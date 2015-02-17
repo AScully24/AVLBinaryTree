@@ -1,26 +1,44 @@
 package binarytree;
 
 import java.util.ArrayList;
-import java.util.Stack;
 
+/**
+ * Contains a lists of MyNodes that can tree traversed, removed, added to, and
+ * viewed.
+ *
+ * @author Anthony Scully
+ */
 public class MyTree {
     /* {src_lang=Java}*/
 
     private int nodeCount;
     private MyNode root;
 
+    /**
+     * Default Constructor. Sets the root to null.
+     */
     public MyTree() {
     }
 
+    /**
+     *
+     * @param root Sets the root to the node that is passed when creating the
+     * tree.
+     */
     public MyTree(MyNode root) {
         this.root = root;
     }
 
-    /* Add a new node to the tree. */
-    public void addNode(MyNode node) {
+    /**
+     * Add a new node to the tree.
+     *
+     * @param newNode Node to be added to the tree. Must contain a unique
+     * reference.
+     */
+    public void addNode(MyNode newNode) {
 
         if (root == null) {
-            root = node;
+            root = newNode;
             nodeCount++;
             return;
         }
@@ -28,16 +46,16 @@ public class MyTree {
         MyNode temp = root;
         while (true) {
 
-            if (node.getReference() > temp.getReference()) {
+            if (newNode.getReference() > temp.getReference()) {
                 if (temp.getRightNode() == null) {
-                    temp.setRightNode(node);
+                    temp.setRightNode(newNode);
                     temp.getRightNode().setParentNode(temp);
                     nodeCount++;
                     return;
                 } else temp = temp.getRightNode();
             } else {
                 if (temp.getLeftNode() == null) {
-                    temp.setLeftNode(node);
+                    temp.setLeftNode(newNode);
                     temp.getLeftNode().setParentNode(temp);
                     nodeCount++;
                     return;
@@ -46,9 +64,14 @@ public class MyTree {
         }
     }
 
-    /* Remove a node from the tree. Allocates new parents and children accordingly*/
+    /**
+     * Remove a node from the tree. Allocates new parents and children
+     * accordingly
+     *
+     * @param reference The unique reference for the node to be deleted.
+     */
     public void removeNode(int reference) {
-        MyNode temp = findNode(reference);
+        MyNode temp = findNode(reference, root);
 
         if (temp == null) {
             System.out.println("Node does not exist.");
@@ -67,8 +90,7 @@ public class MyTree {
                     // FROM HERE
                     searchTemp.getOnlyChild().setParentNode(searchTemp.getParentNode());
                     searchTemp.getParentNode().setRightNode(searchTemp.getOnlyChild());
-                    
-                    
+
                     searchTemp.setChildren(root.getChildren());
                     root = searchTemp;
                     searchTemp.getParentNode().setRightNode(null);
@@ -134,104 +156,79 @@ public class MyTree {
     }
 
     /**
-     * Searches the left side of the tree for the highest value.
+     * Recursively searches to find a node based on a unique reference number.
      *
-     * @param node.
-     * @return Returns the highest value node.
+     * @param reference The unique reference number for the desired node.
+     * @param node Starting node. This should be the root of the tree.
+     * @return The MyNode with the matching reference number. Returns null if
+     * not found.
      */
-//    public MyNode findHighestValueNodeLeft(MyNode node) {
-//        while (true) {
-//            if (node.getLeftNode() == null) {
-//                return node;
-//            }
-//        }
-//        return node;
-//    }
+    public MyNode findNode(int reference, MyNode node) {
 
-    /* Find a node based on it's reference. */
-    public MyNode findNode(int reference) {
-        MyNode node = root;
-        while (true) {
+        /* Reference found */
+        if (node.getReference() == reference)
+            return node;
 
-            /* Reference found */
-            if (node.getReference() == reference)
-                return node;
-
-            /* If we cannot go further down the tree, return null */
-            if (node.getLeftNode() == null && node.getRightNode() == null)
-                return null;
-
-            /* Choose which path down the tree to go - Right node checked first */
-            if (node.getRightNode() != null) {
-                if (reference > node.getReference()) {
-                    node = node.getRightNode();
-                    continue;
-                }
-            }
-
-            /* Then the left node */
-            if (node.getLeftNode() != null) {
-                if (reference < node.getReference()) {
-                    node = node.getLeftNode();
-                    continue;
-                }
-            }
-
-            /* If either node does not complete the criteria, end the search */
+        /* If we cannot go further down the tree, return null */
+        if (node.getLeftNode() == null && node.getRightNode() == null)
             return null;
+
+        /* Choose which path down the tree to go - Right node checked first */
+        if (node.getRightNode() != null) {
+            if (reference > node.getReference()) {
+                findNode(reference, node.getRightNode());
+            }
         }
+
+        if (node.getLeftNode() != null) {
+            if (reference < node.getReference()) {
+                findNode(reference, node.getLeftNode());
+            }
+        }
+
+        /* If either node does not complete the criteria, end the search */
+        return null;
 
     }
 
-    /* 
-     * Print the tree first based on right node first
-     * This is dictated through the getChildren method in the MyNode class. 
+    /**
+     *
+     * Recursively prints the tree first based on left nodes first.
+     *
+     * If the root isn't chosen as the start point, the left side of the tree is
+     * not printed.
+     *
+     * @param node Starting node for printing.
      */
-    public void printTree() {
+    public void printTree(MyNode node) {
 
         /* Recursive Method */
-//        if (root == null) {
-//            System.out.println("Tree is empty.");
-//            return;
-//        }
-//        if (t.getLeftNode() != null) {
-//            printTree(t.getLeftNode());
-//        }
-//        System.out.print(t.getReference() + " ");
-//        
-//        if (t.getRightNode() != null) {
-//            printTree(t.getRightNode());
-//        }
-        Stack stack = new Stack();
-
         if (root == null) {
             System.out.println("Tree is empty.");
             return;
         }
-
-        MyNode node = root;
-        stack.push(node);
-        while (!stack.isEmpty()) {
-            node = (MyNode) stack.pop();
-            /* Print in order */
-            System.out.print(node.getReference() + " ");
-            for (MyNode n : node.getChildren()) {
-                if (n != null) {
-                    stack.push(n);
-
-                }
-            }
-            /*  Print in reverse order */
-//            System.out.print(node.getReference() + " ");
+        if (node.getLeftNode() != null) {
+            printTree(node.getLeftNode());
         }
-        System.out.println("");
+        System.out.print(node.getReference() + " ");
+
+        if (node.getRightNode() != null) {
+            printTree(node.getRightNode());
+        }
     }
 
-    /* Return the total number of nodes in a tree */
+    /**
+     *
+     * @return Total number of nodes in a tree.
+     */
     public int getNodeCount() {
         return nodeCount;
     }
 
+    /**
+     *
+     * @return First node within the tree.
+     */
     public MyNode getRoot() {
         return root;
     }

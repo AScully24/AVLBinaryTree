@@ -18,43 +18,12 @@ public class GUI {
 //            tree.addNode(new MyNode(i, r.nextInt(100)));
 //        }
         
+        
         for (int u : test) {
             tree.addNode(new MyNode(u, r.nextInt(100)));
         }
         
-        tree.printTree();
-
-//        System.out.println(tree.findNode(3).getRightNode().toString());
-        tree.removeNode(200);
-        tree.printTree();
-//
-//        tree.removeNode(5);
-//        tree.printTree();
-//        
-//        tree.removeNode(10);
-//        tree.printTree();
-        
-
-//        System.out.println(tree.getRoot().toString());
-
-//        tree.printTree();
-//        System.out.println(tree.findNode(5).getParentNode().toString());
-//        System.out.println(tree.findNode(5).getLeftNode().toString());
-////        System.out.println(tree.getRoot().getLeftNode().toString());
-//        tree.printTree();
-////        System.out.println("");
-//        
-//        tree.removeNode(5);
-//        System.out.println(tree.getRoot().getLeftNode().toString());
-//        tree.printTree();
-//        
-//        tree.removeNode(10);
-//        System.out.println(tree.getRoot().getLeftNode().toString());
-//        tree.printTree();
-//        
-//        System.out.println("");
-//        
-//        System.out.println(tree.getRoot().toString());
+        tree.printTree(tree.getRoot());
     }
 
     private static void addReferences() {
