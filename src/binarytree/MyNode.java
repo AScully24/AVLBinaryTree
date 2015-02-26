@@ -1,5 +1,7 @@
 package binarytree;
 
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
 /**
@@ -173,6 +175,38 @@ public class MyNode {
             if (leftNode != null) return leftNode;
             else return rightNode;
         } else return null;
+    }
+
+    public void printTree(OutputStreamWriter out) throws IOException {
+        if (rightNode != null) {
+            rightNode.printTree(out, true, "");
+        }
+        printNodeValue(out);
+        if (leftNode != null) {
+            leftNode.printTree(out, false, "");
+        }
+    }
+
+    private void printNodeValue(OutputStreamWriter out) throws IOException {
+        out.write(Integer.toString(this.reference));
+        out.write('\n');
+    }
+
+    private void printTree(OutputStreamWriter out, boolean isRight, String indent) throws IOException {
+        if (rightNode != null) {
+            rightNode.printTree(out, true, indent + (isRight ? "        " : " |      "));
+        }
+        out.write(indent);
+        if (isRight) {
+            out.write(" /");
+        } else {
+            out.write(" \\");
+        }
+        out.write("----- ");
+        printNodeValue(out);
+        if (leftNode != null) {
+            leftNode.printTree(out, false, indent + (isRight ? " |      " : "        "));
+        }
     }
 
     @Override
