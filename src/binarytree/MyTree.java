@@ -77,11 +77,10 @@ public class MyTree {
             System.out.println("Node does not exist.");
             return;
         }
-
+        
         /* Handle delete with the root.*/
         if (temp == root) {
             if (temp.getLeftNode() != null) {
-
                 MyNode searchTemp = temp.getLeftNode();
                 while (searchTemp.getRightNode() != null) {
                     searchTemp = searchTemp.getRightNode();
@@ -176,19 +175,17 @@ public class MyTree {
         /* Choose which path down the tree to go - Right node checked first */
         if (node.getRightNode() != null) {
             if (reference > node.getReference()) {
-                findNode(reference, node.getRightNode());
+                return findNode(reference, node.getRightNode());
             }
         }
 
         if (node.getLeftNode() != null) {
             if (reference < node.getReference()) {
-                findNode(reference, node.getLeftNode());
+                return findNode(reference, node.getLeftNode());
             }
         }
-
-        /* If either node does not complete the criteria, end the search */
+        
         return null;
-
     }
 
     /**

@@ -3,8 +3,6 @@ package binarytree;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class GUI {
     /* {src_lang=Java}*/
@@ -12,11 +10,11 @@ public class GUI {
     private static MyTree tree;
     private static final int[] references = new int[10];
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         tree = new MyTree(null);
         addReferences();
         Random r = new Random();
-        int[] test = {200, 180, 220, 190, 185};
+        int[] test = {200, 180, 220, 192, 189, 190, 185};
 
         OutputStreamWriter output = new OutputStreamWriter(System.out);
 
@@ -27,17 +25,13 @@ public class GUI {
             tree.addNode(new MyNode(u, r.nextInt(100)));
         }
 
-//        tree.printTree(tree.getRoot());
-
-        
         // Prints the tree in a tree format.
-        try {
-            tree.getRoot().printTree(output);
-            output.flush();
-
-        } catch (IOException ex) {
-            Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        tree.getRoot().printTree(output);
+        output.flush();
+        System.out.println("\n\n\n");
+        tree.removeNode(200);
+        tree.getRoot().printTree(output);
+        output.flush();
     }
 
     private static void addReferences() {
