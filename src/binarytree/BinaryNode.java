@@ -10,30 +10,33 @@ import java.util.ArrayList;
  *
  * @author Anthony Scully
  */
-public class MyNode {
+public class BinaryNode {
     /* {src_lang=Java}*/
 
     private int reference;
-    private int data;
-    private MyNode leftNode = null;
-    private MyNode rightNode = null;
-    private MyNode parentNode = null;
+    private String description;
+    private double price;
+    private BinaryNode leftNode = null;
+    private BinaryNode rightNode = null;
+    private BinaryNode parentNode = null;
 
     /**
      *
      * @param reference A unique value for this node.
-     * @param data The data to be stored in the node.
+     * @param description The description for this node.
+     * @param price The price to be stored in the node.
      */
-    public MyNode(int reference, int data) {
+    public BinaryNode(int reference, String description, double price) {
         this.reference = reference;
-        this.data = data;
+        this.description = description;
+        this.price = price;
     }
 
     /**
      *
      * @return The node previous to this node in the tree.
      */
-    public MyNode getParentNode() {
+    public BinaryNode getParentNode() {
         return parentNode;
     }
 
@@ -42,7 +45,7 @@ public class MyNode {
      *
      * @param parentNode New parent node.
      */
-    public void setParentNode(MyNode parentNode) {
+    public void setParentNode(BinaryNode parentNode) {
         this.parentNode = parentNode;
     }
 
@@ -51,7 +54,7 @@ public class MyNode {
      * @return The child node with the lower reference number than this node.
      * Returns null if one doesn't exist.
      */
-    public MyNode getLeftNode() {
+    public BinaryNode getLeftNode() {
         return leftNode;
     }
 
@@ -60,7 +63,7 @@ public class MyNode {
      * @return The child node with the higher reference number than this node.
      * Returns null if one doesn't exist.
      */
-    public MyNode getRightNode() {
+    public BinaryNode getRightNode() {
         return rightNode;
     }
 
@@ -68,7 +71,7 @@ public class MyNode {
      *
      * @param leftNode Set a new lower reference child node.
      */
-    public void setLeftNode(MyNode leftNode) {
+    public void setLeftNode(BinaryNode leftNode) {
         this.leftNode = leftNode;
     }
 
@@ -76,7 +79,7 @@ public class MyNode {
      *
      * @param rightNode Set a new higher reference child node.
      */
-    public void setRightNode(MyNode rightNode) {
+    public void setRightNode(BinaryNode rightNode) {
         this.rightNode = rightNode;
     }
 
@@ -90,10 +93,10 @@ public class MyNode {
 
     /**
      *
-     * @return The data contained in this node.
+     * @return The price contained in this node.
      */
-    public int getData() {
-        return data;
+    public double getPrice() {
+        return price;
     }
 
     /**
@@ -106,21 +109,37 @@ public class MyNode {
     }
 
     /**
-     * Sets a new data value for the node.
+     * Sets a new price value for the node.
      *
-     * @param data The new data to be stored.
+     * @param price The new data to be stored.
      */
-    public void setData(int data) {
-        this.data = data;
+    public void setPrice(double price) {
+        this.price = price;
     }
 
+    /**
+     * 
+     * @return The item description.
+     */
+    public String getDescription() {
+        return description;
+    }
+
+    /**
+     * Set a new item description.
+     * @param description The new description
+     */
+    public void setDescription(String description) {
+        this.description = description;
+    }
+    
     /**
      *
      * @return An ArrayList of MyNodes that are the children of this node, order
      * lowest reference to highest reference.
      */
-    public ArrayList<MyNode> getChildren() {
-        ArrayList<MyNode> ar = new ArrayList<>();
+    public ArrayList<BinaryNode> getChildren() {
+        ArrayList<BinaryNode> ar = new ArrayList<>();
         ar.add(leftNode);
         ar.add(rightNode);
         return ar;
@@ -131,7 +150,7 @@ public class MyNode {
      * @param newChildren ArrayList of the new children for this node, ordered
      * lowest reference first.
      */
-    public void setChildren(ArrayList<MyNode> newChildren) {
+    public void setChildren(ArrayList<BinaryNode> newChildren) {
         leftNode = newChildren.get(0);
         rightNode = newChildren.get(1);
     }
@@ -167,10 +186,10 @@ public class MyNode {
 
     /**
      *
-     * @return A MyNode that is the only child of this node. Returns null if
-     * there are two children or there are no children.
+     * @return A BinaryNode that is the only child of this node. Returns null if
+ there are two children or there are no children.
      */
-    public MyNode getOnlyChild() {
+    public BinaryNode getOnlyChild() {
         if (getChildCount() == 1) {
             if (leftNode != null) return leftNode;
             else return rightNode;
@@ -211,7 +230,7 @@ public class MyNode {
 
     @Override
     public String toString() {
-        return "MyNode{" + "reference=" + reference + ", data=" + data + ", Child Count=" + getChildCount() + '}';
+        return "MyNode{" + "reference=" + reference + ", data=" + price + ", Child Count=" + getChildCount() + '}';
     }
 
 }

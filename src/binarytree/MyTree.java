@@ -12,7 +12,7 @@ public class MyTree {
     /* {src_lang=Java}*/
 
     private int nodeCount;
-    private MyNode root;
+    private BinaryNode root;
 
     /**
      * Default Constructor. Sets the root to null.
@@ -25,7 +25,7 @@ public class MyTree {
      * @param root Sets the root to the node that is passed when creating the
      * tree.
      */
-    public MyTree(MyNode root) {
+    public MyTree(BinaryNode root) {
         this.root = root;
     }
 
@@ -35,15 +35,19 @@ public class MyTree {
      * @param newNode Node to be added to the tree. Must contain a unique
      * reference.
      */
-    public void addNode(MyNode newNode) {
+    public void addNode(BinaryNode newNode) {
 
         if (root == null) {
             root = newNode;
             nodeCount++;
             return;
         }
-
-        MyNode temp = root;
+        
+        if (findNode(newNode.getReference(), root) != null) {
+            return;
+        }
+        
+        BinaryNode temp = root;
         while (true) {
 
             if (newNode.getReference() > temp.getReference()) {
@@ -71,47 +75,25 @@ public class MyTree {
      * @param reference The unique reference for the node to be deleted.
      */
     public void removeNode(int reference) {
-        MyNode temp = findNode(reference, root);
+        BinaryNode temp = findNode(reference, root);
 
         if (temp == null) {
             System.out.println("Node does not exist.");
             return;
         }
-        
+
         /* Handle delete with the root.*/
         if (temp == root) {
-            if (temp.getLeftNode() != null) {
-                MyNode searchTemp = temp.getLeftNode();
-                while (searchTemp.getRightNode() != null) {
-                    searchTemp = searchTemp.getRightNode();
-                }
-                if (searchTemp.getChildCount() > 0) {
-                    // FROM HERE
-                    searchTemp.getOnlyChild().setParentNode(searchTemp.getParentNode());
-                    searchTemp.getParentNode().setRightNode(searchTemp.getOnlyChild());
-
-                    searchTemp.setChildren(root.getChildren());
-                    root = searchTemp;
-                    searchTemp.getParentNode().setRightNode(null);
-                    root.setParentNode(null);
-                } else {
-                    searchTemp.setChildren(root.getChildren());
-                    root = searchTemp;
-                    searchTemp.getParentNode().setRightNode(null);
-                    root.setParentNode(null);
-                }
-                return;
-            } else if (temp.getRightNode() != null) {
-                MyNode searchTemp = temp.getRightNode();
-                while (searchTemp.getLeftNode() != null) {
-                    searchTemp = searchTemp.getLeftNode();
-                }
-                searchTemp.setChildren(root.getChildren());
-                root = searchTemp;
-                searchTemp.getParentNode().setRightNode(null);
-                root.setParentNode(null);
+            if (root.getLeftNode() != null) {
+                temp = findHighestNode(root.getLeftNode());
+            } else if (root.getRightNode() != null) {
+                temp = findLowestNode(root.getRightNode());
+            }else{
+                root = null;
                 return;
             }
+            removeRootNode(temp);
+            return;
         }
 
         int childCount = temp.getChildCount();
@@ -138,13 +120,13 @@ public class MyTree {
 
         /* Two children in the node. */
         if (childCount == 2) {
-            ArrayList<MyNode> toDeleteChildren = temp.getChildren();
+            ArrayList<BinaryNode> toDeleteChildren = temp.getChildren();
             if (temp.getReference() > temp.getParentNode().getReference())
                 temp.getParentNode().setRightNode(null);
             else
                 temp.getParentNode().setLeftNode(null);
 
-            for (MyNode n : toDeleteChildren) {
+            for (BinaryNode n : toDeleteChildren) {
                 if (n != null) {
                     addNode(n);
                     nodeCount--;
@@ -155,14 +137,67 @@ public class MyTree {
     }
 
     /**
+     * Swaps the location of the root node and another node within the tree.
+     *
+     * @param toSwap Second node to be swapped.
+     */
+    protected void removeRootNode(BinaryNode toSwap) {
+        root.setReference(toSwap.getReference());
+        root.setDescription(toSwap.getDescription());
+        root.setPrice(toSwap.getPrice());
+
+        int childCount = toSwap.getChildCount();
+
+        if (childCount == 0) {
+            System.out.println("toSwap is null");
+            toSwap = null;
+        } else if (childCount == 1) {
+            System.out.println("toSwap becomes child");
+            toSwap.setReference(toSwap.getOnlyChild().getReference());
+            toSwap.setDescription(toSwap.getOnlyChild().getDescription());
+            toSwap.setPrice(toSwap.getOnlyChild().getPrice());
+            toSwap.setChildren(toSwap.getOnlyChild().getChildren());
+        }
+
+    }
+
+    /**
+     * Recursively searches the tree for the highest value node (via reference).
+     *
+     * @param node The start node for where the search starts.
+     * @return The highest node that is equal to or below the start node.
+     */
+    protected BinaryNode findHighestNode(BinaryNode node) {
+        if (node.getRightNode() != null) {
+            return findHighestNode(node.getRightNode());
+        } else {
+            return node;
+        }
+    }
+
+    /**
+     * Recursively searches the tree for the lowest value node (via reference).
+     *
+     * @param node The start node for where the search starts.
+     * @return The lowest node that is equal to or below the start node.
+     */
+    protected BinaryNode findLowestNode(BinaryNode node) {
+        if (node.getLeftNode() != null) {
+            return findLowestNode(node.getLeftNode());
+        } else {
+            return node;
+        }
+    }
+
+    /**
      * Recursively searches to find a node based on a unique reference number.
      *
      * @param reference The unique reference number for the desired node.
      * @param node Starting node. This should be the root of the tree.
-     * @return The MyNode with the matching reference number. Returns null if
-     * not found.
+     * @return The BinaryNode with the matching reference number. Returns null if
+ not found.
      */
-    public MyNode findNode(int reference, MyNode node) {
+    public BinaryNode findNode(int reference, BinaryNode node) {
 
         /* Reference found */
         if (node.getReference() == reference)
@@ -184,7 +219,7 @@ public class MyTree {
                 return findNode(reference, node.getLeftNode());
             }
         }
-        
+
         return null;
     }
 
@@ -197,7 +232,7 @@ public class MyTree {
      *
      * @param node Starting node for printing.
      */
-    public void printTree(MyNode node) {
+    public void printTree(BinaryNode node) {
 
         /* Recursive Method */
         if (root == null) {
@@ -226,7 +261,7 @@ public class MyTree {
      *
      * @return First node within the tree.
      */
-    public MyNode getRoot() {
+    public BinaryNode getRoot() {
         return root;
     }
 
