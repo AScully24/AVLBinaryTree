@@ -3,38 +3,38 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package binarytree;
+package linkedlist;
 
 /**
  *
  * @author Anthony Scully
  */
-public class LinkedListNode {
+public class ItemNode {
 
-    private LinkedListNode parent, child;
-    private int reference;
-    private String description;
-    private double price;
+    protected ItemNode parent, child;
+    protected int reference;
+    protected String description;
+    protected double price;
     
-    public LinkedListNode(int reference, String description, double price) {
+    public ItemNode(int reference, String description, double price) {
         this.reference = reference;
         this.description = description;
         this.price = price;
     }
 
-    public LinkedListNode getParent() {
+    public ItemNode getParent() {
         return parent;
     }
 
-    public void setParent(LinkedListNode parent) {
+    public void setParent(ItemNode parent) {
         this.parent = parent;
     }
 
-    public LinkedListNode getChild() {
+    public ItemNode getChild() {
         return child;
     }
 
-    public void setChild(LinkedListNode child) {
+    public void setChild(ItemNode child) {
         this.child = child;
     }
 

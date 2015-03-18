@@ -3,16 +3,19 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package binarytree;
+package main;
 
+import linkedlist.ItemNode;
+import linkedlist.MyLinkedList;
+import binarytree.MyTree;
 import java.util.ArrayList;
-import java.util.Random;
 import java.util.Scanner;
 import javax.swing.Box;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import linkedlist.SetNode;
 
 /**
  *
@@ -21,8 +24,10 @@ import javax.swing.JTextField;
 public class GUI extends javax.swing.JDialog {
 
     private static MyTree tree;
-    private static final ArrayList<String> data = new ArrayList<>();
-    private static MyLinkedList linkedList;
+    private static final ArrayList<String> itemData = new ArrayList<>();
+    private static final ArrayList<String> setData = new ArrayList<>();
+    private static MyLinkedList itemLinkedList;
+    private static MyLinkedList setLinkedList;
 
     /**
      * Creates new form GUI
@@ -33,25 +38,44 @@ public class GUI extends javax.swing.JDialog {
         loadDataToArrayList();
         loadLinkedList();
     }
-
+1
     /* Loads from the csv file into the arraylist */
     private void loadDataToArrayList() {
         Scanner sc = new Scanner(CommandGUI.class.getResourceAsStream("Test-Data.csv"));
         sc.nextLine();
         while (sc.hasNextLine()) {
-            data.add(sc.nextLine());
+            itemData.add(sc.nextLine());
+        }
+
+        sc.close();
+        sc = new Scanner(CommandGUI.class.getResourceAsStream("Test-Data-Sets.csv"));
+        sc.nextLine();
+        while (sc.hasNextLine()) {
+            setData.add(sc.nextLine());
         }
     }
 
     /* Loads data from arraylist to the linked list.*/
     private void loadLinkedList() {
-        linkedList = new MyLinkedList();
-        for (String s : data) {
+        itemLinkedList = new MyLinkedList();
+        for (String s : itemData) {
             String lineData[] = s.split(",");
-            linkedList.addNode(new LinkedListNode(Integer.parseInt(lineData[0]),
+            itemLinkedList.addNode(new ItemNode(Integer.parseInt(lineData[0]),
                     lineData[1], Double.parseDouble(lineData[2])));
         }
 
+        setLinkedList = new MyLinkedList();
+        for (String s : setData) {
+            String lineData[] = s.split(",");
+            SetNode newNode = new SetNode(Integer.parseInt(lineData[0]),
+                    lineData[1], Double.parseDouble(lineData[2]), Integer.parseInt(lineData[3]));
+
+            for (int i = 4; i < lineData.length; i++) {
+                newNode.addToItemRefs(Integer.parseInt(lineData[i]));
+            }
+
+            setLinkedList.addNode(newNode);
+        }
     }
 
     /**
@@ -67,10 +91,13 @@ public class GUI extends javax.swing.JDialog {
         buttonSearch = new javax.swing.JButton();
         buttonRemove = new javax.swing.JButton();
         buttonPrint = new javax.swing.JButton();
+        buttonPrintSet = new javax.swing.JButton();
+        buttonListItemSet = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("My Data Structures");
 
-        buttonAdd.setText("Add");
+        buttonAdd.setText("Add Item");
         buttonAdd.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 buttonAddActionPerformed(evt);
@@ -84,17 +111,31 @@ public class GUI extends javax.swing.JDialog {
             }
         });
 
-        buttonRemove.setText("Remove");
+        buttonRemove.setText("Remove Item");
         buttonRemove.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 buttonRemoveActionPerformed(evt);
             }
         });
 
-        buttonPrint.setText("Print");
+        buttonPrint.setText("Print Item");
         buttonPrint.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 buttonPrintActionPerformed(evt);
+            }
+        });
+
+        buttonPrintSet.setText("Print Sets");
+        buttonPrintSet.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonPrintSetActionPerformed(evt);
+            }
+        });
+
+        buttonListItemSet.setText("List Item set");
+        buttonListItemSet.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonListItemSetActionPerformed(evt);
             }
         });
 
@@ -103,26 +144,39 @@ public class GUI extends javax.swing.JDialog {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(23, 23, 23)
-                .addComponent(buttonAdd)
-                .addGap(18, 18, 18)
-                .addComponent(buttonRemove)
-                .addGap(18, 18, 18)
-                .addComponent(buttonSearch)
-                .addGap(26, 26, 26)
-                .addComponent(buttonPrint)
-                .addContainerGap(104, Short.MAX_VALUE))
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(buttonAdd)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 235, Short.MAX_VALUE)
+                        .addComponent(buttonPrintSet))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(buttonPrint)
+                            .addComponent(buttonRemove))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(buttonSearch)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(buttonListItemSet)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(244, Short.MAX_VALUE)
+                .addGap(23, 23, 23)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(buttonAdd)
+                    .addComponent(buttonPrintSet)
+                    .addComponent(buttonAdd))
+                .addGap(18, 18, 18)
+                .addComponent(buttonRemove)
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(buttonSearch)
-                    .addComponent(buttonRemove)
-                    .addComponent(buttonPrint))
-                .addGap(26, 26, 26))
+                    .addComponent(buttonListItemSet))
+                .addGap(18, 18, 18)
+                .addComponent(buttonPrint)
+                .addContainerGap(103, Short.MAX_VALUE))
         );
 
         pack();
@@ -133,7 +187,7 @@ public class GUI extends javax.swing.JDialog {
         JTextField itemRef = new JTextField(20);
         JTextField itemDesc = new JTextField(20);
         JTextField itemPrice = new JTextField(20);
-        
+
         JPanel p = new JPanel();
         p.add(new JLabel("Reference No: "));
         p.add(itemRef);
@@ -143,54 +197,106 @@ public class GUI extends javax.swing.JDialog {
         p.add(Box.createHorizontalStrut(15));
         p.add(new JLabel("Price"));
         p.add(itemPrice);
-        
+
         int result = JOptionPane.showConfirmDialog(null, p, "Add an item",
                 JOptionPane.OK_CANCEL_OPTION);
-        
-        int ref = Integer.parseInt(itemRef.getText());
-        String description = itemDesc.getText();
-        double price = Double.parseDouble(itemPrice.getText());
-        
+
         if (result == JOptionPane.OK_OPTION) {
-            linkedList.addNode(new LinkedListNode(ref, description, price));
+            int ref = Integer.parseInt(itemRef.getText());
+            String description = itemDesc.getText();
+            double price = Double.parseDouble(itemPrice.getText());
+
+            itemLinkedList.addNode(new ItemNode(ref, description, price));
+        } else if (result == JOptionPane.CANCEL_OPTION) {
+
         }
     }//GEN-LAST:event_buttonAddActionPerformed
 
     private void buttonPrintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonPrintActionPerformed
-        linkedList.printAllNodes();
+        itemLinkedList.printAllNodes();
     }//GEN-LAST:event_buttonPrintActionPerformed
 
     private void buttonRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonRemoveActionPerformed
         JTextField itemRef = new JTextField(20);
-        
+
         JPanel p = new JPanel();
         p.add(new JLabel("Reference No: "));
         p.add(itemRef);
         int result = JOptionPane.showConfirmDialog(null, p, "Add an item",
                 JOptionPane.OK_CANCEL_OPTION);
-        
-        int ref = Integer.parseInt(itemRef.getText());
-        
+
         if (result == JOptionPane.OK_OPTION) {
-            linkedList.removeNode(ref);
+            int ref = Integer.parseInt(itemRef.getText());
+            itemLinkedList.removeNode(ref);
+            ArrayList<ItemNode> setSearch = setLinkedList.getNodesAsArrayList();
+            for (ItemNode s : setSearch) {
+                if (((SetNode) s).removeItemRef(ref)) {
+                    System.out.println("Item removed from set: " + s.getDescription());
+                    break;
+                }
+            }
+
+        } else if (result == JOptionPane.CANCEL_OPTION) {
+
         }
     }//GEN-LAST:event_buttonRemoveActionPerformed
 
     private void buttonSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonSearchActionPerformed
         JTextField itemRef = new JTextField(20);
-        
+
         JPanel p = new JPanel();
         p.add(new JLabel("Reference No: "));
         p.add(itemRef);
         int result = JOptionPane.showConfirmDialog(null, p, "Add an item",
                 JOptionPane.OK_CANCEL_OPTION);
-        
-        int ref = Integer.parseInt(itemRef.getText());
-        
+
         if (result == JOptionPane.OK_OPTION) {
-            System.out.println(linkedList.findNode(ref).toString());
+            int ref = Integer.parseInt(itemRef.getText());
+            System.out.println(itemLinkedList.findNode(ref).toString());
+        } else if (result == JOptionPane.CANCEL_OPTION) {
+
         }
     }//GEN-LAST:event_buttonSearchActionPerformed
+
+    private void buttonPrintSetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonPrintSetActionPerformed
+        setLinkedList.printAllNodeData();
+    }//GEN-LAST:event_buttonPrintSetActionPerformed
+
+    private void buttonListItemSetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonListItemSetActionPerformed
+        ArrayList<ItemNode> setSearch = setLinkedList.getNodesAsArrayList();
+
+        JTextField itemRef = new JTextField(20);
+
+        JPanel p = new JPanel();
+        p.add(new JLabel("Reference No: "));
+        p.add(itemRef);
+
+        int result = JOptionPane.showConfirmDialog(null, p, "Find item sets",
+                JOptionPane.OK_CANCEL_OPTION);
+        boolean itemFound = false;
+        String setDesc = "";
+        
+        if (result == JOptionPane.OK_OPTION) {
+            int ref = Integer.parseInt(itemRef.getText());
+            for (ItemNode s : setSearch) {
+                if (((SetNode)s).getItemByRef(ref) != -1) {
+                    itemFound = true;
+                    setDesc = s.getDescription();
+                    break;
+                }
+            }
+            
+            if (itemFound) {
+                System.out.printf("Item Reference %d found in Set %s\n",ref,setDesc);
+            }else{
+                System.out.printf("Item Reference %d not found\n",ref);
+            }
+
+        } else if (result == JOptionPane.CANCEL_OPTION) {
+
+        }
+
+    }//GEN-LAST:event_buttonListItemSetActionPerformed
 
     /**
      * @param args the command line arguments
@@ -236,7 +342,9 @@ public class GUI extends javax.swing.JDialog {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton buttonAdd;
+    private javax.swing.JButton buttonListItemSet;
     private javax.swing.JButton buttonPrint;
+    private javax.swing.JButton buttonPrintSet;
     private javax.swing.JButton buttonRemove;
     private javax.swing.JButton buttonSearch;
     // End of variables declaration//GEN-END:variables

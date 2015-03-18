@@ -1,4 +1,6 @@
-package binarytree;
+package linkedlist;
+
+import java.util.ArrayList;
 
 /**
  *
@@ -6,19 +8,24 @@ package binarytree;
  */
 public class MyLinkedList {
 
-    private LinkedListNode root;
+    private ItemNode root;
     private int nodeCount = 0;
 
     public MyLinkedList() {
     }
     
-    public MyLinkedList(LinkedListNode root) {
+    public MyLinkedList(ItemNode root) {
         this.root = root;
         nodeCount = 1;
     }
 
-    public void addNode(LinkedListNode newNode) {
-        LinkedListNode tempNode = root;
+    public void addNode(ItemNode newNode) {
+        ItemNode tempNode = root;
+        
+        if (newNode == null) {
+            System.out.println("Add Node: New node is null");
+            return;
+        }
         
         if (root == null) {
             root = newNode;
@@ -34,8 +41,8 @@ public class MyLinkedList {
         nodeCount++;
     }
     
-    public LinkedListNode findNode(int reference) {
-        LinkedListNode tempNode = root;
+    public ItemNode findNode(int reference) {
+        ItemNode tempNode = root;
         
         while (tempNode != null && tempNode.getReference() != reference) {
             tempNode = tempNode.getChild();
@@ -45,7 +52,7 @@ public class MyLinkedList {
     }
     
     public void removeNode(int reference) {
-        LinkedListNode tempNode = root;
+        ItemNode tempNode = root;
         
         if (tempNode == null) {
             System.out.println("Removal: No root node.");
@@ -68,7 +75,7 @@ public class MyLinkedList {
     }
 
     public void printAllNodes() {
-        LinkedListNode tempNode = root;
+        ItemNode tempNode = root;
         if (tempNode == null) {
             System.out.println("null");
             return;
@@ -79,11 +86,49 @@ public class MyLinkedList {
         }
         System.out.println("null");
     }
+ 
+    public void printNodeData(int ref) {
+        ItemNode tempNode = findNode(ref);
+        if (tempNode == null) {
+            System.out.println("Print Node: Node not found.");
+        }else{
+            System.out.println(tempNode.toString());
+        }
+    }
     
-    public LinkedListNode getRoot() {
+    public void printAllNodeData() {
+        ItemNode tempNode = root;
+        if (tempNode == null) {
+            System.out.println("null");
+            return;
+        }
+        while (tempNode!=null) {
+            System.out.println(tempNode.toString());
+            tempNode = tempNode.getChild();
+        }
+        System.out.println("End");
+    }
+    
+    public ArrayList<ItemNode> getNodesAsArrayList() {
+        ArrayList<ItemNode> temp = new ArrayList<>();
+        ItemNode tempNode = root;
+        if (tempNode == null) {
+            System.out.println("null");
+            return null;
+        }
+        
+        while (tempNode!=null) {
+            temp.add(tempNode);
+            tempNode = tempNode.getChild();
+        }
+        
+        return temp;
+    }
+    
+    public ItemNode getRoot() {
         return root;
     }
-
+    
     public int getNodeCount() {
         return nodeCount;
     }
