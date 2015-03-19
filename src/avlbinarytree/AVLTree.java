@@ -72,33 +72,136 @@ public class AVLTree {
             }
         }
 
-        calculateHeight(temp);
+        refreshHeights(temp);
     }
-    
+
     /**
-     * Calculates the height of one side of the tree after a leaf node is added.
-     * @param temp The leave node where the recursion begins.
+     * Recursively goes through the tree to refresh the height of the nodes
+     * above a newly added node. Stops when the root is reached or the height
+     * changes stop affecting the parent node.
+     *
+     * @param node The node
      */
-    private void calculateHeight(AVLNode temp) {
-        int childCount = temp.getChildCount();
-        switch (childCount) {
-            case 0:
-                temp.setHeight(0);
-                break;
-            case 1:
-                temp.setHeight(temp.getOnlyChild().getHeight() + 1);
-                break;
-            case 2:
-                temp.setHeight(max(temp.getLeftNode().getHeight(),temp.getRightNode().getHeight()) + 1);
-                break;
+    private void refreshHeights(AVLNode node) {
+        int childCount = node.getChildCount();
+        int previousHeight = node.getHeight();
+        if (childCount == 0) {
+            node.setHeight(0);
         }
-        
-        if (temp==root) {
-            // End of recursion.
-        }else{
-            calculateHeight(temp.getParentNode());
+        if (childCount == 1) {
+            node.setHeight(node.getOnlyChild().getHeight() + 1);
         }
 
+        if (childCount == 2) {
+            int maxHeight = max(node.getLeftNode().getHeight(), node.getRightNode().getHeight());
+            node.setHeight(maxHeight + 1);
+        }
+
+        /* Stops refreshing when the node height doesn't change, or the root node is reached */
+//        if ((childCount > 0 && previousHeight != node.getHeight()) || node == root) {
+//            refreshHeights(node.getParentNode());
+//        }
+        if (node.getParentNode() != null) {
+
+            int balance = checkBalance(node.getParentNode());
+            switch (balance) {
+                case 1:
+                    rotateNodeRight(node);
+                    break;
+                case -1:
+                    rotateNodeLeft(node);
+                    break;
+                default:
+            }
+            refreshHeights(node.getParentNode());
+        }
+
+    }
+
+    public void rotateNodeLeft(AVLNode node) {
+        AVLNode x = node, y = node.getRightNode();
+        AVLNode a = x.getLeftNode(), b = y.getLeftNode(), c = y.getRightNode();
+
+        AVLNode masterParent = x.getParentNode();
+
+        // Swaps the parent of the rotating node
+        if (x == root) root = y;
+        else {
+            if (masterParent.getLeftNode() == x) {
+                masterParent.setLeftNode(y);
+            } else masterParent.setRightNode(y);
+        }
+
+        // x becomes y's left child.
+        y.setParentNode(x.getParentNode());
+        y.setLeftNode(x);
+        x.setParentNode(y);
+
+        //AB comes child of x
+        x.setLeftNode(a);
+        x.setRightNode(b);
+        if (a != null) a.setParentNode(x);
+        if (b != null) b.setParentNode(x);
+
+        // C becomes the left child of y
+        y.setRightNode(c);
+        if (c != null) c.setParentNode(y);
+
+        refreshHeights(node);
+
+    }
+
+    public void rotateNodeRight(AVLNode node) {
+        AVLNode x = node.getLeftNode(), y = node;
+        AVLNode a = x.getLeftNode(), b = x.getRightNode(), c = y.getRightNode();
+        AVLNode masterParent = y.getParentNode();
+
+        // Swaps the parent of the rotating node
+        if (y == root) root = x;
+        else {
+            if (masterParent.getLeftNode() == y) {
+                masterParent.setLeftNode(x);
+            } else masterParent.setRightNode(x);
+        }
+
+        // y becomes x's left child.
+        x.setParentNode(y.getParentNode());
+        x.setRightNode(y);
+        y.setParentNode(x);
+
+        //BC comes child of y
+        y.setLeftNode(b);
+        y.setRightNode(c);
+        if (b != null) b.setParentNode(y);
+        if (c != null) c.setParentNode(y);
+
+        // A becomes the left child of x
+        x.setLeftNode(a);
+        if (a != null) a.setParentNode(x);
+
+        refreshHeights(node);
+    }
+
+    /**
+     * Checks the children of a node to see if there is an AVL imbalance
+     *
+     * @param node The node containing the children to check.
+     * @return 1 for right imbalance, -1 for left imbalance, 0 for balanced
+     * tree.
+     */
+    public int checkBalance(AVLNode node) {
+        int leftHeight, rightHeight;
+        if (node.getLeftNode() == null) leftHeight = -1;
+        else leftHeight = node.getLeftNode().getHeight();
+
+        if (node.getRightNode() == null) rightHeight = -1;
+        else rightHeight = node.getRightNode().getHeight();
+
+        int balance = leftHeight - rightHeight;
+
+        if (balance > 1) return -1;
+        else if (balance < -1) return 1;
+        else return 0;
     }
 
     /**
@@ -192,6 +295,14 @@ public class AVLTree {
             toSwap.setChildren(toSwap.getOnlyChild().getChildren());
         }
 
+    }
+
+    public void swapNodes(AVLNode first, AVLNode second) {
+        AVLNode temp = new AVLNode(0, null, 0);
+
+        temp.setData(first.getData());
+        first.setData(second.getData());
+        second.setData(temp.getData());
     }
 
     /**
@@ -297,5 +408,4 @@ public class AVLTree {
     public AVLNode getRoot() {
         return root;
     }
-
 }
