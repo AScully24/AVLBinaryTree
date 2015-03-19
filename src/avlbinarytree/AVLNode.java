@@ -245,7 +245,7 @@ public class AVLNode {
     }
 
     private void printNodeValue(OutputStreamWriter out) throws IOException {
-        out.write(Integer.toString(this.height));
+        out.write(Integer.toString(this.reference));
         out.write('\n');
     }
 

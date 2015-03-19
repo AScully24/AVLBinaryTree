@@ -13,6 +13,9 @@ import java.util.ArrayList;
 public class AVLTree {
     /* {src_lang=Java}*/
 
+    private final static int UNBALANCED_RIGHT = 1;
+    private final static int UNBALANCED_LEFT = -1;
+    private final static int BALANCED = 0;
     private int nodeCount;
     private AVLNode root;
     private int leftDepth = 0, rightDepth = 0;
@@ -50,29 +53,29 @@ public class AVLTree {
             return;
         }
 
-        AVLNode temp = root;
+        AVLNode node = root;
         while (true) {
 
-            if (newNode.getReference() > temp.getReference()) {
-                if (temp.getRightNode() == null) {
-                    temp.setRightNode(newNode);
-                    temp.getRightNode().setParentNode(temp);
-                    temp = temp.getRightNode();
+            if (newNode.getReference() > node.getReference()) {
+                if (node.getRightNode() == null) {
+                    node.setRightNode(newNode);
+                    node.getRightNode().setParentNode(node);
+                    node = node.getRightNode();
                     nodeCount++;
                     break;
-                } else temp = temp.getRightNode();
+                } else node = node.getRightNode();
             } else {
-                if (temp.getLeftNode() == null) {
-                    temp.setLeftNode(newNode);
-                    temp.getLeftNode().setParentNode(temp);
-                    temp = temp.getLeftNode();
+                if (node.getLeftNode() == null) {
+                    node.setLeftNode(newNode);
+                    node.getLeftNode().setParentNode(node);
+                    node = node.getLeftNode();
                     nodeCount++;
                     break;
-                } else temp = temp.getLeftNode();
+                } else node = node.getLeftNode();
             }
         }
 
-        refreshHeights(temp);
+        refreshHeights(node);
     }
 
     /**
@@ -101,21 +104,62 @@ public class AVLTree {
 //        if ((childCount > 0 && previousHeight != node.getHeight()) || node == root) {
 //            refreshHeights(node.getParentNode());
 //        }
-        if (node.getParentNode() != null) {
+        //if (node.getParentNode() != null) {
 
-            int balance = checkBalance(node.getParentNode());
-            switch (balance) {
-                case 1:
-                    rotateNodeRight(node);
-                    break;
-                case -1:
-                    rotateNodeLeft(node);
-                    break;
-                default:
+        int balance = checkBalance(node);
+        int rotationCount = rotationsRequired(node, balance);
+        //System.out.println(node.getReference() + " is unbalanced " + balance + " Needs rotation " + rotationCount);
+
+        if (balance == UNBALANCED_RIGHT) {
+            if (rotationCount == 1) {
+                rotateNodeLeft(node);
+            } else if (rotationCount == 2) {
+                rotateNodeRight(node.getRightNode());
+                rotateNodeLeft(node);
             }
+        } else if (balance == UNBALANCED_LEFT) {
+            if (rotationCount == 1) {
+                rotateNodeRight(node);
+            } else if (rotationCount == 2) {
+                rotateNodeLeft(node.getLeftNode());
+                rotateNodeRight(node);
+            }
+        }
+
+        if (node.getParentNode() != null) {
             refreshHeights(node.getParentNode());
         }
 
+        //}
+    }
+
+    /**
+     * Calculates the number of rotations required to fix the tree traversal and
+     * balance.
+     *
+     * @param node The Node to be rotated around.
+     * @param balance Is the tree unbalanced left or right (See checkBalance
+     * method)
+     * @return Number of rotations required to fix a tree.
+     */
+    public int rotationsRequired(AVLNode node, int balance) {
+        if (balance == UNBALANCED_RIGHT) {
+            if (node.getLeftNode() != null) {
+                if (node.getLeftNode().getLeftNode() != null) {
+                    return 1;
+                } else return 2;
+            }
+        }
+
+        if (balance == UNBALANCED_LEFT) {
+            if (node.getRightNode() != null) {
+                if (node.getRightNode().getRightNode() != null) {
+                    return 1;
+                } else return 2;
+            }
+        }
+
+        return 0;
     }
 
     public void rotateNodeLeft(AVLNode node) {
@@ -211,56 +255,56 @@ public class AVLTree {
      * @param reference The unique reference for the node to be deleted.
      */
     public void removeNode(int reference) {
-        AVLNode temp = findNode(reference, root);
+        AVLNode node = findNode(reference, root);
 
-        if (temp == null) {
+        if (node == null) {
             System.out.println("Node does not exist.");
             return;
         }
 
         /* Handle delete with the root.*/
-        if (temp == root) {
+        if (node == root) {
             if (root.getLeftNode() != null) {
-                temp = findHighestNode(root.getLeftNode());
+                node = findHighestNode(root.getLeftNode());
             } else if (root.getRightNode() != null) {
-                temp = findLowestNode(root.getRightNode());
+                node = findLowestNode(root.getRightNode());
             } else {
                 root = null;
                 return;
             }
-            removeRootNode(temp);
+            removeRootNode(node);
             return;
         }
 
-        int childCount = temp.getChildCount();
+        int childCount = node.getChildCount();
 
         /* When a node doesn't have any children*/
         if (childCount == 0) {
-            if (temp.getParentNode().getReference() < temp.getReference()) {
-                temp.getParentNode().setRightNode(null);
+            if (node.getParentNode().getReference() < node.getReference()) {
+                node.getParentNode().setRightNode(null);
             } else {
-                temp.getParentNode().setLeftNode(null);
+                node.getParentNode().setLeftNode(null);
             }
         }
 
         /* Only one child in node. */
         if (childCount == 1) {
-            if (temp.getParentNode().getReference() < temp.getReference()) {
-                temp.getParentNode().setRightNode(temp.getOnlyChild());
-                temp.getParentNode().getRightNode().setParentNode(temp.getParentNode());
+            if (node.getParentNode().getReference() < node.getReference()) {
+                node.getParentNode().setRightNode(node.getOnlyChild());
+                node.getParentNode().getRightNode().setParentNode(node.getParentNode());
             } else {
-                temp.getParentNode().setLeftNode(temp.getOnlyChild());
-                temp.getParentNode().getLeftNode().setParentNode(temp.getParentNode());
+                node.getParentNode().setLeftNode(node.getOnlyChild());
+                node.getParentNode().getLeftNode().setParentNode(node.getParentNode());
             }
         }
 
         /* Two children in the node. */
         if (childCount == 2) {
-            ArrayList<AVLNode> toDeleteChildren = temp.getChildren();
-            if (temp.getReference() > temp.getParentNode().getReference())
-                temp.getParentNode().setRightNode(null);
+            ArrayList<AVLNode> toDeleteChildren = node.getChildren();
+            if (node.getReference() > node.getParentNode().getReference())
+                node.getParentNode().setRightNode(null);
             else
-                temp.getParentNode().setLeftNode(null);
+                node.getParentNode().setLeftNode(null);
 
             for (AVLNode n : toDeleteChildren) {
                 if (n != null) {
@@ -298,11 +342,11 @@ public class AVLTree {
     }
 
     public void swapNodes(AVLNode first, AVLNode second) {
-        AVLNode temp = new AVLNode(0, null, 0);
+        AVLNode node = new AVLNode(0, null, 0);
 
-        temp.setData(first.getData());
+        node.setData(first.getData());
         first.setData(second.getData());
-        second.setData(temp.getData());
+        second.setData(node.getData());
     }
 
     /**
