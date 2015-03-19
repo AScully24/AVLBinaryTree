@@ -205,6 +205,33 @@ public class AVLNode {
         this.height = height;
     }
 
+    public boolean isChild(AVLNode node) {
+        if (leftNode == node) {
+            return true;
+        }else if (rightNode == node) {
+            return true;
+        }else return false;
+    }
+    
+    public void setData(NodeData data) {
+        description = data.description;
+        price = data.price;
+        reference = data.reference;
+        height = data.height;
+        //parentNode = data.parent;
+        //setChildren(data.children);
+    }
+    
+    public NodeData getData() {
+        NodeData data = new NodeData();
+        data.description = description;
+        data.price = price;
+        data.reference = reference;
+        data.height = height;
+        //data.parent = parentNode;
+        //data.children = getChildren();
+        return data;
+    }
     
     
     public void printTree(OutputStreamWriter out) throws IOException {
@@ -241,7 +268,7 @@ public class AVLNode {
 
     @Override
     public String toString() {
-        return "MyNode{" + "reference=" + reference + ", data=" + price + ", Child Count=" + getChildCount() + '}';
+        return "MyNode{" + "reference=" + reference + ", price=" + price + ", Child Count=" + getChildCount() + '}';
     }
 
 }

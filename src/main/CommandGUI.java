@@ -2,7 +2,6 @@ package main;
 
 import avlbinarytree.AVLNode;
 import avlbinarytree.AVLTree;
-import linkedlist.ItemNode;
 import linkedlist.MyLinkedList;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -14,12 +13,12 @@ public class CommandGUI {
     /* {src_lang=Java}*/
 
     private static AVLTree tree;
-    private static final ArrayList<String> data = new ArrayList<>();    
+    private static final ArrayList<String> data = new ArrayList<>();
     private static MyLinkedList linkedList;
-    
+
     public static void main(String[] args) throws IOException {
         binaryTreeMethod();
-        
+
 //        linkedList = new MyLinkedList();
 //        Random r = new Random();
 //        
@@ -33,48 +32,62 @@ public class CommandGUI {
 //        linkedList.removeNode(200);
 //        linkedList.printAllNodes();
 //        
-        
+
     }
 
     private static void binaryTreeMethod() throws IOException {
         tree = new AVLTree(null);
         Random r = new Random();
 
-        Scanner sc = new Scanner(CommandGUI.class.getResourceAsStream("Test-Data.csv"));
-        sc.nextLine();
-        while (sc.hasNextLine()) {
-            data.add(sc.nextLine());
+
+
+        // Test Data
+        //int[] test = {200, 192, 180, 189, 220, 190, 185, 170, 160, 165, 193, 194, 196, 195};
+        //int[] test = {29,26,23};
+        //int[] test = {100,90,110,85,95};
+        int[] test = {41,20,29,26,23,65,50,11,55};
+        for (int u : test) {
+            System.out.println(u);
+            tree.addNode(new AVLNode(u, "Test", r.nextDouble()));
         }
 
-        int startingPoint = data.size() / 2;
-        int movement = 1;
-        for (int i = 0; i < data.size(); i++) {
+        // Actual Data
+//        Scanner sc = new Scanner(CommandGUI.class.getResourceAsStream("Test-Data.csv"));
+//        sc.nextLine();
+//        while (sc.hasNextLine()) {
+//            data.add(sc.nextLine());
+//        }
 
-            String lineData[] = data.get(i).split(",");
-            tree.addNode(new AVLNode(Integer.parseInt(lineData[0]), lineData[1], Double.parseDouble(lineData[2])));
-//
-//            if ((movement % 2) != 0) {
-//                startingPoint -= movement;
-//            } else {
-//                startingPoint += movement;
-//            }
-//
-//            if (startingPoint > data.size() || startingPoint < 0) {
-//                System.out.println("Exiting Here: i=" + i + "\tstartPoint=" + startingPoint + "\tmovement=" + movement);
-//                break;
-//            }
-//            movement++;
-        }
+//        for (int i = 0; i < data.size(); i++) {
+//            String lineData[] = data.get(i).split(",");
+//            tree.addNode(new AVLNode(Integer.parseInt(lineData[0]), lineData[1], Double.parseDouble(lineData[2])));
+//        }
 
-        System.out.println("data.size() = " + data.size());
         OutputStreamWriter output = new OutputStreamWriter(System.out);
+        
         // Prints the tree in a tree format.
         tree.getRoot().printTree(output);
         output.flush();
         System.out.println("\n\n");
-//        tree.removeNode(200);
+        
+//        AVLNode swap = tree.findNode(29, tree.getRoot());
+//        tree.rotateNodeRight(swap);
 //        tree.getRoot().printTree(output);
-//        output.flush();  
-    }
+//        output.flush();
+//        System.out.println("\n\n");
+//        
+//        
+//        swap = tree.findNode(50, tree.getRoot());
+//        tree.rotateNodeLeft(swap);
+//        tree.getRoot().printTree(output);
+//        output.flush();
+//        System.out.println("\n\n");
+//        
+//        swap = tree.findNode(65, tree.getRoot());
+//        tree.rotateNodeRight(swap);
+//        tree.getRoot().printTree(output);
+//        output.flush();
+//        System.out.println("\n\n");
 
+    }
 }

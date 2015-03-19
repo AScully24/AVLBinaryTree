@@ -38,7 +38,7 @@ public class GUI extends javax.swing.JDialog {
         loadDataToArrayList();
         loadLinkedList();
     }
-1
+    
     /* Loads from the csv file into the arraylist */
     private void loadDataToArrayList() {
         Scanner sc = new Scanner(CommandGUI.class.getResourceAsStream("Test-Data.csv"));
