@@ -42,7 +42,11 @@ public class AVLTree {
      * reference.
      */
     public void addNode(AVLNode newNode) {
-
+        
+        if (newNode.getReference() == 194) {
+            newNode = newNode;
+        }
+        
         if (root == null) {
             root = newNode;
             nodeCount++;
@@ -75,62 +79,67 @@ public class AVLTree {
             }
         }
 
-        refreshHeights(node);
+        rebalanceTree(node);
     }
 
     /**
-     * Recursively goes through the tree to refresh the height of the nodes
-     * above a newly added node. Stops when the root is reached or the height
-     * changes stop affecting the parent node.
-     *
-     * @param node The node
+     * Refreshes a single nodes height,
+     * @param node The node to refresh.
      */
-    private void refreshHeights(AVLNode node) {
+    public void refreshNodeHeight(AVLNode node) {
         int childCount = node.getChildCount();
-        int previousHeight = node.getHeight();
-        if (childCount == 0) {
-            node.setHeight(0);
-        }
-        if (childCount == 1) {
+
+        if (childCount == 0) node.setHeight(0);
+
+        if (childCount == 1)
             node.setHeight(node.getOnlyChild().getHeight() + 1);
-        }
 
         if (childCount == 2) {
             int maxHeight = max(node.getLeftNode().getHeight(), node.getRightNode().getHeight());
             node.setHeight(maxHeight + 1);
         }
+    }
 
-        /* Stops refreshing when the node height doesn't change, or the root node is reached */
-//        if ((childCount > 0 && previousHeight != node.getHeight()) || node == root) {
-//            refreshHeights(node.getParentNode());
-//        }
-        //if (node.getParentNode() != null) {
+    /**
+     * Recursively goes through the tree to refresh the height of the nodes
+     * above a newly added node. Stops when the root is reached or the height
+     * changes stop affecting the parent node. Also balances tree.
+     *
+     * @param node The node where the refresh begins.
+     */
+    private void rebalanceTree(AVLNode node) {
+        while (node != null) {
+            refreshNodeHeight(node);
+            balanceHandler(node);
+            node = node.getParentNode();
+        }
+    }
 
+    public void balanceHandler(AVLNode node) {
         int balance = checkBalance(node);
-        int rotationCount = rotationsRequired(node, balance);
-        //System.out.println(node.getReference() + " is unbalanced " + balance + " Needs rotation " + rotationCount);
+        int rotationCount = 0;
 
-        if (balance == UNBALANCED_RIGHT) {
-            if (rotationCount == 1) {
-                rotateNodeLeft(node);
-            } else if (rotationCount == 2) {
-                rotateNodeRight(node.getRightNode());
-                rotateNodeLeft(node);
-            }
-        } else if (balance == UNBALANCED_LEFT) {
-            if (rotationCount == 1) {
-                rotateNodeRight(node);
-            } else if (rotationCount == 2) {
-                rotateNodeLeft(node.getLeftNode());
-                rotateNodeRight(node);
+        if (balance != 0) {
+            rotationCount = rotationsRequired(node, balance);
+
+            if (balance == UNBALANCED_RIGHT) {
+                if (rotationCount == 1) {
+                    rotateNodeLeft(node);
+                } else if (rotationCount == 2) {
+                    System.out.println("Double Rotate Right: " + node.getReference());
+                    rotateNodeRight(node.getRightNode());
+                    rotateNodeLeft(node);
+                }
+            } else if (balance == UNBALANCED_LEFT) {
+                if (rotationCount == 1) {
+                    rotateNodeRight(node);
+                } else if (rotationCount == 2) {
+                    System.out.println("Double Rotate Left: " + node.getReference());
+                    rotateNodeLeft(node.getLeftNode());
+                    rotateNodeRight(node);
+                }
             }
         }
-
-        if (node.getParentNode() != null) {
-            refreshHeights(node.getParentNode());
-        }
-
-        //}
     }
 
     /**
@@ -143,7 +152,7 @@ public class AVLTree {
      * @return Number of rotations required to fix a tree.
      */
     public int rotationsRequired(AVLNode node, int balance) {
-        if (balance == UNBALANCED_RIGHT) {
+        if (balance == UNBALANCED_LEFT) {
             if (node.getLeftNode() != null) {
                 if (node.getLeftNode().getLeftNode() != null) {
                     return 1;
@@ -151,7 +160,7 @@ public class AVLTree {
             }
         }
 
-        if (balance == UNBALANCED_LEFT) {
+        if (balance == UNBALANCED_RIGHT) {
             if (node.getRightNode() != null) {
                 if (node.getRightNode().getRightNode() != null) {
                     return 1;
@@ -175,7 +184,8 @@ public class AVLTree {
                 masterParent.setLeftNode(y);
             } else masterParent.setRightNode(y);
         }
-
+        
+        
         // x becomes y's left child.
         y.setParentNode(x.getParentNode());
         y.setLeftNode(x);
@@ -190,8 +200,11 @@ public class AVLTree {
         // C becomes the left child of y
         y.setRightNode(c);
         if (c != null) c.setParentNode(y);
-
-        refreshHeights(node);
+        
+        refreshNodeHeight(x);
+        refreshNodeHeight(y);
+        
+        //refreshHeights(node);
 
     }
 
@@ -223,7 +236,9 @@ public class AVLTree {
         x.setLeftNode(a);
         if (a != null) a.setParentNode(x);
 
-        refreshHeights(node);
+        refreshNodeHeight(x);
+        refreshNodeHeight(y);
+        //refreshHeights(node);
     }
 
     /**
@@ -243,9 +258,11 @@ public class AVLTree {
 
         int balance = leftHeight - rightHeight;
 
-        if (balance > 1) return -1;
-        else if (balance < -1) return 1;
-        else return 0;
+        //System.out.println("Ref " + node.getReference() + " is balance " + balance);
+
+        if (balance > 1) return -1; // Left unbalance
+        else if (balance < -1) return 1; // Right unbalance
+        else return 0; // Even
     }
 
     /**

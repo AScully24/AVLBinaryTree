@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.Scanner;
 
 public class CommandGUI {
     /* {src_lang=Java}*/
@@ -43,19 +42,25 @@ public class CommandGUI {
         OutputStreamWriter output = new OutputStreamWriter(System.out);
 
         // Test Data
-        //int[] test = {200, 192, 180, 189, 220, 190, 185, 170, 160, 165, 193, 194, 196, 195};
-        //int[] test = {29,26,23};
+        int[] test = {200, 192, 180, 189, 220, 190, 185, 170, 160, 165, 193, 194, 196, 195};
+        //int[] test = {29, 26, 23};
+        //int[] test = {100,90,95};
+        //int[] test = {23,26,29};
         //int[] test = {100,90,110,85,95};
-        int[] test = {41, 20, 29, 26, 23, 65, 50, 11, 55};
+        // int[] test = {41, 20, 29, 26, 23, 65, 50, 11, 55};
         for (int u : test) {
+            System.out.println(u);
             tree.addNode(new AVLNode(u, "Test", r.nextDouble()));
-
             tree.getRoot().printTree(output);
             output.flush();
-            System.out.println("\n\n\n\n\n");
-
+            System.out.println("\n\n\n");
         }
-
+//        for (int i = 0; i < 10; i++) {
+//            tree.addNode(new AVLNode(i, "Test", r.nextDouble()));
+//            tree.getRoot().printTree(output);
+//            output.flush();
+//            System.out.println("\n\n\n");
+//        }
         // Actual Data
 //        Scanner sc = new Scanner(CommandGUI.class.getResourceAsStream("Test-Data.csv"));
 //        sc.nextLine();
