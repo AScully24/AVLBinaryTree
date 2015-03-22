@@ -16,9 +16,8 @@ public class AVLTree {
 
     private final static int UNBALANCED_RIGHT = 1;
     private final static int UNBALANCED_LEFT = -1;
-    private final static int BALANCED = 0;
     private int nodeCount;
-    private AVLNode root;
+    private AVLItemNode root;
 
     /**
      * Default Constructor. Sets the root to null.
@@ -31,7 +30,7 @@ public class AVLTree {
      * @param root Sets the root to the node that is passed when creating the
      * tree.
      */
-    public AVLTree(AVLNode root) {
+    public AVLTree(AVLItemNode root) {
         this.root = root;
     }
 
@@ -41,7 +40,7 @@ public class AVLTree {
      * @param newNode Node to be added to the tree. Must contain a unique
      * reference.
      */
-    public void addNode(AVLNode newNode) {
+    public void addNode(AVLItemNode newNode) {
 
         if (root == null) {
             root = newNode;
@@ -53,7 +52,7 @@ public class AVLTree {
             return;
         }
 
-        AVLNode node = root;
+        AVLItemNode node = root;
         while (true) {
             if (newNode.getReference() > node.getReference()) {
                 if (node.getRightNode() == null) {
@@ -74,6 +73,7 @@ public class AVLTree {
             }
         }
 
+        printTreeStructure();
         rebalanceTree(node);
     }
 
@@ -82,7 +82,7 @@ public class AVLTree {
      *
      * @param node The node to refresh.
      */
-    public void refreshNodeHeight(AVLNode node) {
+    public void refreshNodeHeight(AVLItemNode node) {
         int childCount = node.getChildCount();
 
         if (childCount == 0) node.setHeight(0);
@@ -103,10 +103,8 @@ public class AVLTree {
      *
      * @param node The node where the refresh begins.
      */
-    private void rebalanceTree(AVLNode node) {
-
-        AVLNode leafNode = node;
-
+    private void rebalanceTree(AVLItemNode node) {
+        AVLItemNode leafNode = node;
         if (node.getReference() == 12810) {
             node = node;
         }
@@ -115,43 +113,21 @@ public class AVLTree {
             refreshNodeHeight(node);
             int balance = balanceHandler(node, leafNode);
             node = node.getParentNode();
-            OutputStreamWriter output = new OutputStreamWriter(System.out);
-            try {
-                getRoot().printTree(output);
-                output.flush();
-                System.out.println("\n\n\n");
-            } catch (Exception e) {
-            }
         }
     }
 
-    public int balanceHandler(AVLNode node, AVLNode leafNode) {
+    /**
+     * Checks whether a node needs re-balancing, and hadnles the number of
+     * rotations to do the balance.
+     *
+     * @param node The node to manage the balance of.
+     * @param leafNode The original node that has just been added to the tree.
+     * @return
+     */
+    private int balanceHandler(AVLItemNode node, AVLItemNode leafNode) {
         int balance = checkBalance(node);
-        int rotationCase = 0;
         int rotationCount = 0;
 
-//        if (balance != 0) {
-//        rotationCase = rotationCase(node, balance);
-//
-//        switch (rotationCase) {
-//            case 0:
-//                break;
-//            case 1: // Left Left
-//                rotateNodeLeft(node);
-//                break;
-//            case 2: // Left Right
-//                rotateNodeLeft(node.getLeftNode());
-//                rotateNodeRight(node);
-//                break;
-//            case 3: // Right Right
-//                rotateNodeRight(node);
-//                break;
-//            case 4: // Right Left
-//                rotateNodeRight(node.getRightNode());
-//                rotateNodeLeft(node);
-//
-//                break;
-//        }
         rotationCount = rotationCase(node, balance, leafNode);
         if (balance == UNBALANCED_RIGHT) {
             if (rotationCount == 1) {
@@ -170,16 +146,6 @@ public class AVLTree {
         }
 
         return rotationCount;
-
-//        if (balance != 0) {
-//            int parentBalance = checkBalance(node.getParentNode());
-//            if (parentBalance == UNBALANCED_RIGHT) {
-//                rotateNodeLeft(node);
-//            }else if (parentBalance == UNBALANCED_LEFT) {
-//                rotateNodeRight(node);
-//            }
-//            
-//        }
     }
 
     /**
@@ -192,9 +158,18 @@ public class AVLTree {
      * @param leafNode
      * @return Number of rotations required to fix a tree.
      */
-    public int rotationCase(AVLNode node, int balance, AVLNode leafNode) {
-        AVLNode leftNode = node.getLeftNode();
-        AVLNode rightNode = node.getRightNode();
+    public int rotationCase(AVLItemNode node, int balance, AVLItemNode leafNode) {
+        AVLItemNode leftNode = node.getLeftNode();
+        AVLItemNode rightNode = node.getRightNode();
+        AVLItemNode temp = node;
+        ArrayList<AVLItemNode> arr = new ArrayList<>();
+        for (int i = 0; i < 2; i++) {
+            if (temp != null) {
+                
+                arr.add(temp);
+            }
+
+        }
 
         if (balance == UNBALANCED_LEFT) {
             if (leftNode != null) {
@@ -203,21 +178,26 @@ public class AVLTree {
                 } else return 2;
             } else return 1;
         }
-        
+        // FROM HERE - Need to set  a method that is capable of find whether is on the path from z
         if (balance == UNBALANCED_RIGHT) {
             if (rightNode != null) {
                 if (rightNode.getRightNode() == leafNode.getParentNode() || rightNode.getRightNode() == leafNode) {
                     return 1;
                 } else return 2;
-            }else return 1;
+            } else return 1;
         }
         return 0;
     }
 
-    public void rotateNodeLeft(AVLNode node) {
-        AVLNode x = node, y = node.getRightNode();
-        AVLNode a = x.getLeftNode(), b = y.getLeftNode(), c = y.getRightNode();
-        AVLNode masterParent = x.getParentNode();
+    /**
+     * Rotates a node and its subtree to the left.
+     *
+     * @param node The node to be rotated.
+     */
+    private void rotateNodeLeft(AVLItemNode node) {
+        AVLItemNode x = node, y = node.getRightNode();
+        AVLItemNode a = x.getLeftNode(), b = y.getLeftNode(), c = y.getRightNode();
+        AVLItemNode masterParent = x.getParentNode();
 
         // Swaps the parent of the rotating node
         if (x == root) root = y;
@@ -248,10 +228,15 @@ public class AVLTree {
         //refreshHeights(node);
     }
 
-    public void rotateNodeRight(AVLNode node) {
-        AVLNode x = node.getLeftNode(), y = node;
-        AVLNode a = x.getLeftNode(), b = x.getRightNode(), c = y.getRightNode();
-        AVLNode masterParent = y.getParentNode();
+    /**
+     * Rotates a node and its subtree to the right.
+     *
+     * @param node The node to be rotated.
+     */
+    private void rotateNodeRight(AVLItemNode node) {
+        AVLItemNode x = node.getLeftNode(), y = node;
+        AVLItemNode a = x.getLeftNode(), b = x.getRightNode(), c = y.getRightNode();
+        AVLItemNode masterParent = y.getParentNode();
 
         // Swaps the parent of the rotating node
         if (y == root) root = x;
@@ -289,7 +274,7 @@ public class AVLTree {
      * @return 1 for right imbalance, -1 for left imbalance, 0 for balanced
      * tree.
      */
-    public int checkBalance(AVLNode node) {
+    private int checkBalance(AVLItemNode node) {
         int leftHeight, rightHeight;
 
         if (node == null) return 0;
@@ -301,11 +286,7 @@ public class AVLTree {
         else rightHeight = node.getRightNode().getHeight();
 
         int balance = leftHeight - rightHeight;
-        //int balance = leftHeight - rightHeight;
 
-//        if (Math.abs(balance) == 1) return 0;
-//        else return rightHeight - leftHeight;
-        //System.out.println("Ref " + node.getReference() + " is balance " + balance);
         if (balance > 1) return -1; // Left unbalance
         else if (balance < -1) return 1; // Right unbalance
         else return 0; // Even
@@ -318,7 +299,7 @@ public class AVLTree {
      * @param reference The unique reference for the node to be deleted.
      */
     public void removeNode(int reference) {
-        AVLNode node = findNode(reference, root);
+        AVLItemNode node = findNode(reference, root);
 
         if (node == null) {
             System.out.println("Node does not exist.");
@@ -363,13 +344,13 @@ public class AVLTree {
 
         /* Two children in the node. */
         if (childCount == 2) {
-            ArrayList<AVLNode> toDeleteChildren = node.getChildren();
+            ArrayList<AVLItemNode> toDeleteChildren = node.getChildren();
             if (node.getReference() > node.getParentNode().getReference())
                 node.getParentNode().setRightNode(null);
             else
                 node.getParentNode().setLeftNode(null);
 
-            for (AVLNode n : toDeleteChildren) {
+            for (AVLItemNode n : toDeleteChildren) {
                 if (n != null) {
                     addNode(n);
                     nodeCount--;
@@ -384,7 +365,7 @@ public class AVLTree {
      *
      * @param toSwap Second node to be swapped.
      */
-    protected void removeRootNode(AVLNode toSwap) {
+    protected void removeRootNode(AVLItemNode toSwap) {
         root.setReference(toSwap.getReference());
         root.setDescription(toSwap.getDescription());
         root.setPrice(toSwap.getPrice());
@@ -404,21 +385,13 @@ public class AVLTree {
 
     }
 
-    public void swapNodes(AVLNode first, AVLNode second) {
-        AVLNode node = new AVLNode(0, null, 0);
-
-        node.setData(first.getData());
-        first.setData(second.getData());
-        second.setData(node.getData());
-    }
-
     /**
      * Recursively searches the tree for the highest value node (via reference).
      *
      * @param node The start node for where the search starts.
      * @return The highest node that is equal to or below the start node.
      */
-    protected AVLNode findHighestNode(AVLNode node) {
+    protected AVLItemNode findHighestNode(AVLItemNode node) {
         if (node.getRightNode() != null) {
             return findHighestNode(node.getRightNode());
         } else {
@@ -432,7 +405,7 @@ public class AVLTree {
      * @param node The start node for where the search starts.
      * @return The lowest node that is equal to or below the start node.
      */
-    protected AVLNode findLowestNode(AVLNode node) {
+    protected AVLItemNode findLowestNode(AVLItemNode node) {
         if (node.getLeftNode() != null) {
             return findLowestNode(node.getLeftNode());
         } else {
@@ -445,10 +418,10 @@ public class AVLTree {
      *
      * @param reference The unique reference number for the desired node.
      * @param node Starting node. This should be the root of the tree.
-     * @return The AVLNode with the matching reference number. Returns null if
-     * not found.
+     * @return The AVLItemNode with the matching reference number. Returns null
+     * if not found.
      */
-    public AVLNode findNode(int reference, AVLNode node) {
+    public AVLItemNode findNode(int reference, AVLItemNode node) {
 
         /* Reference found */
         if (node.getReference() == reference)
@@ -483,7 +456,7 @@ public class AVLTree {
      *
      * @param node Starting node for printing.
      */
-    public void printTree(AVLNode node) {
+    public void printTreeNodes(AVLItemNode node) {
 
         /* Recursive Method */
         if (root == null) {
@@ -491,12 +464,28 @@ public class AVLTree {
             return;
         }
         if (node.getLeftNode() != null) {
-            printTree(node.getLeftNode());
+            printTreeNodes(node.getLeftNode());
         }
         System.out.print(node.getReference() + " ");
 
         if (node.getRightNode() != null) {
-            printTree(node.getRightNode());
+            printTreeNodes(node.getRightNode());
+        }
+    }
+
+    /**
+     *
+     * Recursively prints the tree in a tree format.
+     *
+     */
+    public void printTreeStructure() {
+        OutputStreamWriter output = new OutputStreamWriter(System.out);
+        try {
+            getRoot().printTree(output);
+            output.flush();
+            System.out.println("\n\n\n");
+        } catch (Exception e) {
+            System.out.println("Cannot print tree.");
         }
     }
 
@@ -512,7 +501,24 @@ public class AVLTree {
      *
      * @return First node within the tree.
      */
-    public AVLNode getRoot() {
+    public AVLItemNode getRoot() {
         return root;
+    }
+
+    public void getNodesAsArrayList(ArrayList<AVLItemNode> arr, AVLItemNode node) {
+
+        /* If we cannot go further down the tree, return null */
+        if (node.getLeftNode() != null || node.getRightNode() != null) {
+
+            /* Choose which path down the tree to go - Right node checked first */
+            if (node.getRightNode() != null) {
+                getNodesAsArrayList(arr, node.getRightNode());
+            }
+
+            if (node.getLeftNode() != null) {
+                getNodesAsArrayList(arr, node.getLeftNode());
+            }
+        }
+
     }
 }

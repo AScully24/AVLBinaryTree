@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package linkedlist;
+package avlbinarytree;
 
 import java.util.ArrayList;
 
@@ -11,24 +11,23 @@ import java.util.ArrayList;
  *
  * @author Anthony Scully
  */
-public class SetNode extends ItemNode {
-
+public class AVLSetNode extends AVLItemNode {
     private int itemCount;
     private ArrayList<Integer> itemRefs;
 
-    public SetNode(int reference, String description, double price, int itemCount) {
+    public AVLSetNode(int reference, String description, double price) {
         super(reference, description, price);
-        this.itemCount = itemCount;
+        itemCount = 0;
         itemRefs = new ArrayList<>();
     }
-
+    
     public int getItemByRef(int ref) {
         for (Integer i : itemRefs) {
             if (i == ref) return ref;
         }
         return -1;
     }
-
+    
     public void addToItemRefs(int ref) {
         itemRefs.add(ref);
         itemCount++;
@@ -60,17 +59,5 @@ public class SetNode extends ItemNode {
         }
         return false;
     }
-
-    @Override
-    public String toString() {
-        String itemRefData = "| ";
-
-        for (Integer i : itemRefs) {
-            itemRefData += i.toString() + " | ";
-        }
-
-        return "SetNode{" + "itemCount=" + itemCount + "reference=" + reference
-                + ", description=" + description + ", price=" + price + ", itemRefs=" + itemRefData + '}';
-    }
-
+    
 }

@@ -10,15 +10,15 @@ import java.util.ArrayList;
  *
  * @author Anthony Scully
  */
-public class AVLNode {
+public class AVLItemNode {
     /* {src_lang=Java}*/
 
     private int reference;
     private String description;
     private double price;
-    private AVLNode leftNode = null;
-    private AVLNode rightNode = null;
-    private AVLNode parentNode = null;
+    private AVLItemNode leftNode = null;
+    private AVLItemNode rightNode = null;
+    private AVLItemNode parentNode = null;
     private int height = 0;
 
     /**
@@ -27,7 +27,7 @@ public class AVLNode {
      * @param description The description for this node.
      * @param price The price to be stored in the node.
      */
-    public AVLNode(int reference, String description, double price) {
+    public AVLItemNode(int reference, String description, double price) {
         this.reference = reference;
         this.description = description;
         this.price = price;
@@ -37,7 +37,7 @@ public class AVLNode {
      *
      * @return The node previous to this node in the tree.
      */
-    public AVLNode getParentNode() {
+    public AVLItemNode getParentNode() {
         return parentNode;
     }
 
@@ -46,7 +46,7 @@ public class AVLNode {
      *
      * @param parentNode New parent node.
      */
-    public void setParentNode(AVLNode parentNode) {
+    public void setParentNode(AVLItemNode parentNode) {
         this.parentNode = parentNode;
     }
 
@@ -55,7 +55,7 @@ public class AVLNode {
      * @return The child node with the lower reference number than this node.
      * Returns null if one doesn't exist.
      */
-    public AVLNode getLeftNode() {
+    public AVLItemNode getLeftNode() {
         return leftNode;
     }
 
@@ -64,7 +64,7 @@ public class AVLNode {
      * @return The child node with the higher reference number than this node.
      * Returns null if one doesn't exist.
      */
-    public AVLNode getRightNode() {
+    public AVLItemNode getRightNode() {
         return rightNode;
     }
 
@@ -72,7 +72,7 @@ public class AVLNode {
      *
      * @param leftNode Set a new lower reference child node.
      */
-    public void setLeftNode(AVLNode leftNode) {
+    public void setLeftNode(AVLItemNode leftNode) {
         this.leftNode = leftNode;
     }
 
@@ -80,7 +80,7 @@ public class AVLNode {
      *
      * @param rightNode Set a new higher reference child node.
      */
-    public void setRightNode(AVLNode rightNode) {
+    public void setRightNode(AVLItemNode rightNode) {
         this.rightNode = rightNode;
     }
 
@@ -139,8 +139,8 @@ public class AVLNode {
      * @return An ArrayList of MyNodes that are the children of this node, order
      * lowest reference to highest reference.
      */
-    public ArrayList<AVLNode> getChildren() {
-        ArrayList<AVLNode> ar = new ArrayList<>();
+    public ArrayList<AVLItemNode> getChildren() {
+        ArrayList<AVLItemNode> ar = new ArrayList<>();
         ar.add(leftNode);
         ar.add(rightNode);
         return ar;
@@ -151,7 +151,7 @@ public class AVLNode {
      * @param newChildren ArrayList of the new children for this node, ordered
      * lowest reference first.
      */
-    public void setChildren(ArrayList<AVLNode> newChildren) {
+    public void setChildren(ArrayList<AVLItemNode> newChildren) {
         leftNode = newChildren.get(0);
         rightNode = newChildren.get(1);
     }
@@ -187,10 +187,10 @@ public class AVLNode {
 
     /**
      *
-     * @return A AVLNode that is the only child of this node. Returns null if
+     * @return A AVLItemNode that is the only child of this node. Returns null if
  there are two children or there are no children.
      */
-    public AVLNode getOnlyChild() {
+    public AVLItemNode getOnlyChild() {
         if (getChildCount() == 1) {
             if (leftNode != null) return leftNode;
             else return rightNode;
@@ -205,7 +205,7 @@ public class AVLNode {
         this.height = height;
     }
 
-    public boolean isChild(AVLNode node) {
+    public boolean isChild(AVLItemNode node) {
         if (leftNode == node) {
             return true;
         }else if (rightNode == node) {

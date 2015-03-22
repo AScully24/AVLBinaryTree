@@ -5,8 +5,10 @@
  */
 package main;
 
+import avlbinarytree.AVLItemNode;
+import avlbinarytree.AVLSetNode;
+import avlbinarytree.AVLTree;
 import linkedlist.ItemNode;
-import linkedlist.MyLinkedList;
 import binarytree.MyTree;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -26,8 +28,8 @@ public class GUI extends javax.swing.JDialog {
     private static MyTree tree;
     private static final ArrayList<String> itemData = new ArrayList<>();
     private static final ArrayList<String> setData = new ArrayList<>();
-    private static MyLinkedList itemLinkedList;
-    private static MyLinkedList setLinkedList;
+    private static AVLTree itemAVLTree;
+    private static AVLTree setAVLTree;
 
     /**
      * Creates new form GUI
@@ -38,7 +40,7 @@ public class GUI extends javax.swing.JDialog {
         loadDataToArrayList();
         loadLinkedList();
     }
-    
+
     /* Loads from the csv file into the arraylist */
     private void loadDataToArrayList() {
         Scanner sc = new Scanner(CommandGUI.class.getResourceAsStream("Test-Data.csv"));
@@ -57,24 +59,24 @@ public class GUI extends javax.swing.JDialog {
 
     /* Loads data from arraylist to the linked list.*/
     private void loadLinkedList() {
-        itemLinkedList = new MyLinkedList();
+        itemAVLTree = new AVLTree();
         for (String s : itemData) {
             String lineData[] = s.split(",");
-            itemLinkedList.addNode(new ItemNode(Integer.parseInt(lineData[0]),
+            itemAVLTree.addNode(new AVLItemNode(Integer.parseInt(lineData[0]),
                     lineData[1], Double.parseDouble(lineData[2])));
         }
 
-        setLinkedList = new MyLinkedList();
+        setAVLTree = new AVLTree();
         for (String s : setData) {
             String lineData[] = s.split(",");
-            SetNode newNode = new SetNode(Integer.parseInt(lineData[0]),
-                    lineData[1], Double.parseDouble(lineData[2]), Integer.parseInt(lineData[3]));
+            AVLSetNode newNode = new AVLSetNode(Integer.parseInt(lineData[0]),
+                    lineData[1], Double.parseDouble(lineData[2]));
 
             for (int i = 4; i < lineData.length; i++) {
                 newNode.addToItemRefs(Integer.parseInt(lineData[i]));
             }
 
-            setLinkedList.addNode(newNode);
+            setAVLTree.addNode(newNode);
         }
     }
 
@@ -206,14 +208,14 @@ public class GUI extends javax.swing.JDialog {
             String description = itemDesc.getText();
             double price = Double.parseDouble(itemPrice.getText());
 
-            itemLinkedList.addNode(new ItemNode(ref, description, price));
+            itemAVLTree.addNode(new AVLItemNode(ref, description, price));
         } else if (result == JOptionPane.CANCEL_OPTION) {
 
         }
     }//GEN-LAST:event_buttonAddActionPerformed
 
     private void buttonPrintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonPrintActionPerformed
-        itemLinkedList.printAllNodes();
+        itemAVLTree.printTreeStructure();
     }//GEN-LAST:event_buttonPrintActionPerformed
 
     private void buttonRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonRemoveActionPerformed
@@ -227,10 +229,11 @@ public class GUI extends javax.swing.JDialog {
 
         if (result == JOptionPane.OK_OPTION) {
             int ref = Integer.parseInt(itemRef.getText());
-            itemLinkedList.removeNode(ref);
-            ArrayList<ItemNode> setSearch = setLinkedList.getNodesAsArrayList();
-            for (ItemNode s : setSearch) {
-                if (((SetNode) s).removeItemRef(ref)) {
+            itemAVLTree.removeNode(ref);
+            ArrayList<AVLItemNode> setSearch = new ArrayList<>();
+            setAVLTree.getNodesAsArrayList(setSearch, setAVLTree.getRoot());
+            for (AVLItemNode s : setSearch) {
+                if (((AVLSetNode) s).removeItemRef(ref)) {
                     System.out.println("Item removed from set: " + s.getDescription());
                     break;
                 }
@@ -252,18 +255,19 @@ public class GUI extends javax.swing.JDialog {
 
         if (result == JOptionPane.OK_OPTION) {
             int ref = Integer.parseInt(itemRef.getText());
-            System.out.println(itemLinkedList.findNode(ref).toString());
+            System.out.println(itemAVLTree.findNode(ref,itemAVLTree.getRoot()).toString());
         } else if (result == JOptionPane.CANCEL_OPTION) {
 
         }
     }//GEN-LAST:event_buttonSearchActionPerformed
 
     private void buttonPrintSetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonPrintSetActionPerformed
-        setLinkedList.printAllNodeData();
+        setAVLTree.printTreeStructure();
     }//GEN-LAST:event_buttonPrintSetActionPerformed
 
     private void buttonListItemSetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonListItemSetActionPerformed
-        ArrayList<ItemNode> setSearch = setLinkedList.getNodesAsArrayList();
+        ArrayList<AVLItemNode> setSearch = new ArrayList<>();
+        setAVLTree.getNodesAsArrayList(setSearch, setAVLTree.getRoot());
 
         JTextField itemRef = new JTextField(20);
 
@@ -275,21 +279,21 @@ public class GUI extends javax.swing.JDialog {
                 JOptionPane.OK_CANCEL_OPTION);
         boolean itemFound = false;
         String setDesc = "";
-        
+
         if (result == JOptionPane.OK_OPTION) {
             int ref = Integer.parseInt(itemRef.getText());
-            for (ItemNode s : setSearch) {
-                if (((SetNode)s).getItemByRef(ref) != -1) {
+            for (AVLItemNode s : setSearch) {
+                if (((AVLSetNode) s).getItemByRef(ref) != -1) {
                     itemFound = true;
                     setDesc = s.getDescription();
                     break;
                 }
             }
-            
+
             if (itemFound) {
-                System.out.printf("Item Reference %d found in Set %s\n",ref,setDesc);
-            }else{
-                System.out.printf("Item Reference %d not found\n",ref);
+                System.out.printf("Item Reference %d found in Set %s\n", ref, setDesc);
+            } else {
+                System.out.printf("Item Reference %d not found\n", ref);
             }
 
         } else if (result == JOptionPane.CANCEL_OPTION) {
