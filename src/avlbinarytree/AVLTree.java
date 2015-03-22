@@ -111,7 +111,7 @@ public class AVLTree {
 
         while (node != null) {
             refreshNodeHeight(node);
-            int balance = balanceHandler(node, leafNode);
+            balanceHandler(node, leafNode);
             node = node.getParentNode();
         }
     }
@@ -124,28 +124,28 @@ public class AVLTree {
      * @param leafNode The original node that has just been added to the tree.
      * @return
      */
-    private int balanceHandler(AVLItemNode node, AVLItemNode leafNode) {
+    private void balanceHandler(AVLItemNode node, AVLItemNode leafNode) {
         int balance = checkBalance(node);
         int rotationCount = 0;
 
-        rotationCount = rotationCase(node, balance, leafNode);
-        if (balance == UNBALANCED_RIGHT) {
-            if (rotationCount == 1) {
-                rotateNodeLeft(node);
-            } else if (rotationCount == 2) {
-                rotateNodeRight(node.getRightNode());
-                rotateNodeLeft(node);
-            }
-        } else if (balance == UNBALANCED_LEFT) {
-            if (rotationCount == 1) {
-                rotateNodeRight(node);
-            } else if (rotationCount == 2) {
-                rotateNodeLeft(node.getLeftNode());
-                rotateNodeRight(node);
+        if (balance != 0) {
+            rotationCount = rotationCase(node, balance, leafNode);
+            if (balance == UNBALANCED_RIGHT) {
+                if (rotationCount == 1) {
+                    rotateNodeLeft(node);
+                } else if (rotationCount == 2) {
+                    rotateNodeRight(node.getRightNode());
+                    rotateNodeLeft(node);
+                }
+            } else if (balance == UNBALANCED_LEFT) {
+                if (rotationCount == 1) {
+                    rotateNodeRight(node);
+                } else if (rotationCount == 2) {
+                    rotateNodeLeft(node.getLeftNode());
+                    rotateNodeRight(node);
+                }
             }
         }
-
-        return rotationCount;
     }
 
     /**
@@ -164,29 +164,44 @@ public class AVLTree {
         AVLItemNode temp = node;
         ArrayList<AVLItemNode> arr = new ArrayList<>();
         for (int i = 0; i < 2; i++) {
-            if (temp != null) {
-                
-                arr.add(temp);
+            if (leafNode.getReference() < temp.getReference()) {
+                arr.add(temp.getLeftNode());
+                temp = temp.getLeftNode();
+            } else {
+                arr.add(temp.getRightNode());
+                temp = temp.getRightNode();
             }
-
         }
+
+        AVLItemNode x = arr.get(0), y = arr.get(1);
 
         if (balance == UNBALANCED_LEFT) {
-            if (leftNode != null) {
-                if (leftNode.getLeftNode() == leafNode.getParentNode() || leftNode.getLeftNode() == leafNode) {
-                    return 1;
-                } else return 2;
-            } else return 1;
+            if (y == x.getLeftNode()) return 1; // Left Left
+            if (y == x.getRightNode()) return 2; // Left Right
         }
-        // FROM HERE - Need to set  a method that is capable of find whether is on the path from z
+
         if (balance == UNBALANCED_RIGHT) {
-            if (rightNode != null) {
-                if (rightNode.getRightNode() == leafNode.getParentNode() || rightNode.getRightNode() == leafNode) {
-                    return 1;
-                } else return 2;
-            } else return 1;
+            if (y == x.getRightNode()) return 1; // Right Right
+            if (y == x.getLeftNode()) return 2; // Right Left
         }
         return 0;
+
+//        if (balance == UNBALANCED_LEFT) {
+//            if (leftNode != null) {
+//                if (leftNode.getLeftNode() == leafNode.getParentNode() || leftNode.getLeftNode() == leafNode) {
+//                    return 1;
+//                } else return 2;
+//            } else return 1;
+//        }
+//        // FROM HERE - Need to set  a method that is capable of find whether is on the path from z
+//        if (balance == UNBALANCED_RIGHT) {
+//            if (rightNode != null) {
+//                if (rightNode.getRightNode() == leafNode.getParentNode() || rightNode.getRightNode() == leafNode) {
+//                    return 1;
+//                } else return 2;
+//            } else return 1;
+//        }
+//        return 0;
     }
 
     /**
