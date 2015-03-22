@@ -42,7 +42,7 @@ public class AVLTree {
      * reference.
      */
     public void addNode(AVLNode newNode) {
-        
+
         if (root == null) {
             root = newNode;
             nodeCount++;
@@ -104,16 +104,16 @@ public class AVLTree {
      * @param node The node where the refresh begins.
      */
     private void rebalanceTree(AVLNode node) {
-        
+
         AVLNode leafNode = node;
-        
-        if (node.getReference() == 180) {
+
+        if (node.getReference() == 12810) {
             node = node;
         }
 
         while (node != null) {
             refreshNodeHeight(node);
-            int balance = balanceHandler(node,leafNode);
+            int balance = balanceHandler(node, leafNode);
             node = node.getParentNode();
             OutputStreamWriter output = new OutputStreamWriter(System.out);
             try {
@@ -152,7 +152,7 @@ public class AVLTree {
 //
 //                break;
 //        }
-        rotationCount = rotationCase(node, balance,leafNode);
+        rotationCount = rotationCase(node, balance, leafNode);
         if (balance == UNBALANCED_RIGHT) {
             if (rotationCount == 1) {
                 rotateNodeLeft(node);
@@ -193,77 +193,23 @@ public class AVLTree {
      * @return Number of rotations required to fix a tree.
      */
     public int rotationCase(AVLNode node, int balance, AVLNode leafNode) {
-        int nodeBalance = 0;
-        int childBalance = 0;
-        int leftBalance = 0;
-        int rightBalance = 0;
-
-        nodeBalance = checkBalance(node);
-        
-        if (node.getLeftNode() != null) {
-            leftBalance = checkBalance(node.getLeftNode());
-        }
-
-        if (node.getRightNode() != null) {
-            rightBalance = checkBalance(node.getRightNode());
-        }
-
-//        // Left Left
-//        if (nodeBalance < 0 && leftBalance <= 0 && rightBalance == 0) return 1;
-//
-//        // Left Right
-//        if (nodeBalance < 0 && leftBalance > 0 && rightBalance == 0) return 2;
-//
-//        // Right Right
-//        if (nodeBalance < 0 && rightBalance >= 0 && leftBalance == 0) return 3;
-//
-//        // Right Left
-//        if (nodeBalance < 0 && rightBalance < 0 && leftBalance == 0) return 4;
-//        // Left Left
-//        if (nodeBalance < 0 && node.getLeftNode() != null) {
-//            childBalance = checkBalance(node.getLeftNode());
-//            if (childBalance == 0); // No unbalance
-//            else if (childBalance < 0 || childBalance == 0) return 1; // Left Left
-//            else if (childBalance > 0) return 2; // Left Right
-//        } else if (nodeBalance > 0 && node.getRightNode() != null) {
-//            childBalance = checkBalance(node.getRightNode());
-//            if (childBalance == 0); // No unbalance
-//            else if (childBalance == 1 || childBalance == 0) return 3; // Right Right
-//            else if (childBalance > 1) return 4; // Right Left    
-//        }
-//        if (childBalance < -1) return 1;
-//        if (childBalance > 0) return 1;
-//        if (childBalance < 0) return 2;
-//        else if (childBalance > 0) return 1;
         AVLNode leftNode = node.getLeftNode();
         AVLNode rightNode = node.getRightNode();
-        
+
         if (balance == UNBALANCED_LEFT) {
             if (leftNode != null) {
                 if (leftNode.getLeftNode() == leafNode.getParentNode() || leftNode.getLeftNode() == leafNode) {
                     return 1;
-                }else return 2;
-            }
-//            if (node.getLeftNode() != null) {
-//                if (node.getLeftNode().getLeftNode() != null) {
-//                } else return 2;
-//                return 1;
-//            }
+                } else return 2;
+            } else return 1;
         }
-
+        
         if (balance == UNBALANCED_RIGHT) {
-            
             if (rightNode != null) {
                 if (rightNode.getRightNode() == leafNode.getParentNode() || rightNode.getRightNode() == leafNode) {
                     return 1;
-                }else return 2;
-            }
-            
-//            if (node.getRightNode() != null) {
-//                if (node.getRightNode().getRightNode() != null) {
-//                    return 1;
-//                } else return 2;
-//            }
+                } else return 2;
+            }else return 1;
         }
         return 0;
     }
