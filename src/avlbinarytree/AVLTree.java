@@ -1,5 +1,6 @@
 package avlbinarytree;
 
+import java.io.OutputStreamWriter;
 import static java.lang.StrictMath.max;
 import java.util.ArrayList;
 
@@ -18,7 +19,6 @@ public class AVLTree {
     private final static int BALANCED = 0;
     private int nodeCount;
     private AVLNode root;
-    private int leftDepth = 0, rightDepth = 0;
 
     /**
      * Default Constructor. Sets the root to null.
@@ -43,10 +43,6 @@ public class AVLTree {
      */
     public void addNode(AVLNode newNode) {
         
-        if (newNode.getReference() == 194) {
-            newNode = newNode;
-        }
-        
         if (root == null) {
             root = newNode;
             nodeCount++;
@@ -59,7 +55,6 @@ public class AVLTree {
 
         AVLNode node = root;
         while (true) {
-
             if (newNode.getReference() > node.getReference()) {
                 if (node.getRightNode() == null) {
                     node.setRightNode(newNode);
@@ -84,6 +79,7 @@ public class AVLTree {
 
     /**
      * Refreshes a single nodes height,
+     *
      * @param node The node to refresh.
      */
     public void refreshNodeHeight(AVLNode node) {
@@ -108,38 +104,82 @@ public class AVLTree {
      * @param node The node where the refresh begins.
      */
     private void rebalanceTree(AVLNode node) {
+        
+        AVLNode leafNode = node;
+        
+        if (node.getReference() == 180) {
+            node = node;
+        }
+
         while (node != null) {
             refreshNodeHeight(node);
-            balanceHandler(node);
+            int balance = balanceHandler(node,leafNode);
             node = node.getParentNode();
+            OutputStreamWriter output = new OutputStreamWriter(System.out);
+            try {
+                getRoot().printTree(output);
+                output.flush();
+                System.out.println("\n\n\n");
+            } catch (Exception e) {
+            }
         }
     }
 
-    public void balanceHandler(AVLNode node) {
+    public int balanceHandler(AVLNode node, AVLNode leafNode) {
         int balance = checkBalance(node);
+        int rotationCase = 0;
         int rotationCount = 0;
 
-        if (balance != 0) {
-            rotationCount = rotationsRequired(node, balance);
-
-            if (balance == UNBALANCED_RIGHT) {
-                if (rotationCount == 1) {
-                    rotateNodeLeft(node);
-                } else if (rotationCount == 2) {
-                    System.out.println("Double Rotate Right: " + node.getReference());
-                    rotateNodeRight(node.getRightNode());
-                    rotateNodeLeft(node);
-                }
-            } else if (balance == UNBALANCED_LEFT) {
-                if (rotationCount == 1) {
-                    rotateNodeRight(node);
-                } else if (rotationCount == 2) {
-                    System.out.println("Double Rotate Left: " + node.getReference());
-                    rotateNodeLeft(node.getLeftNode());
-                    rotateNodeRight(node);
-                }
+//        if (balance != 0) {
+//        rotationCase = rotationCase(node, balance);
+//
+//        switch (rotationCase) {
+//            case 0:
+//                break;
+//            case 1: // Left Left
+//                rotateNodeLeft(node);
+//                break;
+//            case 2: // Left Right
+//                rotateNodeLeft(node.getLeftNode());
+//                rotateNodeRight(node);
+//                break;
+//            case 3: // Right Right
+//                rotateNodeRight(node);
+//                break;
+//            case 4: // Right Left
+//                rotateNodeRight(node.getRightNode());
+//                rotateNodeLeft(node);
+//
+//                break;
+//        }
+        rotationCount = rotationCase(node, balance,leafNode);
+        if (balance == UNBALANCED_RIGHT) {
+            if (rotationCount == 1) {
+                rotateNodeLeft(node);
+            } else if (rotationCount == 2) {
+                rotateNodeRight(node.getRightNode());
+                rotateNodeLeft(node);
+            }
+        } else if (balance == UNBALANCED_LEFT) {
+            if (rotationCount == 1) {
+                rotateNodeRight(node);
+            } else if (rotationCount == 2) {
+                rotateNodeLeft(node.getLeftNode());
+                rotateNodeRight(node);
             }
         }
+
+        return rotationCount;
+
+//        if (balance != 0) {
+//            int parentBalance = checkBalance(node.getParentNode());
+//            if (parentBalance == UNBALANCED_RIGHT) {
+//                rotateNodeLeft(node);
+//            }else if (parentBalance == UNBALANCED_LEFT) {
+//                rotateNodeRight(node);
+//            }
+//            
+//        }
     }
 
     /**
@@ -149,32 +189,88 @@ public class AVLTree {
      * @param node The Node to be rotated around.
      * @param balance Is the tree unbalanced left or right (See checkBalance
      * method)
+     * @param leafNode
      * @return Number of rotations required to fix a tree.
      */
-    public int rotationsRequired(AVLNode node, int balance) {
+    public int rotationCase(AVLNode node, int balance, AVLNode leafNode) {
+        int nodeBalance = 0;
+        int childBalance = 0;
+        int leftBalance = 0;
+        int rightBalance = 0;
+
+        nodeBalance = checkBalance(node);
+        
+        if (node.getLeftNode() != null) {
+            leftBalance = checkBalance(node.getLeftNode());
+        }
+
+        if (node.getRightNode() != null) {
+            rightBalance = checkBalance(node.getRightNode());
+        }
+
+//        // Left Left
+//        if (nodeBalance < 0 && leftBalance <= 0 && rightBalance == 0) return 1;
+//
+//        // Left Right
+//        if (nodeBalance < 0 && leftBalance > 0 && rightBalance == 0) return 2;
+//
+//        // Right Right
+//        if (nodeBalance < 0 && rightBalance >= 0 && leftBalance == 0) return 3;
+//
+//        // Right Left
+//        if (nodeBalance < 0 && rightBalance < 0 && leftBalance == 0) return 4;
+//        // Left Left
+//        if (nodeBalance < 0 && node.getLeftNode() != null) {
+//            childBalance = checkBalance(node.getLeftNode());
+//            if (childBalance == 0); // No unbalance
+//            else if (childBalance < 0 || childBalance == 0) return 1; // Left Left
+//            else if (childBalance > 0) return 2; // Left Right
+//        } else if (nodeBalance > 0 && node.getRightNode() != null) {
+//            childBalance = checkBalance(node.getRightNode());
+//            if (childBalance == 0); // No unbalance
+//            else if (childBalance == 1 || childBalance == 0) return 3; // Right Right
+//            else if (childBalance > 1) return 4; // Right Left    
+//        }
+//        if (childBalance < -1) return 1;
+//        if (childBalance > 0) return 1;
+//        if (childBalance < 0) return 2;
+//        else if (childBalance > 0) return 1;
+        AVLNode leftNode = node.getLeftNode();
+        AVLNode rightNode = node.getRightNode();
+        
         if (balance == UNBALANCED_LEFT) {
-            if (node.getLeftNode() != null) {
-                if (node.getLeftNode().getLeftNode() != null) {
+            if (leftNode != null) {
+                if (leftNode.getLeftNode() == leafNode.getParentNode() || leftNode.getLeftNode() == leafNode) {
                     return 1;
-                } else return 2;
+                }else return 2;
             }
+//            if (node.getLeftNode() != null) {
+//                if (node.getLeftNode().getLeftNode() != null) {
+//                } else return 2;
+//                return 1;
+//            }
         }
 
         if (balance == UNBALANCED_RIGHT) {
-            if (node.getRightNode() != null) {
-                if (node.getRightNode().getRightNode() != null) {
+            
+            if (rightNode != null) {
+                if (rightNode.getRightNode() == leafNode.getParentNode() || rightNode.getRightNode() == leafNode) {
                     return 1;
-                } else return 2;
+                }else return 2;
             }
+            
+//            if (node.getRightNode() != null) {
+//                if (node.getRightNode().getRightNode() != null) {
+//                    return 1;
+//                } else return 2;
+//            }
         }
-
         return 0;
     }
 
     public void rotateNodeLeft(AVLNode node) {
         AVLNode x = node, y = node.getRightNode();
         AVLNode a = x.getLeftNode(), b = y.getLeftNode(), c = y.getRightNode();
-
         AVLNode masterParent = x.getParentNode();
 
         // Swaps the parent of the rotating node
@@ -184,8 +280,7 @@ public class AVLTree {
                 masterParent.setLeftNode(y);
             } else masterParent.setRightNode(y);
         }
-        
-        
+
         // x becomes y's left child.
         y.setParentNode(x.getParentNode());
         y.setLeftNode(x);
@@ -197,15 +292,14 @@ public class AVLTree {
         if (a != null) a.setParentNode(x);
         if (b != null) b.setParentNode(x);
 
-        // C becomes the left child of y
+        // C becomes the right child of y
         y.setRightNode(c);
         if (c != null) c.setParentNode(y);
-        
+
         refreshNodeHeight(x);
         refreshNodeHeight(y);
-        
-        //refreshHeights(node);
 
+        //refreshHeights(node);
     }
 
     public void rotateNodeRight(AVLNode node) {
@@ -236,8 +330,9 @@ public class AVLTree {
         x.setLeftNode(a);
         if (a != null) a.setParentNode(x);
 
-        refreshNodeHeight(x);
         refreshNodeHeight(y);
+        refreshNodeHeight(x);
+
         //refreshHeights(node);
     }
 
@@ -250,6 +345,9 @@ public class AVLTree {
      */
     public int checkBalance(AVLNode node) {
         int leftHeight, rightHeight;
+
+        if (node == null) return 0;
+
         if (node.getLeftNode() == null) leftHeight = -1;
         else leftHeight = node.getLeftNode().getHeight();
 
@@ -257,9 +355,11 @@ public class AVLTree {
         else rightHeight = node.getRightNode().getHeight();
 
         int balance = leftHeight - rightHeight;
+        //int balance = leftHeight - rightHeight;
 
+//        if (Math.abs(balance) == 1) return 0;
+//        else return rightHeight - leftHeight;
         //System.out.println("Ref " + node.getReference() + " is balance " + balance);
-
         if (balance > 1) return -1; // Left unbalance
         else if (balance < -1) return 1; // Right unbalance
         else return 0; // Even
