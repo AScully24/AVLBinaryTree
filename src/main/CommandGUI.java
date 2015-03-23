@@ -1,7 +1,7 @@
 package main;
 
-import avlbinarytree.AVLItemNode;
-import avlbinarytree.AVLTree;
+import avlbinarytree.ItemNode;
+import avlbinarytree.Tree;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
@@ -10,7 +10,7 @@ import java.util.Scanner;
 public class CommandGUI {
     /* {src_lang=Java}*/
 
-    private static AVLTree tree;
+    private static Tree tree;
     private static final ArrayList<String> data = new ArrayList<>();
 
     public static void main(String[] args) throws IOException {
@@ -18,7 +18,7 @@ public class CommandGUI {
     }
 
     private static void binaryTreeMethod() throws IOException {
-        tree = new AVLTree(null);
+        tree = new Tree(null);
 
         OutputStreamWriter output = new OutputStreamWriter(System.out);
 
@@ -31,7 +31,7 @@ public class CommandGUI {
 
         for (int i = 0; i < data.size(); i++) {
             String lineData[] = data.get(i).split(",");
-            tree.addNode(new AVLItemNode(Integer.parseInt(lineData[0]), lineData[1], Double.parseDouble(lineData[2])));
+            tree.addNode(new ItemNode(Integer.parseInt(lineData[0]), lineData[1], Double.parseDouble(lineData[2])));
         }
 
 //        // Prints the tree in a tree format.

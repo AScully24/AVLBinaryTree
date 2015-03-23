@@ -11,11 +11,11 @@ import java.util.ArrayList;
  *
  * @author Anthony Scully
  */
-public class AVLSetNode extends AVLItemNode {
+public class SetNode extends ItemNode {
     private int itemCount;
     private ArrayList<Integer> itemRefs;
 
-    public AVLSetNode(int reference, String description, double price) {
+    public SetNode(int reference, String description, double price) {
         super(reference, description, price);
         itemCount = 0;
         itemRefs = new ArrayList<>();

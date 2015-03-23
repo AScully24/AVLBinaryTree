@@ -5,10 +5,9 @@
  */
 package main;
 
-import avlbinarytree.AVLItemNode;
-import avlbinarytree.AVLSetNode;
-import avlbinarytree.AVLTree;
-import linkedlist.ItemNode;
+import avlbinarytree.ItemNode;
+import avlbinarytree.SetNode;
+import avlbinarytree.Tree;
 import binarytree.MyTree;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -17,7 +16,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import linkedlist.SetNode;
 
 /**
  *
@@ -28,8 +26,8 @@ public class GUI extends javax.swing.JDialog {
     private static MyTree tree;
     private static final ArrayList<String> itemData = new ArrayList<>();
     private static final ArrayList<String> setData = new ArrayList<>();
-    private static AVLTree itemAVLTree;
-    private static AVLTree setAVLTree;
+    private static Tree itemAVLTree;
+    private static Tree setAVLTree;
 
     /**
      * Creates new form GUI
@@ -59,17 +57,17 @@ public class GUI extends javax.swing.JDialog {
 
     /* Loads data from arraylist to the linked list.*/
     private void loadLinkedList() {
-        itemAVLTree = new AVLTree();
+        itemAVLTree = new Tree();
         for (String s : itemData) {
             String lineData[] = s.split(",");
-            itemAVLTree.addNode(new AVLItemNode(Integer.parseInt(lineData[0]),
+            itemAVLTree.addNode(new ItemNode(Integer.parseInt(lineData[0]),
                     lineData[1], Double.parseDouble(lineData[2])));
         }
 
-        setAVLTree = new AVLTree();
+        setAVLTree = new Tree();
         for (String s : setData) {
             String lineData[] = s.split(",");
-            AVLSetNode newNode = new AVLSetNode(Integer.parseInt(lineData[0]),
+            SetNode newNode = new SetNode(Integer.parseInt(lineData[0]),
                     lineData[1], Double.parseDouble(lineData[2]));
 
             for (int i = 4; i < lineData.length; i++) {
@@ -208,7 +206,7 @@ public class GUI extends javax.swing.JDialog {
             String description = itemDesc.getText();
             double price = Double.parseDouble(itemPrice.getText());
 
-            itemAVLTree.addNode(new AVLItemNode(ref, description, price));
+            itemAVLTree.addNode(new ItemNode(ref, description, price));
         } else if (result == JOptionPane.CANCEL_OPTION) {
 
         }
@@ -230,10 +228,10 @@ public class GUI extends javax.swing.JDialog {
         if (result == JOptionPane.OK_OPTION) {
             int ref = Integer.parseInt(itemRef.getText());
             itemAVLTree.removeNode(ref);
-            ArrayList<AVLItemNode> setSearch = new ArrayList<>();
+            ArrayList<ItemNode> setSearch = new ArrayList<>();
             setAVLTree.getNodesAsArrayList(setSearch, setAVLTree.getRoot());
-            for (AVLItemNode s : setSearch) {
-                if (((AVLSetNode) s).removeItemRef(ref)) {
+            for (ItemNode s : setSearch) {
+                if (((SetNode) s).removeItemRef(ref)) {
                     System.out.println("Item removed from set: " + s.getDescription());
                     break;
                 }
@@ -266,7 +264,7 @@ public class GUI extends javax.swing.JDialog {
     }//GEN-LAST:event_buttonPrintSetActionPerformed
 
     private void buttonListItemSetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonListItemSetActionPerformed
-        ArrayList<AVLItemNode> setSearch = new ArrayList<>();
+        ArrayList<ItemNode> setSearch = new ArrayList<>();
         setAVLTree.getNodesAsArrayList(setSearch, setAVLTree.getRoot());
 
         JTextField itemRef = new JTextField(20);
@@ -282,8 +280,8 @@ public class GUI extends javax.swing.JDialog {
 
         if (result == JOptionPane.OK_OPTION) {
             int ref = Integer.parseInt(itemRef.getText());
-            for (AVLItemNode s : setSearch) {
-                if (((AVLSetNode) s).getItemByRef(ref) != -1) {
+            for (ItemNode s : setSearch) {
+                if (((SetNode) s).getItemByRef(ref) != -1) {
                     itemFound = true;
                     setDesc = s.getDescription();
                     break;

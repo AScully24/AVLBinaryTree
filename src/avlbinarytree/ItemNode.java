@@ -10,15 +10,15 @@ import java.util.ArrayList;
  *
  * @author Anthony Scully
  */
-public class AVLItemNode {
+public class ItemNode {
     /* {src_lang=Java}*/
 
     private int reference;
     private String description;
     private double price;
-    private AVLItemNode leftNode = null;
-    private AVLItemNode rightNode = null;
-    private AVLItemNode parentNode = null;
+    private ItemNode leftNode = null;
+    private ItemNode rightNode = null;
+    private ItemNode parentNode = null;
     private int height = 0;
 
     /**
@@ -27,17 +27,27 @@ public class AVLItemNode {
      * @param description The description for this node.
      * @param price The price to be stored in the node.
      */
-    public AVLItemNode(int reference, String description, double price) {
+    public ItemNode(int reference, String description, double price) {
         this.reference = reference;
         this.description = description;
         this.price = price;
     }
-
+    
+    /**
+     *
+     * @param reference A unique value for this node.
+     */
+    public ItemNode(int reference) {
+        this.reference = reference;
+        this.description = "";
+        this.price = 0;
+    }
+    
     /**
      *
      * @return The node previous to this node in the tree.
      */
-    public AVLItemNode getParentNode() {
+    public ItemNode getParentNode() {
         return parentNode;
     }
 
@@ -46,7 +56,7 @@ public class AVLItemNode {
      *
      * @param parentNode New parent node.
      */
-    public void setParentNode(AVLItemNode parentNode) {
+    public void setParentNode(ItemNode parentNode) {
         this.parentNode = parentNode;
     }
 
@@ -55,7 +65,7 @@ public class AVLItemNode {
      * @return The child node with the lower reference number than this node.
      * Returns null if one doesn't exist.
      */
-    public AVLItemNode getLeftNode() {
+    public ItemNode getLeftNode() {
         return leftNode;
     }
 
@@ -64,7 +74,7 @@ public class AVLItemNode {
      * @return The child node with the higher reference number than this node.
      * Returns null if one doesn't exist.
      */
-    public AVLItemNode getRightNode() {
+    public ItemNode getRightNode() {
         return rightNode;
     }
 
@@ -72,7 +82,7 @@ public class AVLItemNode {
      *
      * @param leftNode Set a new lower reference child node.
      */
-    public void setLeftNode(AVLItemNode leftNode) {
+    public void setLeftNode(ItemNode leftNode) {
         this.leftNode = leftNode;
     }
 
@@ -80,7 +90,7 @@ public class AVLItemNode {
      *
      * @param rightNode Set a new higher reference child node.
      */
-    public void setRightNode(AVLItemNode rightNode) {
+    public void setRightNode(ItemNode rightNode) {
         this.rightNode = rightNode;
     }
 
@@ -139,8 +149,8 @@ public class AVLItemNode {
      * @return An ArrayList of MyNodes that are the children of this node, order
      * lowest reference to highest reference.
      */
-    public ArrayList<AVLItemNode> getChildren() {
-        ArrayList<AVLItemNode> ar = new ArrayList<>();
+    public ArrayList<ItemNode> getChildren() {
+        ArrayList<ItemNode> ar = new ArrayList<>();
         ar.add(leftNode);
         ar.add(rightNode);
         return ar;
@@ -151,7 +161,7 @@ public class AVLItemNode {
      * @param newChildren ArrayList of the new children for this node, ordered
      * lowest reference first.
      */
-    public void setChildren(ArrayList<AVLItemNode> newChildren) {
+    public void setChildren(ArrayList<ItemNode> newChildren) {
         leftNode = newChildren.get(0);
         rightNode = newChildren.get(1);
     }
@@ -187,10 +197,10 @@ public class AVLItemNode {
 
     /**
      *
-     * @return A AVLItemNode that is the only child of this node. Returns null if
+     * @return A ItemNode that is the only child of this node. Returns null if
  there are two children or there are no children.
      */
-    public AVLItemNode getOnlyChild() {
+    public ItemNode getOnlyChild() {
         if (getChildCount() == 1) {
             if (leftNode != null) return leftNode;
             else return rightNode;
@@ -205,7 +215,7 @@ public class AVLItemNode {
         this.height = height;
     }
 
-    public boolean isChild(AVLItemNode node) {
+    public boolean isChild(ItemNode node) {
         if (leftNode == node) {
             return true;
         }else if (rightNode == node) {

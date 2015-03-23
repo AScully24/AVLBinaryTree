@@ -15,6 +15,6 @@ public class NodeData {
     public String description = "";
     public double price = 0.00;
     public int height = 0;
-    public ArrayList<AVLItemNode> children = null;
-    public AVLItemNode parent = null;
+    public ArrayList<ItemNode> children = null;
+    public ItemNode parent = null;
 }
