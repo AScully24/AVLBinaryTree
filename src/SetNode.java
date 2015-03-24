@@ -22,6 +22,7 @@ public class SetNode extends ItemNode {
 
     public void addToItemRefs(ItemNode node) {
         items.add(node);
+        node.addToRelatedSet(this);
         itemCount++;
     }
 
@@ -53,4 +54,10 @@ public class SetNode extends ItemNode {
         }
         return false;
     }
+
+    @Override
+    public String toString() {
+        return description;
+    }
+
 }

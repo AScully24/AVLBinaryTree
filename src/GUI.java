@@ -1,217 +1,465 @@
 
 import java.util.ArrayList;
 import java.util.Scanner;
-import javax.swing.Box;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JList;
 
-public class GUI extends javax.swing.JDialog {
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+/**
+ *
+ * @author Anthony Scully
+ */
+public class GUI extends javax.swing.JFrame {
 
-    private static final ArrayList<String> itemData = new ArrayList<>();
-    private static final ArrayList<String> setData = new ArrayList<>();
-    private static Tree itemAVLTree;
-    private static Tree setAVLTree;
+    private Tree repositries;
+    private RepoNode currentRepo;
+    private SetNode currentSet;
 
-    public GUI(java.awt.Frame parent, boolean modal) {
-        super(parent, modal);
+    /**
+     * Creates new form GUI
+     */
+    public GUI() {
         initComponents();
-        loadDataToArrayList();
-        loadLinkedList();
+        
+        // Default values.
+        loadDefaultRep();
+        updateItemList();
+        updateSetComboBox();
+        updateSetList();
     }
 
-    private void loadDataToArrayList() {
-        Scanner sc = new Scanner(CommandGUI.class.getResourceAsStream("Test-Data.csv"));
+    private void updateSetList() {
+        if (currentSet != null) {
+            ArrayList<ItemNode> sets = currentSet.getItemRefs();
+            
+            JList newSetBox = new JList(sets.toArray());
+            listSetItems.setModel(newSetBox.getModel());
+        }
+    }
+
+    private void updateSetComboBox() {
+        ArrayList<Node> sets = new ArrayList<>();
+        currentRepo.getSets().getNodesAsArrayList(sets, currentRepo.getSets().getRoot());
+
+        JComboBox newSetBox = new JComboBox(sets.toArray());
+        jcSets.setModel(newSetBox.getModel());
+    }
+
+    private void updateItemList() {
+        ArrayList<Node> items = new ArrayList<>();
+        currentRepo.getItems().getNodesAsArrayList(items, currentRepo.getItems().getRoot());
+
+        JList newItemList = new JList(items.toArray());
+        listItems.setModel(newItemList.getModel());
+    }
+
+    private void loadDefaultRep() {
+        repositries = new Tree();
+        addRepository("repo1");
+        currentRepo = (RepoNode) repositries.getRoot();
+        updateRepositoryComboBox();
+
+    }
+
+    private void updateRepositoryComboBox() {
+        ArrayList<Node> arr = new ArrayList<>();
+        repositries.getNodesAsArrayList(arr, repositries.getRoot());
+        JComboBox newComboBox = new JComboBox(arr.toArray());
+        jcRepositories.setModel(newComboBox.getModel());
+    }
+
+    private void addRepository(String location) {
+        ArrayList<String> items = new ArrayList<>();
+        ArrayList<String> sets = new ArrayList<>();
+
+        RepoNode newRepo = new RepoNode(repositries.getNodeCount() + 1, location);
+
+
+        /*
+         * 
+         * 
+         * Adds the new items.
+         */
+        Scanner sc = null;
+        sc = new Scanner(GUI.class.getResourceAsStream(location + "\\items.csv"));
+
         sc.nextLine();
         while (sc.hasNextLine()) {
-            itemData.add(sc.nextLine());
+            items.add(sc.nextLine());
+        }
+
+        for (String i : items) {
+            String lineData[] = i.split(",");
+            ItemNode newNode = new ItemNode(Integer.parseInt(lineData[0]), lineData[1], Double.parseDouble(lineData[2]));
+            newRepo.addItem(newNode, null);
         }
         sc.close();
-        sc = new Scanner(CommandGUI.class.getResourceAsStream("Test-Data-Sets.csv"));
+
+        /*
+         *
+         *
+         * Adds new sets 
+         */
+        sc = new Scanner(GUI.class.getResourceAsStream(location + "\\sets.csv"));
         sc.nextLine();
         while (sc.hasNextLine()) {
-            setData.add(sc.nextLine());
+            sets.add(sc.nextLine());
         }
-    }
 
-    private void loadLinkedList() {
-        itemAVLTree = new Tree();
-        for (String s : itemData) {
+        for (String s : sets) {
+
+            // Creates the new set.
             String lineData[] = s.split(",");
-            itemAVLTree.addNode(new ItemNode(Integer.parseInt(lineData[0]), lineData[1], Double.parseDouble(lineData[2])));
-        }
-        setAVLTree = new Tree();
-        for (String s : setData) {
-            String lineData[] = s.split(",");
-            SetNode newNode = new SetNode(Integer.parseInt(lineData[0]), lineData[1], Double.parseDouble(lineData[2]));
+            SetNode newSet = new SetNode(Integer.parseInt(lineData[0]),
+                    lineData[1], Double.parseDouble(lineData[2]));
+
+            // Adds the items to the set.
             for (int i = 4; i < lineData.length; i++) {
-                newNode.addToItemRefs((ItemNode) itemAVLTree.findNode(Integer.parseInt(lineData[i]), itemAVLTree.getRoot()));
+                int ref = Integer.parseInt(lineData[i]);
+                ItemNode temp = newRepo.findItem(ref);
+                if (temp != null) {
+                    newSet.addToItemRefs(temp);
+                }
             }
-            setAVLTree.addNode(newNode);
+            newRepo.addSet(newSet);
         }
+        sc.close();
+
+        currentSet = (SetNode) newRepo.getSets().getRoot();
+        repositries.addNode(newRepo);
+
     }
 
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
     @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
-        buttonAdd = new javax.swing.JButton();
-        buttonSearch = new javax.swing.JButton();
-        buttonRemove = new javax.swing.JButton();
-        buttonPrint = new javax.swing.JButton();
-        buttonPrintSet = new javax.swing.JButton();
-        buttonListItemSet = new javax.swing.JButton();
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("My Data Structures");
-        buttonAdd.setText("Add Item");
-        buttonAdd.addActionListener(new java.awt.event.ActionListener() {
 
+        jpRepositories = new javax.swing.JPanel();
+        jcRepositories = new javax.swing.JComboBox();
+        jlReposiroties = new javax.swing.JLabel();
+        jpItems = new javax.swing.JPanel();
+        jlItems = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        listItems = new javax.swing.JList();
+        jpSets = new javax.swing.JPanel();
+        jlSets = new javax.swing.JLabel();
+        jcSets = new javax.swing.JComboBox();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        listSetItems = new javax.swing.JList();
+        jpItemButtons = new javax.swing.JPanel();
+        butAddItem = new javax.swing.JButton();
+        butDeleteItem = new javax.swing.JButton();
+        butFindItem = new javax.swing.JButton();
+        jpSetButtons = new javax.swing.JPanel();
+        butAddItemToSet = new javax.swing.JButton();
+        butRemoveItemFromSet = new javax.swing.JButton();
+        butDeleteSet = new javax.swing.JButton();
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setName("mainFrame"); // NOI18N
+        setPreferredSize(new java.awt.Dimension(1280, 750));
+
+        jpRepositories.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        jpRepositories.setPreferredSize(new java.awt.Dimension(1152, 79));
+
+        jcRepositories.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jcRepositories.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        jlReposiroties.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        jlReposiroties.setText("Repositories");
+
+        javax.swing.GroupLayout jpRepositoriesLayout = new javax.swing.GroupLayout(jpRepositories);
+        jpRepositories.setLayout(jpRepositoriesLayout);
+        jpRepositoriesLayout.setHorizontalGroup(
+            jpRepositoriesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jpRepositoriesLayout.createSequentialGroup()
+                .addGap(33, 33, 33)
+                .addComponent(jlReposiroties)
+                .addGap(34, 34, 34)
+                .addComponent(jcRepositories, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jpRepositoriesLayout.setVerticalGroup(
+            jpRepositoriesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jpRepositoriesLayout.createSequentialGroup()
+                .addGap(25, 25, 25)
+                .addGroup(jpRepositoriesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jcRepositories, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jlReposiroties))
+                .addContainerGap(14, Short.MAX_VALUE))
+        );
+
+        jpItems.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        jpItems.setMinimumSize(new java.awt.Dimension(0, 0));
+
+        jlItems.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        jlItems.setText("Items");
+
+        listItems.setModel(new javax.swing.AbstractListModel() {
+            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            public int getSize() { return strings.length; }
+            public Object getElementAt(int i) { return strings[i]; }
+        });
+        jScrollPane2.setViewportView(listItems);
+
+        javax.swing.GroupLayout jpItemsLayout = new javax.swing.GroupLayout(jpItems);
+        jpItems.setLayout(jpItemsLayout);
+        jpItemsLayout.setHorizontalGroup(
+            jpItemsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jpItemsLayout.createSequentialGroup()
+                .addGap(22, 22, 22)
+                .addGroup(jpItemsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jpItemsLayout.createSequentialGroup()
+                        .addComponent(jlItems)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jScrollPane2))
+                .addContainerGap())
+        );
+        jpItemsLayout.setVerticalGroup(
+            jpItemsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jpItemsLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jlItems)
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 408, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        jpSets.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        jpSets.setPreferredSize(new java.awt.Dimension(630, 480));
+
+        jlSets.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        jlSets.setText("Sets");
+
+        jcSets.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jcSets.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        listSetItems.setModel(new javax.swing.AbstractListModel() {
+            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            public int getSize() { return strings.length; }
+            public Object getElementAt(int i) { return strings[i]; }
+        });
+        jScrollPane1.setViewportView(listSetItems);
+
+        javax.swing.GroupLayout jpSetsLayout = new javax.swing.GroupLayout(jpSets);
+        jpSets.setLayout(jpSetsLayout);
+        jpSetsLayout.setHorizontalGroup(
+            jpSetsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jpSetsLayout.createSequentialGroup()
+                .addGap(33, 33, 33)
+                .addComponent(jlSets)
+                .addGap(34, 34, 34)
+                .addComponent(jcSets, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(162, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jpSetsLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1)
+                .addContainerGap())
+        );
+        jpSetsLayout.setVerticalGroup(
+            jpSetsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jpSetsLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jpSetsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jcSets, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jlSets))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1)
+                .addContainerGap())
+        );
+
+        jpItemButtons.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        jpItemButtons.setPreferredSize(new java.awt.Dimension(630, 128));
+
+        butAddItem.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        butAddItem.setText("Add item");
+        butAddItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                buttonAddActionPerformed(evt);
+                butAddItemActionPerformed(evt);
             }
         });
-        buttonSearch.setText("Search");
-        buttonSearch.addActionListener(new java.awt.event.ActionListener() {
 
+        butDeleteItem.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        butDeleteItem.setText("Delete item");
+        butDeleteItem.setToolTipText("");
+        butDeleteItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                buttonSearchActionPerformed(evt);
+                butDeleteItemActionPerformed(evt);
             }
         });
-        buttonRemove.setText("Remove Item");
-        buttonRemove.addActionListener(new java.awt.event.ActionListener() {
 
+        butFindItem.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        butFindItem.setText("Find Item");
+        butFindItem.setToolTipText("");
+        butFindItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                buttonRemoveActionPerformed(evt);
+                butFindItemActionPerformed(evt);
             }
         });
-        buttonPrint.setText("Print Item");
-        buttonPrint.addActionListener(new java.awt.event.ActionListener() {
 
+        javax.swing.GroupLayout jpItemButtonsLayout = new javax.swing.GroupLayout(jpItemButtons);
+        jpItemButtons.setLayout(jpItemButtonsLayout);
+        jpItemButtonsLayout.setHorizontalGroup(
+            jpItemButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jpItemButtonsLayout.createSequentialGroup()
+                .addGap(25, 25, 25)
+                .addComponent(butAddItem, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(butDeleteItem, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(butFindItem, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(293, Short.MAX_VALUE))
+        );
+        jpItemButtonsLayout.setVerticalGroup(
+            jpItemButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jpItemButtonsLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jpItemButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(butDeleteItem, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(butAddItem, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(butFindItem, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        jpSetButtons.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        jpSetButtons.setPreferredSize(new java.awt.Dimension(630, 128));
+
+        butAddItemToSet.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        butAddItemToSet.setText("Add to Set");
+        butAddItemToSet.setToolTipText("");
+        butAddItemToSet.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                buttonPrintActionPerformed(evt);
+                butAddItemToSetActionPerformed(evt);
             }
         });
-        buttonPrintSet.setText("Print Sets");
-        buttonPrintSet.addActionListener(new java.awt.event.ActionListener() {
 
+        butRemoveItemFromSet.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        butRemoveItemFromSet.setText("Remove from set");
+        butRemoveItemFromSet.setToolTipText("");
+        butRemoveItemFromSet.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                buttonPrintSetActionPerformed(evt);
+                butRemoveItemFromSetActionPerformed(evt);
             }
         });
-        buttonListItemSet.setText("List Item set");
-        buttonListItemSet.addActionListener(new java.awt.event.ActionListener() {
 
+        butDeleteSet.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        butDeleteSet.setText("Delete Set");
+        butDeleteSet.setToolTipText("");
+        butDeleteSet.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                buttonListItemSetActionPerformed(evt);
+                butDeleteSetActionPerformed(evt);
             }
         });
+
+        javax.swing.GroupLayout jpSetButtonsLayout = new javax.swing.GroupLayout(jpSetButtons);
+        jpSetButtons.setLayout(jpSetButtonsLayout);
+        jpSetButtonsLayout.setHorizontalGroup(
+            jpSetButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jpSetButtonsLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jpSetButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(butRemoveItemFromSet, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jpSetButtonsLayout.createSequentialGroup()
+                        .addComponent(butAddItemToSet, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(butDeleteSet, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jpSetButtonsLayout.setVerticalGroup(
+            jpSetButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jpSetButtonsLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jpSetButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(butAddItemToSet, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(butDeleteSet, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(butRemoveItemFromSet, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(48, Short.MAX_VALUE))
+        );
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(layout.createSequentialGroup().addContainerGap().addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup().addComponent(buttonAdd).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 235, Short.MAX_VALUE).addComponent(buttonPrintSet)).addGroup(layout.createSequentialGroup().addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addComponent(buttonPrint).addComponent(buttonRemove)).addGap(0, 0, Short.MAX_VALUE)).addGroup(layout.createSequentialGroup().addComponent(buttonSearch).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE).addComponent(buttonListItemSet))).addContainerGap()));
-        layout.setVerticalGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup().addGap(23, 23, 23).addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE).addComponent(buttonPrintSet).addComponent(buttonAdd)).addGap(18, 18, 18).addComponent(buttonRemove).addGap(18, 18, 18).addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE).addComponent(buttonSearch).addComponent(buttonListItemSet)).addGap(18, 18, 18).addComponent(buttonPrint).addContainerGap(103, Short.MAX_VALUE)));
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jpRepositories, javax.swing.GroupLayout.DEFAULT_SIZE, 1435, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jpItems, javax.swing.GroupLayout.DEFAULT_SIZE, 739, Short.MAX_VALUE)
+                            .addComponent(jpItemButtons, javax.swing.GroupLayout.DEFAULT_SIZE, 739, Short.MAX_VALUE))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jpSets, javax.swing.GroupLayout.DEFAULT_SIZE, 678, Short.MAX_VALUE)
+                            .addComponent(jpSetButtons, javax.swing.GroupLayout.DEFAULT_SIZE, 678, Short.MAX_VALUE))))
+                .addContainerGap())
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jpRepositories, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jpSets, javax.swing.GroupLayout.DEFAULT_SIZE, 481, Short.MAX_VALUE)
+                    .addComponent(jpItems, javax.swing.GroupLayout.DEFAULT_SIZE, 481, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jpSetButtons, javax.swing.GroupLayout.DEFAULT_SIZE, 159, Short.MAX_VALUE)
+                    .addComponent(jpItemButtons, javax.swing.GroupLayout.DEFAULT_SIZE, 159, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+
         pack();
-    }
+    }// </editor-fold>//GEN-END:initComponents
 
-    private void buttonAddActionPerformed(java.awt.event.ActionEvent evt) {
-        JTextField itemRef = new JTextField(20);
-        JTextField itemDesc = new JTextField(20);
-        JTextField itemPrice = new JTextField(20);
-        JPanel p = new JPanel();
-        p.add(new JLabel("Reference No: "));
-        p.add(itemRef);
-        p.add(Box.createHorizontalStrut(15));
-        p.add(new JLabel("Description"));
-        p.add(itemDesc);
-        p.add(Box.createHorizontalStrut(15));
-        p.add(new JLabel("Price"));
-        p.add(itemPrice);
-        int result = JOptionPane.showConfirmDialog(null, p, "Add an item", JOptionPane.OK_CANCEL_OPTION);
-        if (result == JOptionPane.OK_OPTION) {
-            int ref = Integer.parseInt(itemRef.getText());
-            String description = itemDesc.getText();
-            double price = Double.parseDouble(itemPrice.getText());
-            itemAVLTree.addNode(new ItemNode(ref, description, price));
-        } else if (result == JOptionPane.CANCEL_OPTION) {
-        }
-    }
+    private void butAddItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_butAddItemActionPerformed
+        JFrame frame = new JFrame();
+        
+        
+        
+    }//GEN-LAST:event_butAddItemActionPerformed
 
-    private void buttonPrintActionPerformed(java.awt.event.ActionEvent evt) {
-        itemAVLTree.printTreeStructure();
-    }
+    private void butDeleteItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_butDeleteItemActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_butDeleteItemActionPerformed
 
-    private void buttonRemoveActionPerformed(java.awt.event.ActionEvent evt) {
-        JTextField itemRef = new JTextField(20);
-        JPanel p = new JPanel();
-        p.add(new JLabel("Reference No: "));
-        p.add(itemRef);
-        int result = JOptionPane.showConfirmDialog(null, p, "Add an item", JOptionPane.OK_CANCEL_OPTION);
-        if (result == JOptionPane.OK_OPTION) {
-            int ref = Integer.parseInt(itemRef.getText());
-            ItemNode toRemove = (ItemNode) itemAVLTree.findNode(ref, itemAVLTree.getRoot());
-            
-            itemAVLTree.removeNode(ref);
-            
-            ArrayList<Node> setSearch = new ArrayList<>();
-            setAVLTree.getNodesAsArrayList(setSearch, setAVLTree.getRoot());
-            for (Node sr : setSearch) {
-                SetNode s = (SetNode) sr;
-                if (s.removeItemRef(toRemove)) {
-                    System.out.println("Item removed from set: " + s.getDescription());
-                    break;
-                }
-            }
-        } else if (result == JOptionPane.CANCEL_OPTION) {
-        }
-    }
+    private void butFindItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_butFindItemActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_butFindItemActionPerformed
 
-    private void buttonSearchActionPerformed(java.awt.event.ActionEvent evt) {
-        JTextField itemRef = new JTextField(20);
-        JPanel p = new JPanel();
-        p.add(new JLabel("Reference No: "));
-        p.add(itemRef);
-        int result = JOptionPane.showConfirmDialog(null, p, "Add an item", JOptionPane.OK_CANCEL_OPTION);
-        if (result == JOptionPane.OK_OPTION) {
-            int ref = Integer.parseInt(itemRef.getText());
-            System.out.println(itemAVLTree.findNode(ref, itemAVLTree.getRoot()).toString());
-        } else if (result == JOptionPane.CANCEL_OPTION) {
-        }
-    }
+    private void butAddItemToSetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_butAddItemToSetActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_butAddItemToSetActionPerformed
 
-    private void buttonPrintSetActionPerformed(java.awt.event.ActionEvent evt) {
-        setAVLTree.printTreeStructure();
-    }
+    private void butRemoveItemFromSetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_butRemoveItemFromSetActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_butRemoveItemFromSetActionPerformed
 
-    private void buttonListItemSetActionPerformed(java.awt.event.ActionEvent evt) {
-        ArrayList<Node> setSearch = new ArrayList<>();
-        setAVLTree.getNodesAsArrayList(setSearch, setAVLTree.getRoot());
-        JTextField itemRef = new JTextField(20);
-        JPanel p = new JPanel();
-        p.add(new JLabel("Reference No: "));
-        p.add(itemRef);
-        int result = JOptionPane.showConfirmDialog(null, p, "Find item sets", JOptionPane.OK_CANCEL_OPTION);
-        boolean itemFound = false;
-        String setDesc = "";
-        if (result == JOptionPane.OK_OPTION) {
-            int ref = Integer.parseInt(itemRef.getText());
-            ItemNode toFind = (ItemNode) itemAVLTree.findNode(ref, itemAVLTree.getRoot());
-            
-            for (Node sr : setSearch) {
-                SetNode s = (SetNode) sr;
-                if (s.getItemByRef(toFind) != null) {
-                    itemFound = true;
-                    setDesc = s.getDescription();
-                    break;
-                }
-            }
-            if (itemFound) {
-                System.out.printf("Item Reference %d found in Set %s\n", ref, setDesc);
-            } else {
-                System.out.printf("Item Reference %d not found\n", ref);
-            }
-        } else if (result == JOptionPane.CANCEL_OPTION) {
-        }
-    }
+    private void butDeleteSetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_butDeleteSetActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_butDeleteSetActionPerformed
 
+    /**
+     * @param args the command line arguments
+     */
     public static void main(String args[]) {
+        /* Set the Nimbus look and feel */
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
@@ -228,26 +476,36 @@ public class GUI extends javax.swing.JDialog {
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(GUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+
+        /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
-
             public void run() {
-                GUI dialog = new GUI(new javax.swing.JFrame(), true);
-                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-
-                    @Override
-                    public void windowClosing(java.awt.event.WindowEvent e) {
-                        System.exit(0);
-                    }
-                });
-                dialog.setVisible(true);
+                new GUI().setVisible(true);
             }
         });
     }
 
-    private javax.swing.JButton buttonAdd;
-    private javax.swing.JButton buttonListItemSet;
-    private javax.swing.JButton buttonPrint;
-    private javax.swing.JButton buttonPrintSet;
-    private javax.swing.JButton buttonRemove;
-    private javax.swing.JButton buttonSearch;
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton butAddItem;
+    private javax.swing.JButton butAddItemToSet;
+    private javax.swing.JButton butDeleteItem;
+    private javax.swing.JButton butDeleteSet;
+    private javax.swing.JButton butFindItem;
+    private javax.swing.JButton butRemoveItemFromSet;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JComboBox jcRepositories;
+    private javax.swing.JComboBox jcSets;
+    private javax.swing.JLabel jlItems;
+    private javax.swing.JLabel jlReposiroties;
+    private javax.swing.JLabel jlSets;
+    private javax.swing.JPanel jpItemButtons;
+    private javax.swing.JPanel jpItems;
+    private javax.swing.JPanel jpRepositories;
+    private javax.swing.JPanel jpSetButtons;
+    private javax.swing.JPanel jpSets;
+    private javax.swing.JList listItems;
+    private javax.swing.JList listSetItems;
+    // End of variables declaration//GEN-END:variables
 }

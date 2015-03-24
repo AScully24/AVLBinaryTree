@@ -5,36 +5,87 @@ public class RepoNode extends Node {
 
     Tree sets;
     Tree items;
+    String name;
 
-    public RepoNode(int reference) {
+    public RepoNode(int reference, String name) {
         super(reference);
+        this.name = name;
+        items = new Tree();
+        sets = new Tree();
     }
 
-    public void addItem(ItemNode node) {
-        items.addNode(node);
+    /**
+     * Add an item to the item list the set list (if required)
+     *
+     * @param node The new Item node
+     * @param sNode A set that the node is going to be added to.
+     * @return True when item is added, false if it is a duplicate.
+     */
+    public boolean addItem(ItemNode node, SetNode sNode) {
+        if (!items.addNode(node)) {
+            return false;
+        }
+
+        if (sNode != null) {
+            node.addToRelatedSet(sNode);
+            sNode.addToItemRefs(node);
+        }
+        return true;
     }
 
     public void addSet(SetNode node) {
         sets.addNode(node);
     }
 
-    public void removeItem(int ref) {
+    /**
+     * Deletes an item and removes it from any sets within the repo.
+     *
+     * @param ref The reference for the node to be deleted.
+     * @return False when the ItemNode doesn't exist, true when it has been
+     * deleted.
+     */
+    public boolean removeItem(int ref) {
+        ItemNode toRemove = (ItemNode) items.findNode(ref, items.getRoot());
+
+        if (toRemove == null) {
+            return false;
+        }
+
+        ArrayList<SetNode> relatedSets = toRemove.getRelatedSets();
+
+        for (SetNode n : relatedSets) {
+            n.removeItemRef(toRemove);
+        }
         items.removeNode(ref);
-        sets.removeNode(ref);
+
+        return true;
     }
 
-    public ArrayList<SetNode> getSetsContaingItem(int ref) {
-        ArrayList<SetNode> arr = new ArrayList<>();
-        
-        
-        
-        
-        if (arr.size() > 0) return arr;
-        else return null;
+    /**
+     * Deletes a set and any items associated with that set within the repo.
+     *
+     * @param ref The reference for the node to be deleted.
+     * @return False when the SetNode doesn't exist, true when it has been
+     * deleted.
+     */
+    public boolean removeSet(int ref) {
+        SetNode toRemove = (SetNode) sets.findNode(ref, sets.getRoot());
+
+        if (toRemove == null) {
+            return false;
+        }
+
+        ArrayList<ItemNode> itemsToRemove = toRemove.getItemRefs();
+        for (ItemNode i : itemsToRemove) {
+            items.removeNode(i.getReference());
+        }
+
+        sets.removeNode(ref);
+        return true;
     }
 
-    public void removeSet(int ref) {
-        sets.removeNode(ref);
+    public ItemNode findItem(int ref) {
+        return (ItemNode) items.findNode(ref, items.getRoot());
     }
 
     public void printSetsTree() {
@@ -44,4 +95,22 @@ public class RepoNode extends Node {
     public void printItemsTree() {
         items.printTreeStructure();
     }
+
+    @Override
+    public String toString() {
+        return reference + " - " + name;
+    }
+
+    public Tree getSets() {
+        return sets;
+    }
+
+    public Tree getItems() {
+        return items;
+    }
+
+    public String getName() {
+        return name;
+    }
+
 }

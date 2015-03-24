@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class Node {
 
-    private int reference;
+    protected int reference;
     private Node leftNode = null;
     private Node rightNode = null;
     private Node parentNode = null;

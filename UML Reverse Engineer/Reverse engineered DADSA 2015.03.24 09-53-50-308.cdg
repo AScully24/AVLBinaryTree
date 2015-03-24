@@ -1,8 +1,67 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<ClassDiagram name="Reverse engineered DADSA 2015.03.23 17-04-49-323">
+<ClassDiagram name="Reverse engineered DADSA 2015.03.24 09-53-50-308">
   <ClassDiagramComponents>
-    <Class xPosition="1772.0" yPosition="608.0" package="" name="ItemNode" visibility="public">
+    <Class xPosition="20.0" yPosition="20.0" package="" name="CommandGUI" visibility="public">
+      <Constructors/>
+      <Fields>
+        <Field name="tree" visibility="private" type="Tree" isStatic="true"/>
+        <Field name="data" visibility="private" type="ArrayList&lt;String&gt;" isStatic="true" isFinal="true"/>
+      </Fields>
+      <Methods>
+        <Method name="main" visibility="public" returnType="void" isStatic="true">
+          <Argument type="String[]" name="args"/>
+        </Method>
+        <Method name="binaryTreeMethod" visibility="private" returnType="void" isStatic="true"/>
+      </Methods>
+    </Class>
+    <Class xPosition="320.0" yPosition="20.0" package="" name="GUI" visibility="public">
+      <Constructors>
+        <Constructor name="GUI" visibility="public">
+          <Argument type="java.awt.Frame" name="parent"/>
+          <Argument type="boolean" name="modal"/>
+        </Constructor>
+      </Constructors>
+      <Fields>
+        <Field name="itemData" visibility="private" type="ArrayList&lt;String&gt;" isStatic="true" isFinal="true"/>
+        <Field name="setData" visibility="private" type="ArrayList&lt;String&gt;" isStatic="true" isFinal="true"/>
+        <Field name="itemAVLTree" visibility="private" type="Tree" isStatic="true"/>
+        <Field name="setAVLTree" visibility="private" type="Tree" isStatic="true"/>
+        <Field name="buttonAdd" visibility="private" type="javax.swing.JButton"/>
+        <Field name="buttonListItemSet" visibility="private" type="javax.swing.JButton"/>
+        <Field name="buttonPrint" visibility="private" type="javax.swing.JButton"/>
+        <Field name="buttonPrintSet" visibility="private" type="javax.swing.JButton"/>
+        <Field name="buttonRemove" visibility="private" type="javax.swing.JButton"/>
+        <Field name="buttonSearch" visibility="private" type="javax.swing.JButton"/>
+      </Fields>
+      <Methods>
+        <Method name="loadDataToArrayList" visibility="private" returnType="void"/>
+        <Method name="loadLinkedList" visibility="private" returnType="void"/>
+        <Method name="initComponents" visibility="private" returnType="void"/>
+        <Method name="buttonAddActionPerformed" visibility="private" returnType="void">
+          <Argument type="java.awt.event.ActionEvent" name="evt"/>
+        </Method>
+        <Method name="buttonPrintActionPerformed" visibility="private" returnType="void">
+          <Argument type="java.awt.event.ActionEvent" name="evt"/>
+        </Method>
+        <Method name="buttonRemoveActionPerformed" visibility="private" returnType="void">
+          <Argument type="java.awt.event.ActionEvent" name="evt"/>
+        </Method>
+        <Method name="buttonSearchActionPerformed" visibility="private" returnType="void">
+          <Argument type="java.awt.event.ActionEvent" name="evt"/>
+        </Method>
+        <Method name="buttonPrintSetActionPerformed" visibility="private" returnType="void">
+          <Argument type="java.awt.event.ActionEvent" name="evt"/>
+        </Method>
+        <Method name="buttonListItemSetActionPerformed" visibility="private" returnType="void">
+          <Argument type="java.awt.event.ActionEvent" name="evt"/>
+        </Method>
+        <Method name="main" visibility="public" returnType="void" isStatic="true">
+          <Argument type="String" name="args"/>
+        </Method>
+      </Methods>
+    </Class>
+    <Class xPosition="620.0" yPosition="20.0" package="" name="ItemNode" visibility="public">
       <Constructors>
         <Constructor name="ItemNode" visibility="public">
           <Argument type="int" name="reference"/>
@@ -26,7 +85,7 @@
         <Method name="toString" visibility="public" returnType="String"/>
       </Methods>
     </Class>
-    <Class xPosition="1170.0" yPosition="361.0" package="" name="Node" visibility="public">
+    <Class xPosition="920.0" yPosition="20.0" package="" name="Node" visibility="public">
       <Constructors>
         <Constructor name="Node" visibility="public">
           <Argument type="int" name="reference"/>
@@ -84,7 +143,7 @@
         <Method name="toString" visibility="public" returnType="String"/>
       </Methods>
     </Class>
-    <Class xPosition="1349.0" yPosition="20.0" package="" name="RepoNode" visibility="public">
+    <Class xPosition="20.0" yPosition="420.0" package="" name="RepoNode" visibility="public">
       <Constructors>
         <Constructor name="RepoNode" visibility="public">
           <Argument type="int" name="reference"/>
@@ -114,7 +173,7 @@
         <Method name="printItemsTree" visibility="public" returnType="void"/>
       </Methods>
     </Class>
-    <Class xPosition="1667.0" yPosition="240.0" package="" name="SetNode" visibility="public">
+    <Class xPosition="320.0" yPosition="420.0" package="" name="SetNode" visibility="public">
       <Constructors>
         <Constructor name="SetNode" visibility="public">
           <Argument type="int" name="reference"/>
@@ -146,7 +205,7 @@
         </Method>
       </Methods>
     </Class>
-    <Class xPosition="532.0" yPosition="532.0" package="" name="Tree" visibility="public">
+    <Class xPosition="620.0" yPosition="420.0" package="" name="Tree" visibility="public">
       <Constructors>
         <Constructor name="Tree" visibility="public"/>
         <Constructor name="Tree" visibility="public">
@@ -217,20 +276,23 @@
     </Class>
   </ClassDiagramComponents>
   <ClassDiagramRelations>
-    <IsRelation name="is" source="SetNode" target="ItemNode"/>
-    <UseRelation source="SetNode" target="Node" sourceCardinality="1..1" targetCardinality="1..1"/>
     <IsRelation name="is" source="ItemNode" target="Node"/>
-    <HasRelation name="root" source="Tree" target="Node" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="items" source="SetNode" target="Node" sourceCardinality="1..1" targetCardinality="0..*" collectionType="List"/>
     <HasRelation name="leftNode" source="Node" target="Node" sourceCardinality="1..1" targetCardinality="1..1"/>
     <HasRelation name="rightNode" source="Node" target="Node" sourceCardinality="1..1" targetCardinality="1..1"/>
     <HasRelation name="parentNode" source="Node" target="Node" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation source="Tree" target="Node" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation source="RepoNode" target="SetNode" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="itemAVLTree" source="GUI" target="Tree" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="setAVLTree" source="GUI" target="Tree" sourceCardinality="1..1" targetCardinality="1..1"/>
     <IsRelation name="is" source="RepoNode" target="Node"/>
     <UseRelation source="RepoNode" target="Node" sourceCardinality="1..1" targetCardinality="1..1"/>
-    <UseRelation source="Tree" target="Node" sourceCardinality="1..1" targetCardinality="1..1"/>
-    <HasRelation name="items" source="SetNode" target="Node" sourceCardinality="1..1" targetCardinality="0..*" collectionType="List"/>
-    <UseRelation source="Node" target="Node" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="root" source="Tree" target="Node" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation source="SetNode" target="Node" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="tree" source="CommandGUI" target="Tree" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <IsRelation name="is" source="SetNode" target="ItemNode"/>
     <HasRelation name="sets" source="RepoNode" target="Tree" sourceCardinality="1..1" targetCardinality="1..1"/>
     <HasRelation name="items" source="RepoNode" target="Tree" sourceCardinality="1..1" targetCardinality="1..1"/>
-    <UseRelation source="RepoNode" target="SetNode" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation source="Node" target="Node" sourceCardinality="1..1" targetCardinality="1..1"/>
   </ClassDiagramRelations>
 </ClassDiagram>

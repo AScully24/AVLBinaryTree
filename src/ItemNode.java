@@ -1,20 +1,38 @@
+
+import java.util.ArrayList;
+
+
 public class ItemNode extends Node {
 
-    private String desciption;
-    private double price;
+    protected String description;
+    protected double price;
+    private final ArrayList<SetNode> relatedSets;
 
     public ItemNode(int reference, String description, double price) {
         super(reference);
-        this.desciption = description;
+        this.description = description;
         this.price = price;
+        relatedSets = new ArrayList<>();
+    }
+
+    public void addToRelatedSet(SetNode node) {
+        relatedSets.add(node);
+    }
+
+    public void removeFromRelatedSet(SetNode node) {
+        relatedSets.remove(node);
+    }
+
+    public ArrayList<SetNode> getRelatedSets() {
+        return relatedSets;
     }
 
     public String getDescription() {
-        return desciption;
+        return description;
     }
 
     public void setDescription(String desciption) {
-        this.desciption = desciption;
+        this.description = desciption;
     }
 
     public double getPrice() {
@@ -25,9 +43,9 @@ public class ItemNode extends Node {
         this.price = price;
     }
 
+    @Override
     public String toString() {
-        return "ItemNode{" + "desciption=" + desciption + ", price=" + price + '}';
+        return reference + " - " + description + " - £" + price;
     }
-    
-    
+
 }

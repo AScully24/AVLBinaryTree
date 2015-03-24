@@ -1,7 +1,11 @@
+
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import static java.lang.Thread.sleep;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class CommandGUI {
     /* {src_lang=Java}*/
@@ -30,11 +34,30 @@ public class CommandGUI {
             tree.addNode(new ItemNode(Integer.parseInt(lineData[0]), lineData[1], Double.parseDouble(lineData[2])));
         }
 
-//        // Prints the tree in a tree format.
+        // Prints the tree in a tree format.
         tree.printTreeStructure();
+        ArrayList<Node> arr = new ArrayList<>();
+        tree.getNodesAsArrayList(arr, tree.getRoot());
+        System.out.println(tree.getNodeCount());
+        System.out.println(arr.size());
         
-        ItemNode x = (ItemNode) tree.findNode(12800, tree.getRoot());
-        
-        System.out.println(x.getDescription());
+
+        int ref = 0;
+
+        for (int i = 0; i < 15; i++) {
+
+            try {
+                sleep(100);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(CommandGUI.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+            ref = tree.getRoot().getLeftNode().getReference();
+            
+            tree.removeNode(ref);
+            tree.printTreeStructure();
+
+        }
     }
+
 }
