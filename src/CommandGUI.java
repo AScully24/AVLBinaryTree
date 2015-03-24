@@ -1,7 +1,3 @@
-package main;
-
-import avlbinarytree.ItemNode;
-import avlbinarytree.Tree;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
@@ -36,5 +32,9 @@ public class CommandGUI {
 
 //        // Prints the tree in a tree format.
         tree.printTreeStructure();
+        
+        ItemNode x = (ItemNode) tree.findNode(12800, tree.getRoot());
+        
+        System.out.println(x.getDescription());
     }
 }
