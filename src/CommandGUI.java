@@ -1,4 +1,7 @@
 
+import AVLTree.Node;
+import AVLTree.Tree;
+import AVLTree.ItemNode;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import static java.lang.Thread.sleep;
@@ -14,7 +17,15 @@ public class CommandGUI {
     private static final ArrayList<String> data = new ArrayList<>();
 
     public static void main(String[] args) throws IOException {
-        binaryTreeMethod();
+        //binaryTreeMethod();
+        String a = "", b = "Hello1";
+        int compareLength = a.length() + a.toLowerCase().compareTo(b.toLowerCase()) ;
+        float perc = (float)((float)compareLength / (float)a.length());
+        
+        System.out.println("a length " + a.length());
+        System.out.println("%" + perc + " match");
+        System.out.println(compareLength);
+        
     }
 
     private static void binaryTreeMethod() throws IOException {

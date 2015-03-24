@@ -1,9 +1,22 @@
 
+import AVLTree.Node;
+import AVLTree.Tree;
+import AVLTree.RepoNode;
+import AVLTree.ItemNode;
+import AVLTree.SetNode;
+import java.awt.GridLayout;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Scanner;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -25,7 +38,7 @@ public class GUI extends javax.swing.JFrame {
      */
     public GUI() {
         initComponents();
-        
+
         // Default values.
         loadDefaultRep();
         updateItemList();
@@ -35,9 +48,9 @@ public class GUI extends javax.swing.JFrame {
 
     private void updateSetList() {
         if (currentSet != null) {
-            ArrayList<ItemNode> sets = currentSet.getItemRefs();
-            
-            JList newSetBox = new JList(sets.toArray());
+            ArrayList<ItemNode> setItems = currentSet.getItemRefs();
+            Collections.sort(setItems);
+            JList newSetBox = new JList(setItems.toArray());
             listSetItems.setModel(newSetBox.getModel());
         }
     }
@@ -45,7 +58,7 @@ public class GUI extends javax.swing.JFrame {
     private void updateSetComboBox() {
         ArrayList<Node> sets = new ArrayList<>();
         currentRepo.getSets().getNodesAsArrayList(sets, currentRepo.getSets().getRoot());
-
+        Collections.sort(sets);
         JComboBox newSetBox = new JComboBox(sets.toArray());
         jcSets.setModel(newSetBox.getModel());
     }
@@ -53,7 +66,7 @@ public class GUI extends javax.swing.JFrame {
     private void updateItemList() {
         ArrayList<Node> items = new ArrayList<>();
         currentRepo.getItems().getNodesAsArrayList(items, currentRepo.getItems().getRoot());
-
+        Collections.sort(items);
         JList newItemList = new JList(items.toArray());
         listItems.setModel(newItemList.getModel());
     }
@@ -69,6 +82,7 @@ public class GUI extends javax.swing.JFrame {
     private void updateRepositoryComboBox() {
         ArrayList<Node> arr = new ArrayList<>();
         repositries.getNodesAsArrayList(arr, repositries.getRoot());
+        Collections.sort(arr);
         JComboBox newComboBox = new JComboBox(arr.toArray());
         jcRepositories.setModel(newComboBox.getModel());
     }
@@ -158,7 +172,7 @@ public class GUI extends javax.swing.JFrame {
         listSetItems = new javax.swing.JList();
         jpItemButtons = new javax.swing.JPanel();
         butAddItem = new javax.swing.JButton();
-        butDeleteItem = new javax.swing.JButton();
+        butDeleteSelectedItem = new javax.swing.JButton();
         butFindItem = new javax.swing.JButton();
         jpSetButtons = new javax.swing.JPanel();
         butAddItemToSet = new javax.swing.JButton();
@@ -289,12 +303,12 @@ public class GUI extends javax.swing.JFrame {
             }
         });
 
-        butDeleteItem.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        butDeleteItem.setText("Delete item");
-        butDeleteItem.setToolTipText("");
-        butDeleteItem.addActionListener(new java.awt.event.ActionListener() {
+        butDeleteSelectedItem.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        butDeleteSelectedItem.setText("Delete Selected item");
+        butDeleteSelectedItem.setToolTipText("");
+        butDeleteSelectedItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                butDeleteItemActionPerformed(evt);
+                butDeleteSelectedItemActionPerformed(evt);
             }
         });
 
@@ -313,21 +327,23 @@ public class GUI extends javax.swing.JFrame {
             jpItemButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jpItemButtonsLayout.createSequentialGroup()
                 .addGap(25, 25, 25)
-                .addComponent(butAddItem, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(butDeleteItem, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(butFindItem, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(293, Short.MAX_VALUE))
+                .addGroup(jpItemButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(butDeleteSelectedItem)
+                    .addGroup(jpItemButtonsLayout.createSequentialGroup()
+                        .addComponent(butAddItem, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(butFindItem, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(382, Short.MAX_VALUE))
         );
         jpItemButtonsLayout.setVerticalGroup(
             jpItemButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jpItemButtonsLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jpItemButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(butDeleteItem, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(butAddItem, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(butFindItem, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addComponent(butDeleteSelectedItem, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -397,7 +413,7 @@ public class GUI extends javax.swing.JFrame {
                     .addComponent(jpRepositories, javax.swing.GroupLayout.DEFAULT_SIZE, 1435, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jpItems, javax.swing.GroupLayout.DEFAULT_SIZE, 739, Short.MAX_VALUE)
+                            .addComponent(jpItems, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jpItemButtons, javax.swing.GroupLayout.DEFAULT_SIZE, 739, Short.MAX_VALUE))
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -413,7 +429,7 @@ public class GUI extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jpSets, javax.swing.GroupLayout.DEFAULT_SIZE, 481, Short.MAX_VALUE)
-                    .addComponent(jpItems, javax.swing.GroupLayout.DEFAULT_SIZE, 481, Short.MAX_VALUE))
+                    .addComponent(jpItems, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jpSetButtons, javax.swing.GroupLayout.DEFAULT_SIZE, 159, Short.MAX_VALUE)
@@ -425,15 +441,65 @@ public class GUI extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void butAddItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_butAddItemActionPerformed
-        JFrame frame = new JFrame();
+
+
+        JPanel panel = new JPanel();
+        JTextField referenceField = new JTextField(10);
+        JTextField priceField = new JTextField(10);
+        JTextArea descriptionField = new JTextArea(10, 30);
         
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         
+        panel.add(new JLabel("Reference"));
+        panel.add(referenceField);
+       // panel.add(Box.createHorizontalStrut(15));
         
+        panel.add(new JLabel("Price"));
+        panel.add(priceField);
+        //panel.add(Box.createVerticalStrut(5));
+        
+        panel.add(new JLabel("Description"));
+        panel.add(descriptionField);
+        //panel.add(Box.createHorizontalStrut(15));
+        
+ 
+        
+        int result = JOptionPane.showConfirmDialog(null, panel, "Add a new item",
+                JOptionPane.OK_CANCEL_OPTION);
+        
+        if (result == JOptionPane.OK_OPTION) {
+            int ref = Integer.parseInt(referenceField.getText());
+            String description = descriptionField.getText();
+            double price = Double.parseDouble(priceField.getText());
+            
+            ItemNode newItem = new ItemNode(ref, description, price);
+            
+            currentRepo.addItem(newItem, null);
+            
+            updateItemList();
+            
+        }else if (result == JOptionPane.CANCEL_OPTION) {
+            
+        }
+
     }//GEN-LAST:event_butAddItemActionPerformed
 
-    private void butDeleteItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_butDeleteItemActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_butDeleteItemActionPerformed
+    private void butDeleteSelectedItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_butDeleteSelectedItemActionPerformed
+        ItemNode toRemove = (ItemNode) listItems.getSelectedValue();
+        ArrayList<Node> arr = new ArrayList<>();
+        if (toRemove != null) {    
+            repositries.getNodesAsArrayList(arr, repositries.getRoot());
+        }
+        
+        for (Node r : arr) {
+            RepoNode repo = (RepoNode) r;
+            System.out.println("Deleted Item from " + repo.getName());
+            repo.removeItem(toRemove.getReference());
+        }
+        
+        updateItemList();
+        updateSetList();
+    }//GEN-LAST:event_butDeleteSelectedItemActionPerformed
 
     private void butFindItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_butFindItemActionPerformed
         // TODO add your handling code here:
@@ -489,7 +555,7 @@ public class GUI extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton butAddItem;
     private javax.swing.JButton butAddItemToSet;
-    private javax.swing.JButton butDeleteItem;
+    private javax.swing.JButton butDeleteSelectedItem;
     private javax.swing.JButton butDeleteSet;
     private javax.swing.JButton butFindItem;
     private javax.swing.JButton butRemoveItemFromSet;
