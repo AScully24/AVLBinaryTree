@@ -1,7 +1,7 @@
 
-import AVLTree.Node;
 import AVLTree.Tree;
 import AVLTree.ItemNode;
+import AVLTree.Node;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import static java.lang.Thread.sleep;
@@ -17,15 +17,17 @@ public class CommandGUI {
     private static final ArrayList<String> data = new ArrayList<>();
 
     public static void main(String[] args) throws IOException {
-        //binaryTreeMethod();
+        binaryTreeMethod();
+    }
+
+    private void testingStrings() {
         String a = "", b = "Hello1";
-        int compareLength = a.length() + a.toLowerCase().compareTo(b.toLowerCase()) ;
-        float perc = (float)((float)compareLength / (float)a.length());
-        
+        int compareLength = a.length() + a.toLowerCase().compareTo(b.toLowerCase());
+        float perc = (float) ((float) compareLength / (float) a.length());
+
         System.out.println("a length " + a.length());
         System.out.println("%" + perc + " match");
         System.out.println(compareLength);
-        
     }
 
     private static void binaryTreeMethod() throws IOException {
@@ -34,7 +36,7 @@ public class CommandGUI {
         OutputStreamWriter output = new OutputStreamWriter(System.out);
 
         // Test Data
-        Scanner sc = new Scanner(CommandGUI.class.getResourceAsStream("Test-Data.csv"));
+        Scanner sc = new Scanner(CommandGUI.class.getResourceAsStream("repo1//items.csv"));
         sc.nextLine();
         while (sc.hasNextLine()) {
             data.add(sc.nextLine());
@@ -44,31 +46,47 @@ public class CommandGUI {
             String lineData[] = data.get(i).split(",");
             tree.addNode(new ItemNode(Integer.parseInt(lineData[0]), lineData[1], Double.parseDouble(lineData[2])));
         }
+//        
+//        int refs[] = {12806,12802,12810,12807,12805,12804};
+//        
+//        for (int r : refs) {
+//            try {
+//                sleep(1);
+//            } catch (InterruptedException ex) {
+//                Logger.getLogger(CommandGUI.class.getName()).log(Level.SEVERE, null, ex);
+//            }
+//            tree.removeNode(r);
+//            tree.printTreeStructure();
+//        }
 
         // Prints the tree in a tree format.
+        //tree.printTreeStructure();
+//        System.getProperties().list(System.out);
         tree.printTreeStructure();
-        ArrayList<Node> arr = new ArrayList<>();
-        tree.getNodesAsArrayList(arr, tree.getRoot());
-        System.out.println(tree.getNodeCount());
-        System.out.println(arr.size());
-        
+        int ref = 12806;
+//        Node n = tree.findNode(ref, tree.getRoot());
+//        tree.removeNode(ref);
 
-        int ref = 0;
-
-        for (int i = 0; i < 15; i++) {
-
+//        ref = 12807;
+//        tree.removeNode(ref);
+//        tree.printTreeStructure();
+//
+        for (int i = 0; i < 18; i++) {
             try {
-                sleep(100);
+                sleep(10);
             } catch (InterruptedException ex) {
                 Logger.getLogger(CommandGUI.class.getName()).log(Level.SEVERE, null, ex);
             }
 
+               tree.printTreeStructure();
             ref = tree.getRoot().getLeftNode().getReference();
-            
+            //ref = tree.findHighestNode(tree.getRoot().getRightNode()).getReference();
+
             tree.removeNode(ref);
-            tree.printTreeStructure();
 
         }
+        tree.printTreeStructure();
+
     }
 
 }

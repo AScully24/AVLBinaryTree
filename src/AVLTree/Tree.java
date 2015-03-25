@@ -1,6 +1,5 @@
 package AVLTree;
 
-
 import java.io.OutputStreamWriter;
 import static java.lang.StrictMath.max;
 import java.util.ArrayList;
@@ -28,6 +27,7 @@ public class Tree {
         if (findNode(newNode.getReference(), root) != null) {
             return false;
         }
+
         Node node = root;
         while (true) {
             if (newNode.getReference() > node.getReference()) {
@@ -50,7 +50,7 @@ public class Tree {
                     node = node.getLeftNode();
             }
         }
-        rebalanceTree(node, node);
+        rebalanceTree(node);
         return true;
     }
 
@@ -66,77 +66,65 @@ public class Tree {
         }
     }
 
-    private void rebalanceTree(Node node, Node leafNode) {
-        if (leafNode == null) {
-            leafNode = node;
-        }
+    private void rebalanceTree(Node node) {
         while (node != null) {
             refreshNodeHeight(node);
-            balanceHandler(node, leafNode);
+            balanceHandler(node);
             node = node.getParentNode();
         }
     }
 
-    private void balanceHandler(Node node, Node leafNode) {
+    private ArrayList<Node> getXandY(Node node) {
+        Node temp = node;
+        ArrayList<Node> arr = new ArrayList<>();
+        int tempBalance = 0;
+        for (int i = 0; i < 3; i++) {
+            tempBalance = checkBalance(temp);
+            if (tempBalance == UNBALANCED_LEFT) {
+                temp = temp.getLeftNode();
+            } else temp = temp.getRightNode();
+            
+            arr.add(temp);
+        }
+        return arr;
+    }
+    
+    
+    private void balanceHandler(Node node) {
         int balance = checkBalance(node);
         int rotationCount = 0;
         if (balance != 0) {
-            rotationCount = rotationCase(node, balance, leafNode);
+            ArrayList<Node> nodes = getXandY(node);
+            rotationCount = rotationCase(nodes, balance);
+            
+            Node z = nodes.get(0);
+            Node y = nodes.get(1);
+            Node x = nodes.get(2);
+            
             if (balance == UNBALANCED_RIGHT) {
                 if (rotationCount == 1) {
-                    rotateNodeLeft(node);
+                    rotateNodeLeft(z,y);
                 } else if (rotationCount == 2) {
-                    rotateNodeRight(node.getRightNode());
-                    rotateNodeLeft(node);
+                    rotateNodeRight(y,y.getLeftNode());
+                    rotateNodeLeft(node,y);
                 }
             } else if (balance == UNBALANCED_LEFT) {
                 if (rotationCount == 1) {
-                    rotateNodeRight(node);
+                    rotateNodeRight(node, y);
                 } else if (rotationCount == 2) {
-                    rotateNodeLeft(node.getLeftNode());
-                    rotateNodeRight(node);
+                    rotateNodeLeft(x,y);
+                    rotateNodeRight(node,x);
                 }
             }
         }
     }
 
-    public int rotationCase(Node node, int balance, Node leafNode) {
-        Node temp = node;
-        ArrayList<Node> arr = new ArrayList<>();
-//        System.out.print("Leaf: " + leafNode.getReference() + "\t");
-        for (int i = 0; i < 2; i++) {
-//            if (i == 0) {
-//                if (leafNode.getReference() <= temp.getReference()) {
-//                    temp = temp.getLeftNode();
-//                } else {
-//                    temp = temp.getRightNode();
-//                }
-//            } else {
-//                System.out.print("Temp: " + i + "--" + temp.getReference() + "\t");
-            if (leafNode.getReference() < temp.getReference()) {
-                arr.add(temp.getLeftNode());
-                temp = temp.getLeftNode();
-            } else {
-                arr.add(temp.getRightNode());
-                temp = temp.getRightNode();
-            }
-            //}
-        }
-
-//        System.out.println("");
-//        System.out.println("Bal= " + checkBalance(node));
-//        OutputStreamWriter output = new OutputStreamWriter(System.out);
-//        try {
-//            node.printTree(output);
-//            output.flush();
-//            System.out.println("\n\n\n");
-//        } catch (Exception e) {
-//            System.out.println("Cannot print tree.");
-//        }
-        Node x = arr.get(0), y = arr.get(1);
+    public int rotationCase(ArrayList<Node> arr, int balance) {
+        Node x = (Node) arr.get(0), y = (Node) arr.get(1);
         if (balance == UNBALANCED_LEFT) {
             if (y == x.getLeftNode())
                 return 1;
+            
             if (y == x.getRightNode())
                 return 2;
         }
@@ -146,21 +134,24 @@ public class Tree {
             if (y == x.getLeftNode())
                 return 2;
         }
+
         return 0;
     }
 
-    private void rotateNodeLeft(Node node) {
-        Node x = node, y = node.getRightNode();
+    private void rotateNodeLeft(Node x, Node y) {
+        //Node x = node, y = node.getRightNode();
         Node a = x.getLeftNode(), b = y.getLeftNode(), c = y.getRightNode();
         Node masterParent = x.getParentNode();
+
         if (x == root)
             root = y;
         else {
-            if (masterParent.getLeftNode() == x) {
+            if (x.isLeftNode()) {
                 masterParent.setLeftNode(y);
             } else
                 masterParent.setRightNode(y);
         }
+
         y.setParentNode(x.getParentNode());
         y.setLeftNode(x);
         x.setParentNode(y);
@@ -177,8 +168,8 @@ public class Tree {
         refreshNodeHeight(y);
     }
 
-    private void rotateNodeRight(Node node) {
-        Node x = node.getLeftNode(), y = node;
+    private void rotateNodeRight(Node x, Node y) {
+    //    Node x = node.getLeftNode(), y = node;
         Node a = x.getLeftNode(), b = x.getRightNode(), c = y.getRightNode();
         Node masterParent = y.getParentNode();
         if (y == root)
@@ -209,14 +200,17 @@ public class Tree {
         int leftHeight, rightHeight;
         if (node == null)
             return 0;
+
         if (node.getLeftNode() == null)
             leftHeight = -1;
         else
             leftHeight = node.getLeftNode().getHeight();
+
         if (node.getRightNode() == null)
             rightHeight = -1;
         else
             rightHeight = node.getRightNode().getHeight();
+
         int balance = leftHeight - rightHeight;
         if (balance > 1)
             return -1;
@@ -226,84 +220,84 @@ public class Tree {
             return 0;
     }
 
+    private void replaceNode(Node node, Node toSwap) {
+
+        if (node == toSwap) {
+            System.out.println("Cannot replace node");
+            return;
+        }
+
+        if (node.isLeftNode()) {
+            node.getParentNode().setLeftNode(toSwap);
+        } else if (node.isRightNode()) {
+            node.getParentNode().setRightNode(toSwap);
+        } else if (node.getParentNode() == null) {
+        }
+
+        if (toSwap != null) {
+            toSwap.setParentNode(node.getParentNode());
+        }
+        node.setParentNode(null);
+        node.setLeftNode(null);
+        node.setRightNode(null);
+    }
+
     public void removeNode(int reference) {
         Node node = findNode(reference, root);
+
         if (node == null) {
-            System.out.println("Node does not exist.");
-            return;
-        }
-        if (node == root) {
-            if (root.getLeftNode() != null) {
-                node = findHighestNode(root.getLeftNode());
-            } else if (root.getRightNode() != null) {
-                node = findLowestNode(root.getRightNode());
-            } else {
-                root = null;
-                return;
-            }
-            removeRootNode(node);
+            System.out.println("Node cannot be deleted: Does not exist.");
             return;
         }
 
+        Node parent = node.getParentNode();
         int childCount = node.getChildCount();
+
         if (childCount == 0) {
-            if (node.getParentNode().getReference() < node.getReference()) {
-                node.getParentNode().setRightNode(null);
-            } else {
-                node.getParentNode().setLeftNode(null);
-            }
+            replaceNode(node, null);
+            rebalanceTree(parent);
         }
+
         if (childCount == 1) {
-            if (node.getParentNode().getReference() < node.getReference()) {
-                node.getParentNode().setRightNode(node.getOnlyChild());
-                node.getParentNode().getRightNode().setParentNode(node.getParentNode());
-            } else {
-                node.getParentNode().setLeftNode(node.getOnlyChild());
-                node.getParentNode().getLeftNode().setParentNode(node.getParentNode());
-            }
-
-            node = node.getOnlyChild();
-            refreshNodeHeight(node);
+            Node nodeChild = node.getOnlyChild();
+            replaceNode(node, nodeChild);
+            rebalanceTree(nodeChild);
         }
+
         if (childCount == 2) {
-            ArrayList<Node> toDeleteChildren = node.getChildren();
-            Node replacementNode = null;
-            Node replacementParent = null;
+            Node toSwap = findHighestNode(node.getLeftNode());
+            Node toSwapParent = toSwap.getParentNode();
+            Node toSWapChild = toSwap.getOnlyChild();
 
-            if (node == node.getParentNode().getRightNode()) {
-                replacementNode = findHighestNode(node.getLeftNode());
-                replacementParent = replacementNode.getParentNode();
-                if (replacementNode.getChildCount() > 0) {
-                    replacementParent.setRightNode(replacementNode.getOnlyChild());
-                    replacementNode.getOnlyChild().setParentNode(replacementParent);
-                } else {
-                    replacementParent.setRightNode(null);
+            System.out.println("Node: " + node.getReference() + "\t toSwap: " + toSwap.getReference());
 
-                }
-
-                replacementNode.setParentNode(node.getParentNode());
-                replacementNode.setChildren(node.getChildren());
-                node.getParentNode().setRightNode(replacementNode);
-            } else {
-                //node.getParentNode().setLeftNode(null);
-
-                replacementNode = findLowestNode(node.getRightNode());
-                replacementParent = replacementNode.getParentNode();
-                if (replacementNode.getChildCount() > 0) {
-                    replacementParent.setLeftNode(replacementNode.getOnlyChild());
-                    replacementNode.getOnlyChild().setParentNode(replacementParent);
-                } else {
-                    replacementParent.setLeftNode(null);
-
-                }
-
-                replacementNode.setParentNode(node.getParentNode());
-                replacementNode.setChildren(node.getChildren());
-                node.getParentNode().setLeftNode(replacementNode);
-                refreshNodeHeight(replacementNode);
+            if (toSwapParent.getLeftNode() != null) {
+                System.out.println("\t Parent: " + toSwapParent.getHeight());
             }
 
-            node = null;
+            if (toSwap.getReference() == 12567) {
+                int o = 0;
+            }
+
+            replaceNode(toSwap, toSWapChild);
+
+            node.setNodeData(toSwap.getNodeData());
+            refreshNodeHeight(toSwapParent);
+
+            if (toSwapParent != null) {
+                //System.out.println("\t Parent: " + toSwapParent.getHeight());
+                if (toSwapParent.getReference() == 12564) {
+                    int o = 2;
+                }
+            }
+
+            balanceHandler(toSwapParent);
+
+            if (toSWapChild == null) {
+                rebalanceTree(node);
+            } else rebalanceTree(toSWapChild);
+
+//            rebalanceTree(toSwapParent);
         }
         nodeCount--;
     }
@@ -350,11 +344,11 @@ public class Tree {
         if (parent.getReference() == 12571) {
             int y = 0;
         }
-        rebalanceTree(parent, leafNode);
+        rebalanceTree(parent);
 
     }
 
-    protected Node findHighestNode(Node node) {
+    public Node findHighestNode(Node node) {
         if (node.getRightNode() != null) {
             return findHighestNode(node.getRightNode());
         } else {
@@ -362,7 +356,7 @@ public class Tree {
         }
     }
 
-    protected Node findLowestNode(Node node) {
+    public Node findLowestNode(Node node) {
         if (node.getLeftNode() != null) {
             return findLowestNode(node.getLeftNode());
         } else {

@@ -28,6 +28,24 @@ public class SetNode extends ItemNode {
         itemCount++;
     }
 
+
+    @Override
+    public ArrayList<Object> getNodeData() {
+        ArrayList<Object> arr = super.getNodeData(); //To change body of generated methods, choose Tools | Templates.
+        arr.add(itemCount);
+        arr.add(items);
+        return arr;
+    }
+
+    @Override
+    public void setNodeData(ArrayList<Object> arr) {
+        super.setNodeData(arr); //To change body of generated methods, choose Tools | Templates.
+        itemCount = (int) arr.get(4);
+        items = (ArrayList<ItemNode>) arr.get(5);
+        
+    }
+    
+    
     public int getItemCount() {
         return itemCount;
     }

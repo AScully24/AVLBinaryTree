@@ -4,9 +4,6 @@
   <Properties>
     <Property name="defaultCloseOperation" type="int" value="3"/>
     <Property name="name" type="java.lang.String" value="mainFrame" noResource="true"/>
-    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-      <Dimension value="[1280, 750]"/>
-    </Property>
   </Properties>
   <SyntheticProperties>
     <SyntheticProperty name="formSizePolicy" type="int" value="1"/>
@@ -30,16 +27,16 @@
           <Group type="102" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="jpRepositories" pref="1435" max="32767" attributes="0"/>
+                  <Component id="jpRepositories" pref="1015" max="32767" attributes="0"/>
                   <Group type="102" attributes="0">
                       <Group type="103" groupAlignment="1" attributes="0">
                           <Component id="jpItems" max="32767" attributes="0"/>
-                          <Component id="jpItemButtons" pref="739" max="32767" attributes="0"/>
+                          <Component id="jpItemButtons" pref="464" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="jpSets" pref="678" max="32767" attributes="0"/>
-                          <Component id="jpSetButtons" pref="678" max="32767" attributes="0"/>
+                          <Component id="jpSets" pref="533" max="32767" attributes="0"/>
+                          <Component id="jpSetButtons" pref="533" max="32767" attributes="0"/>
                       </Group>
                   </Group>
               </Group>
@@ -54,15 +51,14 @@
               <Component id="jpRepositories" min="-2" max="-2" attributes="0"/>
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                  <Component id="jpSets" pref="481" max="32767" attributes="0"/>
+                  <Component id="jpSets" pref="483" max="32767" attributes="0"/>
                   <Component id="jpItems" max="32767" attributes="0"/>
               </Group>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="jpSetButtons" pref="159" max="32767" attributes="0"/>
-                  <Component id="jpItemButtons" pref="159" max="32767" attributes="0"/>
+                  <Component id="jpSetButtons" pref="136" max="32767" attributes="0"/>
+                  <Component id="jpItemButtons" pref="136" max="32767" attributes="0"/>
               </Group>
-              <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -88,7 +84,7 @@
                   <Component id="jlReposiroties" min="-2" max="-2" attributes="0"/>
                   <EmptySpace min="-2" pref="34" max="-2" attributes="0"/>
                   <Component id="jcRepositories" min="-2" pref="162" max="-2" attributes="0"/>
-                  <EmptySpace max="32767" attributes="0"/>
+                  <EmptySpace pref="637" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -224,7 +220,7 @@
                   <Component id="jlSets" min="-2" max="-2" attributes="0"/>
                   <EmptySpace min="-2" pref="34" max="-2" attributes="0"/>
                   <Component id="jcSets" min="-2" pref="400" max="-2" attributes="0"/>
-                  <EmptySpace pref="162" max="32767" attributes="0"/>
+                  <EmptySpace max="32767" attributes="0"/>
               </Group>
               <Group type="102" alignment="1" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
@@ -321,7 +317,7 @@
                           <Component id="butFindItem" min="-2" pref="155" max="-2" attributes="0"/>
                       </Group>
                   </Group>
-                  <EmptySpace pref="382" max="32767" attributes="0"/>
+                  <EmptySpace pref="107" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -417,7 +413,7 @@
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="butRemoveItemFromSet" min="-2" pref="45" max="-2" attributes="0"/>
-                  <EmptySpace pref="48" max="32767" attributes="0"/>
+                  <EmptySpace max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>

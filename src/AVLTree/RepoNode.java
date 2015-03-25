@@ -38,6 +38,26 @@ public class RepoNode extends Node {
         sets.addNode(node);
     }
 
+    @Override
+    public ArrayList<Object> getNodeData() {
+        ArrayList<Object> arr =  super.getNodeData(); //To change body of generated methods, choose Tools | Templates.
+        arr.add(name);
+        arr.add(items);
+        arr.add(sets);
+        
+        return arr;
+    }
+
+    @Override
+    public void setNodeData(ArrayList<Object> arr) {
+        super.setNodeData(arr); //To change body of generated methods, choose Tools | Templates.
+        name = (String) arr.get(1);
+        items = (Tree) arr.get(2);
+        sets = (Tree) arr.get(3);
+    }
+
+    
+    
     /**
      * Deletes an item and removes it from any sets within the repo.
      *

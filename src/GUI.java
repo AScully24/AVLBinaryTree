@@ -4,11 +4,9 @@ import AVLTree.Tree;
 import AVLTree.RepoNode;
 import AVLTree.ItemNode;
 import AVLTree.SetNode;
-import java.awt.GridLayout;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Scanner;
-import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -100,7 +98,15 @@ public class GUI extends javax.swing.JFrame {
          * Adds the new items.
          */
         Scanner sc = null;
-        sc = new Scanner(GUI.class.getResourceAsStream(location + "\\items.csv"));
+        System.out.println(location);
+
+        String newLocation = location;
+
+        if (System.getProperty("os.name").toLowerCase().equals("linux")) {
+            newLocation += "//";
+        } else newLocation += "\\";
+
+        sc = new Scanner(GUI.class.getResourceAsStream(newLocation + "items.csv"));
 
         sc.nextLine();
         while (sc.hasNextLine()) {
@@ -119,7 +125,7 @@ public class GUI extends javax.swing.JFrame {
          *
          * Adds new sets 
          */
-        sc = new Scanner(GUI.class.getResourceAsStream(location + "\\sets.csv"));
+        sc = new Scanner(GUI.class.getResourceAsStream(newLocation + "sets.csv"));
         sc.nextLine();
         while (sc.hasNextLine()) {
             sets.add(sc.nextLine());
@@ -181,7 +187,6 @@ public class GUI extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setName("mainFrame"); // NOI18N
-        setPreferredSize(new java.awt.Dimension(1280, 750));
 
         jpRepositories.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jpRepositories.setPreferredSize(new java.awt.Dimension(1152, 79));
@@ -201,7 +206,7 @@ public class GUI extends javax.swing.JFrame {
                 .addComponent(jlReposiroties)
                 .addGap(34, 34, 34)
                 .addComponent(jcRepositories, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(637, Short.MAX_VALUE))
         );
         jpRepositoriesLayout.setVerticalGroup(
             jpRepositoriesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -274,7 +279,7 @@ public class GUI extends javax.swing.JFrame {
                 .addComponent(jlSets)
                 .addGap(34, 34, 34)
                 .addComponent(jcSets, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(162, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jpSetsLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jScrollPane1)
@@ -333,7 +338,7 @@ public class GUI extends javax.swing.JFrame {
                         .addComponent(butAddItem, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(butFindItem, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(382, Short.MAX_VALUE))
+                .addContainerGap(107, Short.MAX_VALUE))
         );
         jpItemButtonsLayout.setVerticalGroup(
             jpItemButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -400,7 +405,7 @@ public class GUI extends javax.swing.JFrame {
                     .addComponent(butDeleteSet, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(butRemoveItemFromSet, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(48, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -410,15 +415,15 @@ public class GUI extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jpRepositories, javax.swing.GroupLayout.DEFAULT_SIZE, 1435, Short.MAX_VALUE)
+                    .addComponent(jpRepositories, javax.swing.GroupLayout.DEFAULT_SIZE, 1015, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jpItems, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jpItemButtons, javax.swing.GroupLayout.DEFAULT_SIZE, 739, Short.MAX_VALUE))
+                            .addComponent(jpItemButtons, javax.swing.GroupLayout.DEFAULT_SIZE, 464, Short.MAX_VALUE))
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jpSets, javax.swing.GroupLayout.DEFAULT_SIZE, 678, Short.MAX_VALUE)
-                            .addComponent(jpSetButtons, javax.swing.GroupLayout.DEFAULT_SIZE, 678, Short.MAX_VALUE))))
+                            .addComponent(jpSets, javax.swing.GroupLayout.DEFAULT_SIZE, 533, Short.MAX_VALUE)
+                            .addComponent(jpSetButtons, javax.swing.GroupLayout.DEFAULT_SIZE, 533, Short.MAX_VALUE))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -428,13 +433,12 @@ public class GUI extends javax.swing.JFrame {
                 .addComponent(jpRepositories, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jpSets, javax.swing.GroupLayout.DEFAULT_SIZE, 481, Short.MAX_VALUE)
+                    .addComponent(jpSets, javax.swing.GroupLayout.DEFAULT_SIZE, 483, Short.MAX_VALUE)
                     .addComponent(jpItems, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jpSetButtons, javax.swing.GroupLayout.DEFAULT_SIZE, 159, Short.MAX_VALUE)
-                    .addComponent(jpItemButtons, javax.swing.GroupLayout.DEFAULT_SIZE, 159, Short.MAX_VALUE))
-                .addContainerGap())
+                    .addComponent(jpSetButtons, javax.swing.GroupLayout.DEFAULT_SIZE, 136, Short.MAX_VALUE)
+                    .addComponent(jpItemButtons, javax.swing.GroupLayout.DEFAULT_SIZE, 136, Short.MAX_VALUE)))
         );
 
         pack();
@@ -442,44 +446,41 @@ public class GUI extends javax.swing.JFrame {
 
     private void butAddItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_butAddItemActionPerformed
 
-
         JPanel panel = new JPanel();
         JTextField referenceField = new JTextField(10);
         JTextField priceField = new JTextField(10);
         JTextArea descriptionField = new JTextArea(10, 30);
-        
+
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        
+
         panel.add(new JLabel("Reference"));
         panel.add(referenceField);
        // panel.add(Box.createHorizontalStrut(15));
-        
+
         panel.add(new JLabel("Price"));
         panel.add(priceField);
         //panel.add(Box.createVerticalStrut(5));
-        
+
         panel.add(new JLabel("Description"));
         panel.add(descriptionField);
         //panel.add(Box.createHorizontalStrut(15));
-        
- 
-        
+
         int result = JOptionPane.showConfirmDialog(null, panel, "Add a new item",
                 JOptionPane.OK_CANCEL_OPTION);
-        
+
         if (result == JOptionPane.OK_OPTION) {
             int ref = Integer.parseInt(referenceField.getText());
             String description = descriptionField.getText();
             double price = Double.parseDouble(priceField.getText());
-            
+
             ItemNode newItem = new ItemNode(ref, description, price);
-            
+
             currentRepo.addItem(newItem, null);
-            
+
             updateItemList();
-            
-        }else if (result == JOptionPane.CANCEL_OPTION) {
-            
+
+        } else if (result == JOptionPane.CANCEL_OPTION) {
+
         }
 
     }//GEN-LAST:event_butAddItemActionPerformed
@@ -487,16 +488,16 @@ public class GUI extends javax.swing.JFrame {
     private void butDeleteSelectedItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_butDeleteSelectedItemActionPerformed
         ItemNode toRemove = (ItemNode) listItems.getSelectedValue();
         ArrayList<Node> arr = new ArrayList<>();
-        if (toRemove != null) {    
+        if (toRemove != null) {
             repositries.getNodesAsArrayList(arr, repositries.getRoot());
         }
-        
+
         for (Node r : arr) {
             RepoNode repo = (RepoNode) r;
             System.out.println("Deleted Item from " + repo.getName());
             repo.removeItem(toRemove.getReference());
         }
-        
+
         updateItemList();
         updateSetList();
     }//GEN-LAST:event_butDeleteSelectedItemActionPerformed
