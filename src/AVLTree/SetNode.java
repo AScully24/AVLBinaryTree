@@ -24,7 +24,6 @@ public class SetNode extends ItemNode {
 
     public void addToItemRefs(ItemNode node) {
         items.add(node);
-        node.addToRelatedSet(this);
         itemCount++;
     }
 
@@ -65,7 +64,8 @@ public class SetNode extends ItemNode {
     public boolean removeItemRef(ItemNode node) {
         int inc = 0;
         for (ItemNode i : items) {
-            if (i == node) {
+            if (i.getReference() == node.getReference()) {
+                items.get(inc).removeFromRelatedSet(this);
                 items.remove(inc);
                 return true;
             }

@@ -151,6 +151,7 @@ public class GUI extends javax.swing.JFrame {
                 ItemNode temp = newRepo.findItem(ref);
                 if (temp != null) {
                     newSet.addToItemRefs(temp);
+                    temp.addToRelatedSet(newSet);
                 }
             }
             newRepo.addSet(newSet);
@@ -158,7 +159,7 @@ public class GUI extends javax.swing.JFrame {
         sc.close();
 
         currentSet = (SetNode) newRepo.getSets().getRoot();
-        //repositries.addNode(newRepo);
+        repositries.addNode(repositries.getRoot(),newRepo);
 
     }
 
@@ -599,12 +600,14 @@ public class GUI extends javax.swing.JFrame {
 
             for (Node r : allRepos) {
                 RepoNode repo = (RepoNode) r;
+                if (repo.removeItem(toRemove.getReference())) {
+                    repoList += repo.getName() + "\n";
+                }
                 repo.findSimilarItems(toRemove.getDescription(), similarItems);
-//                if (repo.removeItem(toRemove.getReference())) {
-//                    repoList += repo.getName() + "\n";
-//                }
             }
-
+            
+            
+            
             JOptionPane.showMessageDialog(null, "Item removed from: \n" + repoList, "Item Removed", JOptionPane.PLAIN_MESSAGE);
 
             // Lets the user choose a new item to add to the set.
@@ -621,8 +624,9 @@ public class GUI extends javax.swing.JFrame {
 
             if (result == JOptionPane.OK_OPTION) {
                 ItemNode i = (ItemNode) listReplacements.getSelectedValue();
+                i.addToRelatedSet(currentSet);
                 currentSet.addToItemRefs(i);
-
+                
             } else if (result == JOptionPane.CANCEL_OPTION) {
 
             }

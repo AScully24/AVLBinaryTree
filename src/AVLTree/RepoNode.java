@@ -26,19 +26,30 @@ public class RepoNode extends Node {
      * @return True when item is added, false if it is a duplicate.
      */
     public boolean addItem(ItemNode node, SetNode sNode) {
-        if (items.addNode(items.getRoot(),node) == null) {
-            return false;
-        }
 
-        if (sNode != null) {
-            node.addToRelatedSet(sNode);
-            sNode.addToItemRefs(node);
+        if (!items.itemExists(node.getReference())) {
+            if (items.addNode(items.getRoot(), node) == null) {
+                return false;
+            }
+
+            if (sNode != null) {
+                node.addToRelatedSet(sNode);
+                sNode.addToItemRefs(node);
+            }
+            return true;
         }
-        return true;
+        return false;
+
     }
 
-    public void addSet(SetNode node) {
-        sets.addNode(sets.getRoot(),node);
+    public boolean addSet(SetNode node) {
+        if (!sets.itemExists(node.getReference())) {
+            sets.addNode(sets.getRoot(), node);
+            return true;
+        } 
+        
+        return false;
+        
     }
 
     @Override
@@ -73,13 +84,14 @@ public class RepoNode extends Node {
         if (toRemove == null) {
             return false;
         }
-        
+
         ArrayList<SetNode> relatedSets = toRemove.getRelatedSets();
 
         for (SetNode n : relatedSets) {
             n.removeItemRef(toRemove);
         }
-        items.removeNode(ref);
+        
+        items.removeNode(items.getRoot(), ref);
 
         return true;
     }
@@ -100,10 +112,10 @@ public class RepoNode extends Node {
 
         ArrayList<ItemNode> itemsToRemove = toRemove.getItemRefs();
         for (ItemNode i : itemsToRemove) {
-            items.removeNode(i.getReference());
+            items.removeNode(items.getRoot(), i.getReference());
         }
 
-        sets.removeNode(ref);
+        sets.removeNode(sets.getRoot(), ref);
         return true;
     }
 
@@ -116,19 +128,18 @@ public class RepoNode extends Node {
     public void findSimilarItems(final String description, ArrayList<Node> itemArr) {
         ArrayList<Node> loopArr = new ArrayList<>();
         items.getNodesAsArrayList(loopArr, items.getRoot());
-        String newDescription = description.substring(5, description.length()-5);
-                
+        String newDescription = description.substring(5, description.length() - 5);
+
         Collections.sort(loopArr, new Comparator<Node>() {
             @Override
             public int compare(Node o1, Node o2) {
                 return ((ItemNode) o1).getDescription().compareTo(((ItemNode) o2).getDescription());
             }
         });
-        
+
         for (Node na : loopArr) {
             ItemNode n = (ItemNode) na;
             boolean difference = n.getDescription().contains(newDescription);
-            System.out.printf("%b ------ %s ----- %s\n",difference,newDescription,n.getDescription());
             if (difference) {
                 itemArr.add(n);
             }

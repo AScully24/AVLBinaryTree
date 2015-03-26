@@ -33,14 +33,21 @@ public class CommandGUI {
     
     private static void testData() {
         ArrayList<Integer> test = new ArrayList<>();
+        Random r = new Random();
+        tree = new Tree();
+        
         test.add(56);
         test.add(99);
         test.add(68);
         test.add(10);
         test.add(23);
+        test.add(100);
+//        test.add(r.nextInt(100));
+//        test.add(r.nextInt(100));
+//        test.add(r.nextInt(100));
+//        test.add(r.nextInt(100));
         
-        Random r = new Random();
-        tree = new Tree();
+        
         for (int i = 0; i < 30; i++) {
             
             int adding = r.nextInt(100);
@@ -55,12 +62,14 @@ public class CommandGUI {
             } catch (InterruptedException ex) {
                 Logger.getLogger(CommandGUI.class.getName()).log(Level.SEVERE, null, ex);
             }
+            //tree.printTreeStructure();
         }
-//        int check = 0;
-//        for (Integer i : test) {
-//            tree.addNode(tree.getRoot(), new Node(i));
-//            //ree.printTreeStructure();
-//        }
+        tree.printTreeStructure();
+
+        for (int i = 0; i < 15; i++) {
+            tree.removeNode(tree.getRoot(), tree.getRoot().getReference());
+            tree.printTreeStructure();
+        }
         
         tree.printTreeStructure();
         
@@ -108,21 +117,21 @@ public class CommandGUI {
 //        tree.removeNode(ref);
 //        tree.printTreeStructure();
 //
-        for (int i = 0; i < 18; i++) {
-            try {
-                sleep(10);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(CommandGUI.class.getName()).log(Level.SEVERE, null, ex);
-            }
-
-               tree.printTreeStructure();
-            ref = tree.getRoot().getLeftNode().getReference();
-            //ref = tree.findHighestNode(tree.getRoot().getRightNode()).getReference();
-
-            tree.removeNode(ref);
-
-        }
-        tree.printTreeStructure();
+//        for (int i = 0; i < 18; i++) {
+//            try {
+//                sleep(10);
+//            } catch (InterruptedException ex) {
+//                Logger.getLogger(CommandGUI.class.getName()).log(Level.SEVERE, null, ex);
+//            }
+//
+//               tree.printTreeStructure();
+//            ref = tree.getRoot().getLeftNode().getReference();
+//            //ref = tree.findHighestNode(tree.getRoot().getRightNode()).getReference();
+//
+//            tree.removeNode(ref);
+//
+//        }
+//        tree.printTreeStructure();
 
     }
 

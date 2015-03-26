@@ -1,0 +1,342 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ClassDiagram name="Reverse engineered DADSA 2015.03.26 03-47-35-272">
+  <ClassDiagramComponents>
+    <Class xPosition="438.0" yPosition="814.0" package="AVLTree" name="ItemNode" visibility="public">
+      <Constructors>
+        <Constructor name="ItemNode" visibility="public">
+          <Argument type="int" name="reference"/>
+          <Argument type="String" name="description"/>
+          <Argument type="double" name="price"/>
+        </Constructor>
+      </Constructors>
+      <Fields>
+        <Field name="description" visibility="protected" type="String"/>
+        <Field name="price" visibility="protected" type="double"/>
+        <Field name="relatedSets" visibility="private" type="ArrayList&lt;SetNode&gt;"/>
+      </Fields>
+      <Methods>
+        <Method name="addToRelatedSet" visibility="public" returnType="void">
+          <Argument type="SetNode" name="node"/>
+        </Method>
+        <Method name="removeFromRelatedSet" visibility="public" returnType="void">
+          <Argument type="SetNode" name="node"/>
+        </Method>
+        <Method name="getRelatedSets" visibility="public" returnType="ArrayList&lt;SetNode&gt;"/>
+        <Method name="getNodeData" visibility="public" returnType="ArrayList&lt;Object&gt;"/>
+        <Method name="setNodeData" visibility="public" returnType="void">
+          <Argument type="ArrayList&lt;Object&gt;" name="arr"/>
+        </Method>
+        <Method name="getDescription" visibility="public" returnType="String"/>
+        <Method name="setDescription" visibility="public" returnType="void">
+          <Argument type="String" name="desciption"/>
+        </Method>
+        <Method name="getPrice" visibility="public" returnType="double"/>
+        <Method name="setPrice" visibility="public" returnType="void">
+          <Argument type="double" name="price"/>
+        </Method>
+        <Method name="toString" visibility="public" returnType="String"/>
+      </Methods>
+    </Class>
+    <Class xPosition="506.0" yPosition="19.0" package="AVLTree" name="Node" visibility="public">
+      <Constructors>
+        <Constructor name="Node" visibility="public">
+          <Argument type="int" name="reference"/>
+        </Constructor>
+      </Constructors>
+      <Fields>
+        <Field name="reference" visibility="protected" type="int"/>
+        <Field name="leftNode" visibility="private" type="Node"/>
+        <Field name="rightNode" visibility="private" type="Node"/>
+        <Field name="parentNode" visibility="private" type="Node"/>
+        <Field name="height" visibility="private" type="int"/>
+      </Fields>
+      <Methods>
+        <Method name="isLeftNode" visibility="public" returnType="boolean"/>
+        <Method name="isRightNode" visibility="public" returnType="boolean"/>
+        <Method name="getParentNode" visibility="public" returnType="Node"/>
+        <Method name="setParentNode" visibility="public" returnType="void">
+          <Argument type="Node" name="parentNode"/>
+        </Method>
+        <Method name="getLeftNode" visibility="public" returnType="Node"/>
+        <Method name="getRightNode" visibility="public" returnType="Node"/>
+        <Method name="setLeftNode" visibility="public" returnType="void">
+          <Argument type="Node" name="leftNode"/>
+        </Method>
+        <Method name="setRightNode" visibility="public" returnType="void">
+          <Argument type="Node" name="rightNode"/>
+        </Method>
+        <Method name="getReference" visibility="public" returnType="int"/>
+        <Method name="setReference" visibility="public" returnType="void">
+          <Argument type="int" name="reference"/>
+        </Method>
+        <Method name="getChildren" visibility="public" returnType="ArrayList&lt;Node&gt;"/>
+        <Method name="setChildren" visibility="public" returnType="void">
+          <Argument type="ArrayList&lt;Node&gt;" name="newChildren"/>
+        </Method>
+        <Method name="getChildCount" visibility="public" returnType="int"/>
+        <Method name="getChildrenString" visibility="public" returnType="String"/>
+        <Method name="setNodeData" visibility="public" returnType="void">
+          <Argument type="ArrayList&lt;Object&gt;" name="arr"/>
+        </Method>
+        <Method name="getNodeData" visibility="public" returnType="ArrayList&lt;Object&gt;"/>
+        <Method name="getOnlyChild" visibility="public" returnType="Node"/>
+        <Method name="getHeight" visibility="public" returnType="int"/>
+        <Method name="setHeight" visibility="public" returnType="void">
+          <Argument type="int" name="height"/>
+        </Method>
+        <Method name="isChild" visibility="public" returnType="boolean">
+          <Argument type="Node" name="node"/>
+        </Method>
+        <Method name="printTree" visibility="public" returnType="void">
+          <Argument type="OutputStreamWriter" name="out"/>
+        </Method>
+        <Method name="printNodeValue" visibility="protected" returnType="void">
+          <Argument type="OutputStreamWriter" name="out"/>
+        </Method>
+        <Method name="printTree" visibility="protected" returnType="void">
+          <Argument type="OutputStreamWriter" name="out"/>
+          <Argument type="boolean" name="isRight"/>
+          <Argument type="String" name="indent"/>
+        </Method>
+        <Method name="toString" visibility="public" returnType="String"/>
+        <Method name="compareTo" visibility="public" returnType="int">
+          <Argument type="Node" name="o"/>
+        </Method>
+      </Methods>
+    </Class>
+    <Class xPosition="22.0" yPosition="49.0" package="AVLTree" name="RepoNode" visibility="public">
+      <Constructors>
+        <Constructor name="RepoNode" visibility="public">
+          <Argument type="int" name="reference"/>
+          <Argument type="String" name="name"/>
+        </Constructor>
+      </Constructors>
+      <Fields>
+        <Field name="sets" visibility="package" type="Tree"/>
+        <Field name="items" visibility="package" type="Tree"/>
+        <Field name="name" visibility="package" type="String"/>
+      </Fields>
+      <Methods>
+        <Method name="addItem" visibility="public" returnType="boolean">
+          <Argument type="ItemNode" name="node"/>
+          <Argument type="SetNode" name="sNode"/>
+        </Method>
+        <Method name="addSet" visibility="public" returnType="boolean">
+          <Argument type="SetNode" name="node"/>
+        </Method>
+        <Method name="getNodeData" visibility="public" returnType="ArrayList&lt;Object&gt;"/>
+        <Method name="setNodeData" visibility="public" returnType="void">
+          <Argument type="ArrayList&lt;Object&gt;" name="arr"/>
+        </Method>
+        <Method name="removeItem" visibility="public" returnType="boolean">
+          <Argument type="int" name="ref"/>
+        </Method>
+        <Method name="removeSet" visibility="public" returnType="boolean">
+          <Argument type="int" name="ref"/>
+        </Method>
+        <Method name="findSimilarItems" visibility="public" returnType="void">
+          <Argument type="String" name="description"/>
+          <Argument type="ArrayList&lt;Node&gt;" name="itemArr"/>
+        </Method>
+        <Method name="findItem" visibility="public" returnType="ItemNode">
+          <Argument type="int" name="ref"/>
+        </Method>
+        <Method name="printSetsTree" visibility="public" returnType="void"/>
+        <Method name="printItemsTree" visibility="public" returnType="void"/>
+        <Method name="toString" visibility="public" returnType="String"/>
+        <Method name="getSets" visibility="public" returnType="Tree"/>
+        <Method name="getItems" visibility="public" returnType="Tree"/>
+        <Method name="getName" visibility="public" returnType="String"/>
+      </Methods>
+    </Class>
+    <Class xPosition="51.0" yPosition="593.0" package="AVLTree" name="SetNode" visibility="public">
+      <Constructors>
+        <Constructor name="SetNode" visibility="public">
+          <Argument type="int" name="reference"/>
+          <Argument type="String" name="description"/>
+          <Argument type="double" name="price"/>
+        </Constructor>
+      </Constructors>
+      <Fields>
+        <Field name="itemCount" visibility="private" type="int"/>
+        <Field name="items" visibility="private" type="ArrayList&lt;ItemNode&gt;"/>
+      </Fields>
+      <Methods>
+        <Method name="getItemByRef" visibility="public" returnType="ItemNode">
+          <Argument type="ItemNode" name="node"/>
+        </Method>
+        <Method name="addToItemRefs" visibility="public" returnType="void">
+          <Argument type="ItemNode" name="node"/>
+        </Method>
+        <Method name="getNodeData" visibility="public" returnType="ArrayList&lt;Object&gt;"/>
+        <Method name="setNodeData" visibility="public" returnType="void">
+          <Argument type="ArrayList&lt;Object&gt;" name="arr"/>
+        </Method>
+        <Method name="getItemCount" visibility="public" returnType="int"/>
+        <Method name="setItemCount" visibility="public" returnType="void">
+          <Argument type="int" name="itemCount"/>
+        </Method>
+        <Method name="getItemRefs" visibility="public" returnType="ArrayList&lt;ItemNode&gt;"/>
+        <Method name="setItemRefs" visibility="public" returnType="void">
+          <Argument type="ArrayList&lt;ItemNode&gt;" name="itemRefs"/>
+        </Method>
+        <Method name="removeItemRef" visibility="public" returnType="boolean">
+          <Argument type="ItemNode" name="node"/>
+        </Method>
+        <Method name="toString" visibility="public" returnType="String"/>
+      </Methods>
+    </Class>
+    <Class xPosition="1025.0" yPosition="19.0" package="AVLTree" name="Tree" visibility="public">
+      <Constructors>
+        <Constructor name="Tree" visibility="public"/>
+        <Constructor name="Tree" visibility="public">
+          <Argument type="Node" name="root"/>
+        </Constructor>
+      </Constructors>
+      <Fields>
+        <Field name="UNBALANCED_RIGHT" visibility="private" type="int" isStatic="true" isFinal="true"/>
+        <Field name="UNBALANCED_LEFT" visibility="private" type="int" isStatic="true" isFinal="true"/>
+        <Field name="nodeCount" visibility="private" type="int"/>
+        <Field name="root" visibility="private" type="Node"/>
+      </Fields>
+      <Methods>
+        <Method name="addNode" visibility="public" returnType="Node">
+          <Argument type="Node" name="node"/>
+          <Argument type="Node" name="newNode"/>
+        </Method>
+        <Method name="refreshNodeHeight" visibility="public" returnType="void">
+          <Argument type="Node" name="node"/>
+        </Method>
+        <Method name="getXandY" visibility="private" returnType="ArrayList&lt;Node&gt;">
+          <Argument type="Node" name="node"/>
+        </Method>
+        <Method name="rotationCase" visibility="public" returnType="int">
+          <Argument type="ArrayList&lt;Node&gt;" name="arr"/>
+          <Argument type="int" name="balance"/>
+        </Method>
+        <Method name="rotateNodeLeft" visibility="private" returnType="Node">
+          <Argument type="Node" name="x"/>
+        </Method>
+        <Method name="rotateNodeRight" visibility="private" returnType="Node">
+          <Argument type="Node" name="y"/>
+        </Method>
+        <Method name="checkBalance" visibility="private" returnType="int">
+          <Argument type="Node" name="node"/>
+        </Method>
+        <Method name="replaceNode" visibility="private" returnType="void">
+          <Argument type="Node" name="node"/>
+          <Argument type="Node" name="toSwap"/>
+        </Method>
+        <Method name="removeNode" visibility="public" returnType="Node">
+          <Argument type="Node" name="rootNode"/>
+          <Argument type="int" name="reference"/>
+        </Method>
+        <Method name="findHighestNode" visibility="public" returnType="Node">
+          <Argument type="Node" name="node"/>
+        </Method>
+        <Method name="findLowestNode" visibility="public" returnType="Node">
+          <Argument type="Node" name="node"/>
+        </Method>
+        <Method name="itemExists" visibility="public" returnType="boolean">
+          <Argument type="int" name="reference"/>
+        </Method>
+        <Method name="findNode" visibility="public" returnType="Node">
+          <Argument type="int" name="reference"/>
+          <Argument type="Node" name="node"/>
+        </Method>
+        <Method name="printTreeNodes" visibility="public" returnType="void">
+          <Argument type="Node" name="node"/>
+        </Method>
+        <Method name="printTreeStructure" visibility="public" returnType="void"/>
+        <Method name="getNodeCount" visibility="public" returnType="int"/>
+        <Method name="getRoot" visibility="public" returnType="Node"/>
+        <Method name="getNodesAsArrayList" visibility="public" returnType="void">
+          <Argument type="ArrayList&lt;Node&gt;" name="arr"/>
+          <Argument type="Node" name="node"/>
+        </Method>
+      </Methods>
+    </Class>
+    <Class xPosition="1428.0" yPosition="37.0" package="" name="GUI" visibility="public">
+      <Constructors>
+        <Constructor name="GUI" visibility="public"/>
+      </Constructors>
+      <Fields>
+        <Field name="repositries" visibility="private" type="Tree"/>
+        <Field name="currentRepo" visibility="private" type="RepoNode"/>
+        <Field name="currentSet" visibility="private" type="SetNode"/>
+        <Field name="butAddItem" visibility="private" type="javax.swing.JButton"/>
+        <Field name="butAddItemToSet" visibility="private" type="javax.swing.JButton"/>
+        <Field name="butDeleteSelectedItem" visibility="private" type="javax.swing.JButton"/>
+        <Field name="butDeleteSet" visibility="private" type="javax.swing.JButton"/>
+        <Field name="butFindItem" visibility="private" type="javax.swing.JButton"/>
+        <Field name="butRemoveItemFromSet" visibility="private" type="javax.swing.JButton"/>
+        <Field name="jScrollPane1" visibility="private" type="javax.swing.JScrollPane"/>
+        <Field name="jScrollPane2" visibility="private" type="javax.swing.JScrollPane"/>
+        <Field name="jcRepositories" visibility="private" type="javax.swing.JComboBox"/>
+        <Field name="jcSets" visibility="private" type="javax.swing.JComboBox"/>
+        <Field name="jlItems" visibility="private" type="javax.swing.JLabel"/>
+        <Field name="jlReposiroties" visibility="private" type="javax.swing.JLabel"/>
+        <Field name="jlSets" visibility="private" type="javax.swing.JLabel"/>
+        <Field name="jpItemButtons" visibility="private" type="javax.swing.JPanel"/>
+        <Field name="jpItems" visibility="private" type="javax.swing.JPanel"/>
+        <Field name="jpRepositories" visibility="private" type="javax.swing.JPanel"/>
+        <Field name="jpSetButtons" visibility="private" type="javax.swing.JPanel"/>
+        <Field name="jpSets" visibility="private" type="javax.swing.JPanel"/>
+        <Field name="listItems" visibility="private" type="javax.swing.JList"/>
+        <Field name="listSetItems" visibility="private" type="javax.swing.JList"/>
+      </Fields>
+      <Methods>
+        <Method name="updateSetList" visibility="private" returnType="void"/>
+        <Method name="updateSetComboBox" visibility="private" returnType="void"/>
+        <Method name="updateItemList" visibility="private" returnType="void"/>
+        <Method name="loadDefaultRep" visibility="private" returnType="void"/>
+        <Method name="updateRepositoryComboBox" visibility="private" returnType="void"/>
+        <Method name="addRepository" visibility="private" returnType="void">
+          <Argument type="String" name="location"/>
+        </Method>
+        <Method name="initComponents" visibility="private" returnType="void"/>
+        <Method name="butAddItemActionPerformed" visibility="private" returnType="void">
+          <Argument type="java.awt.event.ActionEvent" name="evt"/>
+        </Method>
+        <Method name="butDeleteSelectedItemActionPerformed" visibility="private" returnType="void">
+          <Argument type="java.awt.event.ActionEvent" name="evt"/>
+        </Method>
+        <Method name="butFindItemActionPerformed" visibility="private" returnType="void">
+          <Argument type="java.awt.event.ActionEvent" name="evt"/>
+        </Method>
+        <Method name="butAddItemToSetActionPerformed" visibility="private" returnType="void">
+          <Argument type="java.awt.event.ActionEvent" name="evt"/>
+        </Method>
+        <Method name="butRemoveItemFromSetActionPerformed" visibility="private" returnType="void">
+          <Argument type="java.awt.event.ActionEvent" name="evt"/>
+        </Method>
+        <Method name="butDeleteSetActionPerformed" visibility="private" returnType="void">
+          <Argument type="java.awt.event.ActionEvent" name="evt"/>
+        </Method>
+        <Method name="jcSetsActionPerformed" visibility="private" returnType="void">
+          <Argument type="java.awt.event.ActionEvent" name="evt"/>
+        </Method>
+        <Method name="jcRepositoriesActionPerformed" visibility="private" returnType="void">
+          <Argument type="java.awt.event.ActionEvent" name="evt"/>
+        </Method>
+        <Method name="main" visibility="public" returnType="void" isStatic="true">
+          <Argument type="String" name="args"/>
+        </Method>
+      </Methods>
+    </Class>
+  </ClassDiagramComponents>
+  <ClassDiagramRelations>
+    <UseRelation source="SetNode" target="Node" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <IsRelation name="is" source="RepoNode" target="Node"/>
+    <UseRelation source="RepoNode" target="Node" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="repositries" source="GUI" target="Tree" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <IsRelation name="is" source="ItemNode" target="Node"/>
+    <UseRelation source="Tree" target="Node" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="rightNode" source="Node" target="Node" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="parentNode" source="Node" target="Node" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <UseRelation source="Node" target="Node" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="root" source="Tree" target="Node" sourceCardinality="1..1" targetCardinality="1..1"/>
+    <HasRelation name="items" source="SetNode" target="Node" sourceCardinality="1..1" targetCardinality="0..*" collectionType="List"/>
+  </ClassDiagramRelations>
+</ClassDiagram>
