@@ -1,6 +1,5 @@
 package AVLTree;
 
-
 import java.util.ArrayList;
 
 public class SetNode extends ItemNode {
@@ -14,19 +13,31 @@ public class SetNode extends ItemNode {
         items = new ArrayList<>();
     }
 
-    public ItemNode getItemByRef(ItemNode node) {
+    /**
+     * Searches a sets item list for a particular item.
+     * @param ref The reference to be searched for
+     * @return The desired item, otherwise null.
+     */
+    public ItemNode getItemByRef(int ref) {
         for (ItemNode i : items) {
-            if (i == node)
-                return node;
+            if (i.getReference() == ref)
+                return i;
         }
         return null;
     }
 
-    public void addToItemRefs(ItemNode node) {
-        items.add(node);
-        itemCount++;
+    /**
+     * Adds a new item to the Sets item list.
+     * @param node The ItemNode to be added.
+     */
+    public boolean addToItemRefs(ItemNode node) {
+        if (!items.contains(node)) {
+            items.add(node);
+            itemCount++;
+            return true;
+        }
+        return false;
     }
-
 
     @Override
     public ArrayList<Object> getNodeData() {
@@ -38,13 +49,12 @@ public class SetNode extends ItemNode {
 
     @Override
     public void setNodeData(ArrayList<Object> arr) {
-        super.setNodeData(arr); //To change body of generated methods, choose Tools | Templates.
+        super.setNodeData(arr);
         itemCount = (int) arr.get(4);
         items = (ArrayList<ItemNode>) arr.get(5);
-        
+
     }
-    
-    
+
     public int getItemCount() {
         return itemCount;
     }
@@ -61,11 +71,15 @@ public class SetNode extends ItemNode {
         this.items = itemRefs;
     }
 
-    public boolean removeItemRef(ItemNode node) {
+    /**
+     * Deletes an item in the Set item list.
+     * @param ref the desired item reference number
+     * @return True if found and deleted, otherwise false.
+     */
+    public boolean removeItemRef(int ref) {
         int inc = 0;
         for (ItemNode i : items) {
-            if (i.getReference() == node.getReference()) {
-                items.get(inc).removeFromRelatedSet(this);
+            if (i.getReference() == ref) {
                 items.remove(inc);
                 return true;
             }

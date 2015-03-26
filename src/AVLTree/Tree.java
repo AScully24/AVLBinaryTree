@@ -6,8 +6,6 @@ import java.util.ArrayList;
 
 public class Tree {
 
-    private static final int UNBALANCED_RIGHT = 1;
-    private static final int UNBALANCED_LEFT = -1;
     private int nodeCount;
     private Node root;
 
@@ -18,7 +16,31 @@ public class Tree {
         this.root = root;
     }
 
+    /**
+     * Used to increment the nodecount (not possible with the recursive method).
+     *
+     * @param node Node to begin search, usually root
+     * @param newNode The new node to be added to the tree
+     * @return The new node.
+     */
     public Node addNode(Node node, Node newNode) {
+        Node result = addNodeRecursion(node, newNode);
+
+        if (result != null) {
+            nodeCount++;
+        }
+
+        return result;
+    }
+
+    /**
+     * Adds a new node to the AVL tree, and also re-balances the tree.
+     *
+     * @param node Node to begin search, usually root
+     * @param newNode The new node to be added to the tree
+     * @return The new node.
+     */
+    public Node addNodeRecursion(Node node, Node newNode) {
 
         if (root == null) {
             root = newNode;
@@ -67,9 +89,15 @@ public class Tree {
 
 
         /* return the (unchanged) node  */
+        nodeCount++;
         return node;
     }
 
+    /**
+     * Sets the height of a node depending on its children
+     *
+     * @param node The node to refresh.
+     */
     public void refreshNodeHeight(Node node) {
         int childCount = node.getChildCount();
         if (childCount == 0)
@@ -82,40 +110,12 @@ public class Tree {
         }
     }
 
-    private ArrayList<Node> getXandY(Node node) {
-        Node temp = node;
-        ArrayList<Node> arr = new ArrayList<>();
-        int tempBalance = 0;
-        for (int i = 0; i < 3; i++) {
-            arr.add(temp);
-            tempBalance = checkBalance(temp);
-            if (tempBalance == UNBALANCED_LEFT) {
-                temp = temp.getLeftNode();
-            } else temp = temp.getRightNode();
-
-        }
-        return arr;
-    }
-
-    public int rotationCase(ArrayList<Node> arr, int balance) {
-        Node x = (Node) arr.get(0), y = (Node) arr.get(1);
-        if (balance == UNBALANCED_LEFT) {
-            if (y == x.getLeftNode())
-                return 1;
-
-            if (y == x.getRightNode())
-                return 2;
-        }
-        if (balance == UNBALANCED_RIGHT) {
-            if (y == x.getRightNode())
-                return 1;
-            if (y == x.getLeftNode())
-                return 2;
-        }
-
-        return 0;
-    }
-
+    /**
+     * Rotates a node and its children right.
+     *
+     * @param x The node to be rotated
+     * @return The new sub tree root
+     */
     private Node rotateNodeLeft(Node x) {
         Node y = x.getRightNode();
         Node a = x.getLeftNode(), b = y.getLeftNode(), c = y.getRightNode();
@@ -123,12 +123,6 @@ public class Tree {
 
         if (x == root)
             root = y;
-//        else {
-//            if (x.isLeftNode()) {
-//                masterParent.setLeftNode(y);
-//            } else
-//                masterParent.setRightNode(y);
-//        }
 
         y.setParentNode(x.getParentNode());
         y.setLeftNode(x);
@@ -151,18 +145,18 @@ public class Tree {
         return y;
     }
 
+    /**
+     * Rotates a node and its children right.
+     *
+     * @param y The node to be rotated
+     * @return The new sub tree root
+     */
     private Node rotateNodeRight(Node y) {
         Node x = y.getLeftNode();
         Node a = x.getLeftNode(), b = x.getRightNode(), c = y.getRightNode();
         Node masterParent = y.getParentNode();
         if (y == root)
             root = x;
-//        else {
-//            if (masterParent.getLeftNode() == y) {
-//                masterParent.setLeftNode(x);
-//            } else
-//                masterParent.setRightNode(x);
-//        }
 
         x.setParentNode(y.getParentNode());
         x.setRightNode(y);
@@ -185,6 +179,13 @@ public class Tree {
         return x;
     }
 
+    /**
+     * Checks the children of a node to see if it is unbalanced.
+     *
+     * @param node The node to check the balances of
+     * @return The balance of a node (negative if left, positive if right, 0 if
+     * balanced)
+     */
     private int checkBalance(Node node) {
         int leftHeight, rightHeight;
         if (node == null)
@@ -201,57 +202,57 @@ public class Tree {
             rightHeight = node.getRightNode().getHeight();
 
         return leftHeight - rightHeight;
-//        int balance = leftHeight - rightHeight;
-//        if (balance > 1)
-//            return -1;
-//        else if (balance < -1)
-//            return 1;
-//        else
-//            return 0;
     }
 
-    private void replaceNode(Node node, Node toSwap) {
-
-        if (node == toSwap) {
-            System.out.println("Cannot replace node");
-            return;
-        }
-
-        if (node.isLeftNode()) {
-            node.getParentNode().setLeftNode(toSwap);
-        } else // if (node.isRightNode())// {
-            node.getParentNode().setRightNode(toSwap);
-//        }
-
-        if (toSwap != null) {
-            toSwap.setParentNode(node.getParentNode());
-        }
-//        node.setParentNode(null);
-//        node.setLeftNode(null);
-//        node.setRightNode(null);
-    }
-
+    /**
+     * Used to increment the nodecount (not possible with the recursive method).
+     *
+     * @param rootNode The node to start the search (Usually the root node)
+     * @param reference The reference of the node to be deleted.
+     * @return null
+     */
     public Node removeNode(Node rootNode, int reference) {
+        Node result = removeNodeRecursion(rootNode, reference);
+        if (result == null) {
+            nodeCount--;
+        }
+        return result;
+    }
 
+    /**
+     * Removes a node from a tree, and re-balances the tree recursively.
+     *
+     * @param rootNode The node to start the search (Usually the root node)
+     * @param reference The reference of the node to be deleted.
+     * @return null
+     */
+    public Node removeNodeRecursion(Node rootNode, int reference) {
+        if (root != null) {
+            if (root.getReference() == reference) {
+                root = null;
+                return null;
+            }
+        }
         // STEP 1: PERFORM STANDARD BST DELETE
         if (rootNode == null)
             return rootNode;
 
-        // If the key to be deleted is smaller than the root's key,
+        // If the reference to be deleted is smaller than the root's reference,
         // then it lies in left subtree
-        if (reference < rootNode.getReference())
+        else if (reference < rootNode.getReference())
             rootNode.setLeftNode(removeNode(rootNode.getLeftNode(), reference));
 
-        // If the key to be deleted is greater than the root's key,
+        // If the reference to be deleted is greater than the root's reference,
         // then it lies in right subtree
         else if (reference > rootNode.getReference())
             rootNode.setRightNode(removeNode(rootNode.getRightNode(), reference));
 
-        // if key is same as root's key, then This is the node
+        // if reference is same as root's reference, then This is the node
         // to be deleted
         else {
             // node with only one child or no child
             int childCount = rootNode.getChildCount();
+
             if (childCount == 0 || childCount == 1) {
 
                 Node temp = rootNode.getOnlyChild();
@@ -308,10 +309,15 @@ public class Tree {
             rootNode.setRightNode(rotateNodeRight(rootNode.getRightNode()));
             return rotateNodeLeft(rootNode);
         }
-
         return rootNode;
     }
 
+    /**
+     * Finds the highest node within a tree or subtree
+     *
+     * @param node The node to start the search in
+     * @return The highest node in that tree.
+     */
     public Node findHighestNode(Node node) {
         if (node.getRightNode() != null) {
             return findHighestNode(node.getRightNode());
@@ -320,6 +326,12 @@ public class Tree {
         }
     }
 
+    /**
+     * Finds the lowest node within a tree or subtree
+     *
+     * @param node The node to start the search in
+     * @return The lowest node in that tree.
+     */
     public Node findLowestNode(Node node) {
         if (node.getLeftNode() != null) {
             return findLowestNode(node.getLeftNode());
@@ -328,10 +340,21 @@ public class Tree {
         }
     }
 
-    public boolean itemExists(int reference) {
+    /**
+     *
+     * @param reference The reference to check
+     * @return True if the node is found, false if it isn't.
+     */
+    public boolean nodeExists(int reference) {
         return findNode(reference, root) != null;
     }
 
+    /**
+     *
+     * @param reference The reference of the desired node.
+     * @param node The starting node to begin the search (usually the root)
+     * @return The desired node, otherwise null
+     */
     public Node findNode(int reference, Node node) {
         if (root == null) {
             return null;
@@ -354,7 +377,12 @@ public class Tree {
         return null;
     }
 
-    public void printTreeNodes(Node node) {
+    /**
+     * Prints the node in left order.
+     *
+     * @param node The node to begin the print (Usually root)
+     */
+    protected void printTreeNodes(Node node) {
         if (root == null) {
             System.out.println("Tree is empty.");
             return;
@@ -368,6 +396,9 @@ public class Tree {
         }
     }
 
+    /**
+     * Prints the tree in a graphical format
+     */
     public void printTreeStructure() {
         OutputStreamWriter output = new OutputStreamWriter(System.out);
         try {
@@ -379,14 +410,28 @@ public class Tree {
         }
     }
 
+    /**
+     *
+     * @return Get the number of nodes within a tree.
+     */
     public int getNodeCount() {
         return nodeCount;
     }
 
+    /**
+     *
+     * @return The root node in the tree.
+     */
     public Node getRoot() {
         return root;
     }
 
+    /**
+     * Adds to arr every node in this tree.
+     *
+     * @param arr The ArrayList to put the tree in to.
+     * @param node The node to start the search (Usually the root)
+     */
     public void getNodesAsArrayList(ArrayList<Node> arr, Node node) {
         if (node != null) {
             arr.add(node);

@@ -4,14 +4,16 @@ import AVLTree.Tree;
 import AVLTree.RepoNode;
 import AVLTree.ItemNode;
 import AVLTree.SetNode;
+import com.sun.media.sound.ModelAbstractChannelMixer;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Formatter;
+import java.util.Iterator;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.BoxLayout;
+import javax.swing.ComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
@@ -52,7 +54,13 @@ public class GUI extends javax.swing.JFrame {
 
     private void updateSetList() {
         currentSet = (SetNode) jcSets.getSelectedItem();
-        if (currentSet != null) {
+
+        if (currentSet == null) {
+            ArrayList<String> setItems = new ArrayList<>();
+            setItems.add("");
+            JList newSetBox = new JList(setItems.toArray());
+            listSetItems.setModel(newSetBox.getModel());
+        } else {
             ArrayList<ItemNode> setItems = currentSet.getItemRefs();
             Collections.sort(setItems);
             JList newSetBox = new JList(setItems.toArray());
@@ -92,28 +100,15 @@ public class GUI extends javax.swing.JFrame {
         jcRepositories.setModel(newComboBox.getModel());
     }
 
-    private void addRepository(String location) {
-        ArrayList<String> items = new ArrayList<>();
-        ArrayList<String> sets = new ArrayList<>();
-
-        RepoNode newRepo = new RepoNode(repositries.getNodeCount() + 1, location);
-
-
+    private void addItemsFromFile(String location, RepoNode newRepo) {
         /*
          * 
          * 
          * Adds the new items.
          */
         Scanner sc = null;
-        System.out.println(location);
-
-        String newLocation = location;
-
-        if (System.getProperty("os.name").toLowerCase().equals("linux")) {
-            newLocation += "//";
-        } else newLocation += "\\";
-
-        sc = new Scanner(GUI.class.getResourceAsStream(newLocation + "items.csv"));
+        ArrayList<String> items = new ArrayList<>();
+        sc = new Scanner(GUI.class.getResourceAsStream(location + "items.csv"));
 
         sc.nextLine();
         while (sc.hasNextLine()) {
@@ -126,13 +121,17 @@ public class GUI extends javax.swing.JFrame {
             newRepo.addItem(newNode, null);
         }
         sc.close();
+    }
 
+    public void addSetsFromFile(String location, RepoNode newRepo) {
         /*
          *
          *
          * Adds new sets 
          */
-        sc = new Scanner(GUI.class.getResourceAsStream(newLocation + "sets.csv"));
+        Scanner sc = null;
+        ArrayList<String> sets = new ArrayList<>();
+        sc = new Scanner(GUI.class.getResourceAsStream(location + "sets.csv"));
         sc.nextLine();
         while (sc.hasNextLine()) {
             sets.add(sc.nextLine());
@@ -151,15 +150,30 @@ public class GUI extends javax.swing.JFrame {
                 ItemNode temp = newRepo.findItem(ref);
                 if (temp != null) {
                     newSet.addToItemRefs(temp);
-                    temp.addToRelatedSet(newSet);
+//                    temp.addToRelatedSet(newSet);
                 }
             }
             newRepo.addSet(newSet);
         }
         sc.close();
 
+    }
+
+    private void addRepository(String location) {
+
+        RepoNode newRepo = new RepoNode(repositries.getNodeCount() + 1, location);
+
+        String newLocation = location;
+
+        if (System.getProperty("os.name").toLowerCase().equals("linux")) {
+            newLocation += "//";
+        } else newLocation += "\\";
+
+        addItemsFromFile(newLocation, newRepo);
+        addSetsFromFile(newLocation, newRepo);
+
         currentSet = (SetNode) newRepo.getSets().getRoot();
-        repositries.addNode(repositries.getRoot(),newRepo);
+        repositries.addNode(repositries.getRoot(), newRepo);
 
     }
 
@@ -175,6 +189,10 @@ public class GUI extends javax.swing.JFrame {
         jpRepositories = new javax.swing.JPanel();
         jcRepositories = new javax.swing.JComboBox();
         jlReposiroties = new javax.swing.JLabel();
+        butAddItemToSet1 = new javax.swing.JButton();
+        butAddItemToSet2 = new javax.swing.JButton();
+        butAddItemToSet3 = new javax.swing.JButton();
+        butAddItemToSet4 = new javax.swing.JButton();
         jpItems = new javax.swing.JPanel();
         jlItems = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
@@ -188,10 +206,12 @@ public class GUI extends javax.swing.JFrame {
         butAddItem = new javax.swing.JButton();
         butDeleteSelectedItem = new javax.swing.JButton();
         butFindItem = new javax.swing.JButton();
+        butFindItem1 = new javax.swing.JButton();
         jpSetButtons = new javax.swing.JPanel();
         butAddItemToSet = new javax.swing.JButton();
         butRemoveItemFromSet = new javax.swing.JButton();
         butDeleteSet = new javax.swing.JButton();
+        butDeleteSet1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setName("mainFrame"); // NOI18N
@@ -210,6 +230,44 @@ public class GUI extends javax.swing.JFrame {
         jlReposiroties.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         jlReposiroties.setText("Repositories");
 
+        butAddItemToSet1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        butAddItemToSet1.setText("Add a Repo");
+        butAddItemToSet1.setToolTipText("");
+        butAddItemToSet1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                butAddItemToSet1ActionPerformed(evt);
+            }
+        });
+
+        butAddItemToSet2.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        butAddItemToSet2.setText("Print Items");
+        butAddItemToSet2.setToolTipText("");
+        butAddItemToSet2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                butAddItemToSet2ActionPerformed(evt);
+            }
+        });
+
+        butAddItemToSet3.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        butAddItemToSet3.setText("Print Sets");
+        butAddItemToSet3.setToolTipText("");
+        butAddItemToSet3.setActionCommand("Print Sets");
+        butAddItemToSet3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                butAddItemToSet3ActionPerformed(evt);
+            }
+        });
+
+        butAddItemToSet4.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        butAddItemToSet4.setText("Print Rep");
+        butAddItemToSet4.setToolTipText("");
+        butAddItemToSet4.setActionCommand("Print Repo");
+        butAddItemToSet4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                butAddItemToSet4ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jpRepositoriesLayout = new javax.swing.GroupLayout(jpRepositories);
         jpRepositories.setLayout(jpRepositoriesLayout);
         jpRepositoriesLayout.setHorizontalGroup(
@@ -219,16 +277,28 @@ public class GUI extends javax.swing.JFrame {
                 .addComponent(jlReposiroties)
                 .addGap(34, 34, 34)
                 .addComponent(jcRepositories, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(1016, Short.MAX_VALUE))
+                .addGap(129, 129, 129)
+                .addComponent(butAddItemToSet1, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(43, 43, 43)
+                .addComponent(butAddItemToSet2, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(butAddItemToSet3, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(butAddItemToSet4, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jpRepositoriesLayout.setVerticalGroup(
             jpRepositoriesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jpRepositoriesLayout.createSequentialGroup()
-                .addGap(25, 25, 25)
+                .addGap(21, 21, 21)
                 .addGroup(jpRepositoriesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jcRepositories, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jlReposiroties))
-                .addContainerGap(14, Short.MAX_VALUE))
+                    .addComponent(jlReposiroties)
+                    .addComponent(butAddItemToSet1, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(butAddItemToSet2, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(butAddItemToSet3, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(butAddItemToSet4, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jpItems.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -297,7 +367,7 @@ public class GUI extends javax.swing.JFrame {
                 .addComponent(jlSets)
                 .addGap(34, 34, 34)
                 .addComponent(jcSets, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(198, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jpSetsLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jScrollPane1)
@@ -344,6 +414,15 @@ public class GUI extends javax.swing.JFrame {
             }
         });
 
+        butFindItem1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        butFindItem1.setText("Add Items From File");
+        butFindItem1.setToolTipText("");
+        butFindItem1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                butFindItem1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jpItemButtonsLayout = new javax.swing.GroupLayout(jpItemButtons);
         jpItemButtons.setLayout(jpItemButtonsLayout);
         jpItemButtonsLayout.setHorizontalGroup(
@@ -351,7 +430,10 @@ public class GUI extends javax.swing.JFrame {
             .addGroup(jpItemButtonsLayout.createSequentialGroup()
                 .addGap(25, 25, 25)
                 .addGroup(jpItemButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(butDeleteSelectedItem)
+                    .addGroup(jpItemButtonsLayout.createSequentialGroup()
+                        .addComponent(butDeleteSelectedItem)
+                        .addGap(18, 18, 18)
+                        .addComponent(butFindItem1, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jpItemButtonsLayout.createSequentialGroup()
                         .addComponent(butAddItem, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
@@ -366,8 +448,10 @@ public class GUI extends javax.swing.JFrame {
                     .addComponent(butAddItem, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(butFindItem, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addComponent(butDeleteSelectedItem, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(jpItemButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(butDeleteSelectedItem, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(butFindItem1, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(13, Short.MAX_VALUE))
         );
 
         jpSetButtons.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -400,6 +484,15 @@ public class GUI extends javax.swing.JFrame {
             }
         });
 
+        butDeleteSet1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        butDeleteSet1.setText("Add Set From File");
+        butDeleteSet1.setToolTipText("");
+        butDeleteSet1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                butDeleteSet1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jpSetButtonsLayout = new javax.swing.GroupLayout(jpSetButtons);
         jpSetButtons.setLayout(jpSetButtonsLayout);
         jpSetButtonsLayout.setHorizontalGroup(
@@ -407,12 +500,15 @@ public class GUI extends javax.swing.JFrame {
             .addGroup(jpSetButtonsLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jpSetButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(butRemoveItemFromSet, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jpSetButtonsLayout.createSequentialGroup()
-                        .addComponent(butAddItemToSet, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(butDeleteSet1, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(butDeleteSet, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(butAddItemToSet, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jpSetButtonsLayout.createSequentialGroup()
+                        .addComponent(butDeleteSet, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(butRemoveItemFromSet, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         jpSetButtonsLayout.setVerticalGroup(
             jpSetButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -420,10 +516,12 @@ public class GUI extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jpSetButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(butAddItemToSet, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(butDeleteSet, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(butDeleteSet1, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(butRemoveItemFromSet, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(jpSetButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(butRemoveItemFromSet, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(butDeleteSet, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(25, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -465,11 +563,19 @@ public class GUI extends javax.swing.JFrame {
     private void butAddItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_butAddItemActionPerformed
 
         JPanel panel = new JPanel();
-        JTextField referenceField = new JTextField(10);
-        JTextField priceField = new JTextField(10);
-        JTextArea descriptionField = new JTextArea(10, 30);
-
+        MaskFormatter refMF = null;
+        MaskFormatter priceMF = null;
+        try {
+            refMF = new MaskFormatter("#####");
+            priceMF = new MaskFormatter("###########");
+        } catch (ParseException ex) {
+            Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        JFormattedTextField referenceField = new JFormattedTextField(refMF);
+        referenceField.setValue("00000");
+        JFormattedTextField priceField = new JFormattedTextField();
+        JTextArea descriptionField = new JTextArea(10, 30);
 
         panel.add(new JLabel("Reference"));
         panel.add(referenceField);
@@ -508,14 +614,12 @@ public class GUI extends javax.swing.JFrame {
 
         if (toRemove != null) {
             ArrayList<Node> arr = new ArrayList<>();
-            if (toRemove != null) {
-                repositries.getNodesAsArrayList(arr, repositries.getRoot());
-            }
-
+            repositries.getNodesAsArrayList(arr, repositries.getRoot());
+            int reference = toRemove.getReference();
             for (Node r : arr) {
                 RepoNode repo = (RepoNode) r;
                 System.out.println("Deleted Item from " + repo.getName());
-                repo.removeItem(toRemove.getReference());
+                repo.removeItem(reference);
             }
 
             updateItemList();
@@ -587,60 +691,114 @@ public class GUI extends javax.swing.JFrame {
     }//GEN-LAST:event_butFindItemActionPerformed
 
     private void butAddItemToSetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_butAddItemToSetActionPerformed
+        ItemNode item = (ItemNode) listItems.getSelectedValue();
+        if (item != null) {
+            if (currentSet.addToItemRefs(item)) {
+                updateSetList();
+            } else
+                JOptionPane.showMessageDialog(null, "Item already exists in the set list.");
 
+        } else {
+            JOptionPane.showMessageDialog(null, "Please select an item from the item list on the left.");
+        }
     }//GEN-LAST:event_butAddItemToSetActionPerformed
 
-    private void butRemoveItemFromSetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_butRemoveItemFromSetActionPerformed
-        ItemNode toRemove = (ItemNode) listSetItems.getSelectedValue();
+    private void removeItemFromSet(ItemNode toRemove, boolean getSimilarItems) {
+
         if (toRemove != null) {
+            int reference = toRemove.getReference();
+            String description = toRemove.getDescription();
             ArrayList<Node> allRepos = new ArrayList<>();
-            ArrayList<Node> similarItems = new ArrayList<>();
+            ArrayList<ItemNode> similarItems = new ArrayList<>();
             String repoList = "";
+
             repositries.getNodesAsArrayList(allRepos, repositries.getRoot());
 
-            for (Node r : allRepos) {
-                RepoNode repo = (RepoNode) r;
-                if (repo.removeItem(toRemove.getReference())) {
-                    repoList += repo.getName() + "\n";
+            for (Node rep_ : allRepos) {
+
+                RepoNode rep = (RepoNode) rep_;
+                if (rep.removeItem(toRemove.getReference())) {
+                    repoList += rep.getName() + "\n";
                 }
-                repo.findSimilarItems(toRemove.getDescription(), similarItems);
-            }
-            
-            
-            
-            JOptionPane.showMessageDialog(null, "Item removed from: \n" + repoList, "Item Removed", JOptionPane.PLAIN_MESSAGE);
+                if (getSimilarItems) {
 
-            // Lets the user choose a new item to add to the set.
-            JPanel panel = new JPanel();
-            JList listReplacements = new JList(similarItems.toArray());
-
-            panel.add(new JLabel("Please choose a replacemant item."));
-            panel.add(listReplacements);
-
-            panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-
-            int result = JOptionPane.showConfirmDialog(null, panel, "Add a new item",
-                    JOptionPane.OK_CANCEL_OPTION);
-
-            if (result == JOptionPane.OK_OPTION) {
-                ItemNode i = (ItemNode) listReplacements.getSelectedValue();
-                i.addToRelatedSet(currentSet);
-                currentSet.addToItemRefs(i);
-                
-            } else if (result == JOptionPane.CANCEL_OPTION) {
+                    rep.findSimilarItems(description, similarItems);
+                }
 
             }
 
-            // Update relevant locations
+            if (getSimilarItems) {
+
+                // Removes duplicates.
+                for (int j = 0; j < similarItems.size(); j++) {
+                    ItemNode s = similarItems.get(j);
+                    for (int i = 0; i < listSetItems.getModel().getSize(); i++) {
+                        ItemNode l = (ItemNode) listSetItems.getModel().getElementAt(i);
+                        System.out.println(l.getReference());
+                        if (s.getReference() == l.getReference() || reference == s.getReference()) {
+                            similarItems.remove(s);
+                            j--;
+                        }
+                    }
+                }
+
+                updateItemList();
+                updateSetList();
+
+                JOptionPane.showMessageDialog(null, "Item removed from: \n" + repoList, "Item Removed", JOptionPane.PLAIN_MESSAGE);
+                // Lets the user choose a new item to add to the set.
+                JPanel panel = new JPanel();
+                JList listReplacements = new JList(similarItems.toArray());
+
+                panel.add(new JLabel("Please choose a replacemant item."));
+                panel.add(listReplacements);
+
+                panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+
+                int result = JOptionPane.showConfirmDialog(null, panel, "Add a new item",
+                        JOptionPane.OK_CANCEL_OPTION);
+
+                if (result == JOptionPane.OK_OPTION) {
+                    ItemNode i = (ItemNode) listReplacements.getSelectedValue();
+                    //i.addToRelatedSet(currentSet);
+                    if (i != null) {
+                        currentSet.addToItemRefs(i);
+                    }
+
+                } else if (result == JOptionPane.CANCEL_OPTION) {
+
+                }
+            }
+
+//
+//            // Update relevant locations
             updateItemList();
             updateSetList();
         } else {
             JOptionPane.showMessageDialog(null, "Please select an item from the set item list on the right.");
         }
+    }
+
+
+    private void butRemoveItemFromSetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_butRemoveItemFromSetActionPerformed
+        ItemNode toRemove = (ItemNode) listSetItems.getSelectedValue();
+        removeItemFromSet(toRemove, true);
     }//GEN-LAST:event_butRemoveItemFromSetActionPerformed
 
     private void butDeleteSetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_butDeleteSetActionPerformed
-        // TODO add your handling code here:
+
+        for (int i = 0; i < listSetItems.getModel().getSize(); i++) {
+
+            ItemNode l = (ItemNode) listSetItems.getModel().getElementAt(i);
+            System.out.println(l.getReference());
+            removeItemFromSet(l, false);
+            i--;
+        }
+
+        currentRepo.removeSet(currentSet.getReference());
+        updateSetComboBox();
+        updateItemList();
+        updateSetList();
     }//GEN-LAST:event_butDeleteSetActionPerformed
 
     private void jcSetsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcSetsActionPerformed
@@ -651,7 +809,67 @@ public class GUI extends javax.swing.JFrame {
         currentRepo = (RepoNode) jcRepositories.getSelectedItem();
         updateItemList();
         updateSetComboBox();
+        updateSetList();
     }//GEN-LAST:event_jcRepositoriesActionPerformed
+
+    private void butAddItemToSet1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_butAddItemToSet1ActionPerformed
+        JPanel panel = new JPanel();
+        JTextField fileLoc = new JTextField(20);
+
+        panel.add(fileLoc);
+        int result = JOptionPane.showConfirmDialog(null, panel, "Add a new Repo.",
+                JOptionPane.OK_CANCEL_OPTION);
+        if (result == JOptionPane.OK_OPTION) {
+            addRepository(fileLoc.getText());
+            updateRepositoryComboBox();
+        } else if (result == JOptionPane.CANCEL_OPTION) {
+
+        }
+
+    }//GEN-LAST:event_butAddItemToSet1ActionPerformed
+
+    private void butFindItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_butFindItem1ActionPerformed
+        JPanel panel = new JPanel();
+        JTextField fileLoc = new JTextField(20);
+
+        panel.add(fileLoc);
+        int result = JOptionPane.showConfirmDialog(null, panel, "Add an item from file.",
+                JOptionPane.OK_CANCEL_OPTION);
+        if (result == JOptionPane.OK_OPTION) {
+            addItemsFromFile(fileLoc.getText(), currentRepo);
+            updateItemList();
+        } else if (result == JOptionPane.CANCEL_OPTION) {
+
+        }
+    }//GEN-LAST:event_butFindItem1ActionPerformed
+
+    private void butDeleteSet1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_butDeleteSet1ActionPerformed
+        JPanel panel = new JPanel();
+        JTextField fileLoc = new JTextField(20);
+
+        panel.add(fileLoc);
+        int result = JOptionPane.showConfirmDialog(null, panel, "Add a set from file.",
+                JOptionPane.OK_CANCEL_OPTION);
+        if (result == JOptionPane.OK_OPTION) {
+            addSetsFromFile(fileLoc.getText(), currentRepo);
+            updateSetComboBox();
+            updateSetList();
+        } else if (result == JOptionPane.CANCEL_OPTION) {
+
+        }
+    }//GEN-LAST:event_butDeleteSet1ActionPerformed
+
+    private void butAddItemToSet2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_butAddItemToSet2ActionPerformed
+        currentRepo.printItemsTree();
+    }//GEN-LAST:event_butAddItemToSet2ActionPerformed
+
+    private void butAddItemToSet3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_butAddItemToSet3ActionPerformed
+        currentRepo.printSetsTree();
+    }//GEN-LAST:event_butAddItemToSet3ActionPerformed
+
+    private void butAddItemToSet4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_butAddItemToSet4ActionPerformed
+        repositries.printTreeStructure();
+    }//GEN-LAST:event_butAddItemToSet4ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -691,9 +909,15 @@ public class GUI extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton butAddItem;
     private javax.swing.JButton butAddItemToSet;
+    private javax.swing.JButton butAddItemToSet1;
+    private javax.swing.JButton butAddItemToSet2;
+    private javax.swing.JButton butAddItemToSet3;
+    private javax.swing.JButton butAddItemToSet4;
     private javax.swing.JButton butDeleteSelectedItem;
     private javax.swing.JButton butDeleteSet;
+    private javax.swing.JButton butDeleteSet1;
     private javax.swing.JButton butFindItem;
+    private javax.swing.JButton butFindItem1;
     private javax.swing.JButton butRemoveItemFromSet;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
