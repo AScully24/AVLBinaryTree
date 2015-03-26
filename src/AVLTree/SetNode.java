@@ -67,7 +67,6 @@ public class SetNode extends ItemNode {
         for (ItemNode i : items) {
             if (i == node) {
                 items.remove(inc);
-                System.out.println("Item removed");
                 return true;
             }
             inc++;

@@ -27,16 +27,16 @@
           <Group type="102" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="jpRepositories" pref="1015" max="32767" attributes="0"/>
+                  <Component id="jpRepositories" pref="1378" max="32767" attributes="0"/>
                   <Group type="102" attributes="0">
                       <Group type="103" groupAlignment="1" attributes="0">
                           <Component id="jpItems" max="32767" attributes="0"/>
-                          <Component id="jpItemButtons" pref="464" max="32767" attributes="0"/>
+                          <Component id="jpItemButtons" pref="646" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="jpSets" pref="533" max="32767" attributes="0"/>
-                          <Component id="jpSetButtons" pref="533" max="32767" attributes="0"/>
+                          <Component id="jpSets" pref="714" max="32767" attributes="0"/>
+                          <Component id="jpSetButtons" pref="714" max="32767" attributes="0"/>
                       </Group>
                   </Group>
               </Group>
@@ -84,7 +84,7 @@
                   <Component id="jlReposiroties" min="-2" max="-2" attributes="0"/>
                   <EmptySpace min="-2" pref="34" max="-2" attributes="0"/>
                   <Component id="jcRepositories" min="-2" pref="162" max="-2" attributes="0"/>
-                  <EmptySpace pref="637" max="32767" attributes="0"/>
+                  <EmptySpace pref="1016" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -116,6 +116,9 @@
               </StringArray>
             </Property>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jcRepositoriesActionPerformed"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JLabel" name="jlReposiroties">
           <Properties>
@@ -161,7 +164,7 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="jlItems" min="-2" max="-2" attributes="0"/>
                   <EmptySpace type="separate" max="-2" attributes="0"/>
-                  <Component id="jScrollPane2" pref="408" max="32767" attributes="0"/>
+                  <Component id="jScrollPane2" pref="410" max="32767" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
@@ -267,6 +270,9 @@
               </StringArray>
             </Property>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jcSetsActionPerformed"/>
+          </Events>
         </Component>
         <Container class="javax.swing.JScrollPane" name="jScrollPane1">
           <AuxValues>
@@ -317,7 +323,7 @@
                           <Component id="butFindItem" min="-2" pref="155" max="-2" attributes="0"/>
                       </Group>
                   </Group>
-                  <EmptySpace pref="107" max="32767" attributes="0"/>
+                  <EmptySpace pref="289" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>

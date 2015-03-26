@@ -4,17 +4,23 @@ import AVLTree.Tree;
 import AVLTree.RepoNode;
 import AVLTree.ItemNode;
 import AVLTree.SetNode;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Formatter;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.BoxLayout;
 import javax.swing.JComboBox;
+import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.text.MaskFormatter;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -45,6 +51,7 @@ public class GUI extends javax.swing.JFrame {
     }
 
     private void updateSetList() {
+        currentSet = (SetNode) jcSets.getSelectedItem();
         if (currentSet != null) {
             ArrayList<ItemNode> setItems = currentSet.getItemRefs();
             Collections.sort(setItems);
@@ -151,7 +158,7 @@ public class GUI extends javax.swing.JFrame {
         sc.close();
 
         currentSet = (SetNode) newRepo.getSets().getRoot();
-        repositries.addNode(newRepo);
+        //repositries.addNode(newRepo);
 
     }
 
@@ -193,6 +200,11 @@ public class GUI extends javax.swing.JFrame {
 
         jcRepositories.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jcRepositories.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jcRepositories.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jcRepositoriesActionPerformed(evt);
+            }
+        });
 
         jlReposiroties.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         jlReposiroties.setText("Repositories");
@@ -206,7 +218,7 @@ public class GUI extends javax.swing.JFrame {
                 .addComponent(jlReposiroties)
                 .addGap(34, 34, 34)
                 .addComponent(jcRepositories, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(637, Short.MAX_VALUE))
+                .addContainerGap(1016, Short.MAX_VALUE))
         );
         jpRepositoriesLayout.setVerticalGroup(
             jpRepositoriesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -250,7 +262,7 @@ public class GUI extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jlItems)
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 408, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 410, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -262,6 +274,11 @@ public class GUI extends javax.swing.JFrame {
 
         jcSets.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jcSets.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jcSets.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jcSetsActionPerformed(evt);
+            }
+        });
 
         listSetItems.setModel(new javax.swing.AbstractListModel() {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
@@ -338,7 +355,7 @@ public class GUI extends javax.swing.JFrame {
                         .addComponent(butAddItem, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(butFindItem, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(107, Short.MAX_VALUE))
+                .addContainerGap(289, Short.MAX_VALUE))
         );
         jpItemButtonsLayout.setVerticalGroup(
             jpItemButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -415,15 +432,15 @@ public class GUI extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jpRepositories, javax.swing.GroupLayout.DEFAULT_SIZE, 1015, Short.MAX_VALUE)
+                    .addComponent(jpRepositories, javax.swing.GroupLayout.DEFAULT_SIZE, 1378, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jpItems, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jpItemButtons, javax.swing.GroupLayout.DEFAULT_SIZE, 464, Short.MAX_VALUE))
+                            .addComponent(jpItemButtons, javax.swing.GroupLayout.DEFAULT_SIZE, 646, Short.MAX_VALUE))
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jpSets, javax.swing.GroupLayout.DEFAULT_SIZE, 533, Short.MAX_VALUE)
-                            .addComponent(jpSetButtons, javax.swing.GroupLayout.DEFAULT_SIZE, 533, Short.MAX_VALUE))))
+                            .addComponent(jpSets, javax.swing.GroupLayout.DEFAULT_SIZE, 714, Short.MAX_VALUE)
+                            .addComponent(jpSetButtons, javax.swing.GroupLayout.DEFAULT_SIZE, 714, Short.MAX_VALUE))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -455,7 +472,7 @@ public class GUI extends javax.swing.JFrame {
 
         panel.add(new JLabel("Reference"));
         panel.add(referenceField);
-       // panel.add(Box.createHorizontalStrut(15));
+        // panel.add(Box.createHorizontalStrut(15));
 
         panel.add(new JLabel("Price"));
         panel.add(priceField);
@@ -487,36 +504,150 @@ public class GUI extends javax.swing.JFrame {
 
     private void butDeleteSelectedItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_butDeleteSelectedItemActionPerformed
         ItemNode toRemove = (ItemNode) listItems.getSelectedValue();
-        ArrayList<Node> arr = new ArrayList<>();
+
         if (toRemove != null) {
-            repositries.getNodesAsArrayList(arr, repositries.getRoot());
+            ArrayList<Node> arr = new ArrayList<>();
+            if (toRemove != null) {
+                repositries.getNodesAsArrayList(arr, repositries.getRoot());
+            }
+
+            for (Node r : arr) {
+                RepoNode repo = (RepoNode) r;
+                System.out.println("Deleted Item from " + repo.getName());
+                repo.removeItem(toRemove.getReference());
+            }
+
+            updateItemList();
+            updateSetList();
+        } else {
+            JOptionPane.showMessageDialog(null, "Please select an item from the item list on the left.");
         }
 
-        for (Node r : arr) {
-            RepoNode repo = (RepoNode) r;
-            System.out.println("Deleted Item from " + repo.getName());
-            repo.removeItem(toRemove.getReference());
-        }
-
-        updateItemList();
-        updateSetList();
     }//GEN-LAST:event_butDeleteSelectedItemActionPerformed
 
     private void butFindItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_butFindItemActionPerformed
-        // TODO add your handling code here:
+        JPanel panel = new JPanel();
+        MaskFormatter mf = null;
+        try {
+            mf = new MaskFormatter("#####");
+        } catch (ParseException ex) {
+            Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        JFormattedTextField referenceField = new JFormattedTextField(mf);
+        referenceField.setValue("");
+        panel.add(new JLabel("Reference"));
+        panel.add(referenceField);
+
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+
+        while (true) {
+
+            int result = JOptionPane.showConfirmDialog(null, panel, "Find an item",
+                    JOptionPane.OK_CANCEL_OPTION);
+
+            if (result == JOptionPane.OK_OPTION) {
+
+                String userInput = referenceField.getText();
+                // If user doesn't put any info in, a message appears
+                if (userInput.trim().isEmpty()) {
+                    JOptionPane.showMessageDialog(panel, "No text input.", "Error", JOptionPane.ERROR_MESSAGE);
+                } else {
+
+                    ArrayList<Node> allRepos = new ArrayList<>();
+                    ItemNode item = null;
+                    int ref = Integer.parseInt(referenceField.getText());
+
+                    repositries.getNodesAsArrayList(allRepos, repositries.getRoot());
+
+                    ItemNode i = currentRepo.findItem(ref);
+                    String repoName = "";
+                    for (Node na : allRepos) {
+                        RepoNode n = (RepoNode) na;
+                        ItemNode temp = n.findItem(ref);
+                        if (temp != null) {
+                            item = temp;
+                            repoName = n.getName() + "\n";
+                            temp = null;
+                        }
+                    }
+
+                    if (item != null) {
+                        JOptionPane.showMessageDialog(panel, "Item found in: \n" + repoName + "\n" + item.toString(), "Item found", JOptionPane.PLAIN_MESSAGE, null);
+                    } else
+                        JOptionPane.showMessageDialog(panel, "Item not found.", "Error", JOptionPane.ERROR_MESSAGE);
+
+                    break;
+                }
+            } else if (result == JOptionPane.CANCEL_OPTION) {
+                break;
+            }
+        }
     }//GEN-LAST:event_butFindItemActionPerformed
 
     private void butAddItemToSetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_butAddItemToSetActionPerformed
-        // TODO add your handling code here:
+
     }//GEN-LAST:event_butAddItemToSetActionPerformed
 
     private void butRemoveItemFromSetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_butRemoveItemFromSetActionPerformed
-        // TODO add your handling code here:
+        ItemNode toRemove = (ItemNode) listSetItems.getSelectedValue();
+        if (toRemove != null) {
+            ArrayList<Node> allRepos = new ArrayList<>();
+            ArrayList<Node> similarItems = new ArrayList<>();
+            String repoList = "";
+            repositries.getNodesAsArrayList(allRepos, repositries.getRoot());
+
+            for (Node r : allRepos) {
+                RepoNode repo = (RepoNode) r;
+                repo.findSimilarItems(toRemove.getDescription(), similarItems);
+//                if (repo.removeItem(toRemove.getReference())) {
+//                    repoList += repo.getName() + "\n";
+//                }
+            }
+
+            JOptionPane.showMessageDialog(null, "Item removed from: \n" + repoList, "Item Removed", JOptionPane.PLAIN_MESSAGE);
+
+            // Lets the user choose a new item to add to the set.
+            JPanel panel = new JPanel();
+            JList listReplacements = new JList(similarItems.toArray());
+
+            panel.add(new JLabel("Please choose a replacemant item."));
+            panel.add(listReplacements);
+
+            panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+
+            int result = JOptionPane.showConfirmDialog(null, panel, "Add a new item",
+                    JOptionPane.OK_CANCEL_OPTION);
+
+            if (result == JOptionPane.OK_OPTION) {
+                ItemNode i = (ItemNode) listReplacements.getSelectedValue();
+                currentSet.addToItemRefs(i);
+
+            } else if (result == JOptionPane.CANCEL_OPTION) {
+
+            }
+
+            // Update relevant locations
+            updateItemList();
+            updateSetList();
+        } else {
+            JOptionPane.showMessageDialog(null, "Please select an item from the set item list on the right.");
+        }
     }//GEN-LAST:event_butRemoveItemFromSetActionPerformed
 
     private void butDeleteSetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_butDeleteSetActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_butDeleteSetActionPerformed
+
+    private void jcSetsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcSetsActionPerformed
+        updateSetList();
+    }//GEN-LAST:event_jcSetsActionPerformed
+
+    private void jcRepositoriesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcRepositoriesActionPerformed
+        currentRepo = (RepoNode) jcRepositories.getSelectedItem();
+        updateItemList();
+        updateSetComboBox();
+    }//GEN-LAST:event_jcRepositoriesActionPerformed
 
     /**
      * @param args the command line arguments

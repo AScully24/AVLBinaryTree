@@ -11,22 +11,23 @@ public class Node implements Comparable<Node> {
     private Node leftNode = null;
     private Node rightNode = null;
     private Node parentNode = null;
-    private int height = 0;
-    
+    private int height;
+
+    public Node(int reference) {
+        this.reference = reference;
+        height = 1;
+    }
+
     public boolean isLeftNode() {
         if (parentNode == null) {
             return false;
-        }else return this == parentNode.getLeftNode();
+        } else return this == parentNode.getLeftNode();
     }
-    
+
     public boolean isRightNode() {
         if (parentNode == null) {
             return false;
-        }else return this == parentNode.getRightNode();
-    }
-    
-    public Node(int reference) {
-        this.reference = reference;
+        } else return this == parentNode.getRightNode();
     }
 
     public Node getParentNode() {
@@ -92,17 +93,17 @@ public class Node implements Comparable<Node> {
         }
         return "LeftNode: " + left + " ---------- RightNode: " + right;
     }
-    
+
     public void setNodeData(ArrayList<Object> arr) {
         reference = (int) arr.get(0);
     }
-    
-    public ArrayList<Object> getNodeData(){
+
+    public ArrayList<Object> getNodeData() {
         ArrayList<Object> arr = new ArrayList<>();
         arr.add(reference);
         return arr;
     }
-    
+
     public Node getOnlyChild() {
         if (getChildCount() == 1) {
             if (leftNode != null)

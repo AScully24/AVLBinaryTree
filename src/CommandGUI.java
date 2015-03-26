@@ -1,11 +1,11 @@
 
-import AVLTree.Tree;
+import AVLTree.*;
 import AVLTree.ItemNode;
-import AVLTree.Node;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import static java.lang.Thread.sleep;
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -17,10 +17,11 @@ public class CommandGUI {
     private static final ArrayList<String> data = new ArrayList<>();
 
     public static void main(String[] args) throws IOException {
-        binaryTreeMethod();
+        //binaryTreeMethod();
+        testData();
     }
 
-    private void testingStrings() {
+    private static void testingStrings() {
         String a = "", b = "Hello1";
         int compareLength = a.length() + a.toLowerCase().compareTo(b.toLowerCase());
         float perc = (float) ((float) compareLength / (float) a.length());
@@ -29,7 +30,43 @@ public class CommandGUI {
         System.out.println("%" + perc + " match");
         System.out.println(compareLength);
     }
-
+    
+    private static void testData() {
+        ArrayList<Integer> test = new ArrayList<>();
+        test.add(56);
+        test.add(99);
+        test.add(68);
+        test.add(10);
+        test.add(23);
+        
+        Random r = new Random();
+        tree = new Tree();
+        for (int i = 0; i < 30; i++) {
+            
+            int adding = r.nextInt(100);
+//            int adding = test.get(i);
+            System.out.println(adding  + " adding this number");
+            
+//            test.add(r.nextInt());
+            tree.addNode(tree.getRoot(), new Node(adding));
+            tree.printTreeStructure();
+            try {
+                sleep(10);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(CommandGUI.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+//        int check = 0;
+//        for (Integer i : test) {
+//            tree.addNode(tree.getRoot(), new Node(i));
+//            //ree.printTreeStructure();
+//        }
+        
+        tree.printTreeStructure();
+        
+    }
+    
+    
     private static void binaryTreeMethod() throws IOException {
         tree = new Tree(null);
 
@@ -44,7 +81,7 @@ public class CommandGUI {
 
         for (int i = 0; i < data.size(); i++) {
             String lineData[] = data.get(i).split(",");
-            tree.addNode(new ItemNode(Integer.parseInt(lineData[0]), lineData[1], Double.parseDouble(lineData[2])));
+            tree.addNode(tree.getRoot(),new ItemNode(Integer.parseInt(lineData[0]), lineData[1], Double.parseDouble(lineData[2])));
         }
 //        
 //        int refs[] = {12806,12802,12810,12807,12805,12804};

@@ -1,6 +1,9 @@
 package AVLTree;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class RepoNode extends Node {
 
@@ -23,7 +26,7 @@ public class RepoNode extends Node {
      * @return True when item is added, false if it is a duplicate.
      */
     public boolean addItem(ItemNode node, SetNode sNode) {
-        if (!items.addNode(node)) {
+        if (items.addNode(items.getRoot(),node) == null) {
             return false;
         }
 
@@ -35,16 +38,16 @@ public class RepoNode extends Node {
     }
 
     public void addSet(SetNode node) {
-        sets.addNode(node);
+        sets.addNode(sets.getRoot(),node);
     }
 
     @Override
     public ArrayList<Object> getNodeData() {
-        ArrayList<Object> arr =  super.getNodeData(); //To change body of generated methods, choose Tools | Templates.
+        ArrayList<Object> arr = super.getNodeData(); //To change body of generated methods, choose Tools | Templates.
         arr.add(name);
         arr.add(items);
         arr.add(sets);
-        
+
         return arr;
     }
 
@@ -56,8 +59,6 @@ public class RepoNode extends Node {
         sets = (Tree) arr.get(3);
     }
 
-    
-    
     /**
      * Deletes an item and removes it from any sets within the repo.
      *
@@ -68,11 +69,11 @@ public class RepoNode extends Node {
     public boolean removeItem(int ref) {
         System.out.println("Searching for " + ref);
         ItemNode toRemove = (ItemNode) items.findNode(ref, items.getRoot());
-        
+
         if (toRemove == null) {
             return false;
         }
-        System.out.println("Item Found " + toRemove.getReference());
+        
         ArrayList<SetNode> relatedSets = toRemove.getRelatedSets();
 
         for (SetNode n : relatedSets) {
@@ -105,18 +106,33 @@ public class RepoNode extends Node {
         sets.removeNode(ref);
         return true;
     }
-    
-    public ArrayList<Node> findSimilarItems(ItemNode node) {
-        ArrayList<Node> arr = new ArrayList<>();
-        items.getNodesAsArrayList(arr, items.getRoot());
+
+    /**
+     * Finds similar items within the repository based upon the description
+     *
+     * @param description The item description to be searched for.
+     * @param itemArr the arraylist to be filled with the similar items.
+     */
+    public void findSimilarItems(final String description, ArrayList<Node> itemArr) {
+        ArrayList<Node> loopArr = new ArrayList<>();
+        items.getNodesAsArrayList(loopArr, items.getRoot());
+        String newDescription = description.substring(5, description.length()-5);
+                
+        Collections.sort(loopArr, new Comparator<Node>() {
+            @Override
+            public int compare(Node o1, Node o2) {
+                return ((ItemNode) o1).getDescription().compareTo(((ItemNode) o2).getDescription());
+            }
+        });
         
-        for (Node na : arr) {
-//            if (node.getDescription().compareTo(((ItemNode)na).getDescription())) {
-//                
-//            }
+        for (Node na : loopArr) {
+            ItemNode n = (ItemNode) na;
+            boolean difference = n.getDescription().contains(newDescription);
+            System.out.printf("%b ------ %s ----- %s\n",difference,newDescription,n.getDescription());
+            if (difference) {
+                itemArr.add(n);
+            }
         }
-        
-        return arr;
     }
 
     public ItemNode findItem(int ref) {
